@@ -14,7 +14,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['"Playfair Display"', ...defaultTheme.fontFamily.sans], // Default is Playfair
+                sans: ['"Noto Sans HK"', ...defaultTheme.fontFamily.sans], // Default is Playfair
                 figtree: ["Figtree", ...defaultTheme.fontFamily.sans],
             },
             borderRadius: {

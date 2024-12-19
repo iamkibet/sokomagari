@@ -1,19 +1,30 @@
 import React, { useState } from "react";
 import { Search, Car, Truck } from "lucide-react";
 import { Button } from "./ui/button";
-import { Audi } from "./cars/Audi";
-import { Bmw } from "./cars/Bmw";
-import { Honda } from "./cars/Honda";
-import { Subaru } from "./cars/Subaru";
-import { Toyota } from "./cars/Toyota";
-import { Nissan } from "./cars/Nissan";
-import { Hyundai } from "./cars/Hyundai";
-import { Lexus } from "./cars/Lexus";
-import { Mazda } from "./cars/Mazda";
-import { Mercedes } from "./cars/Mercedes";
-import { LandRover } from "./cars/LandRover";
-import { VolksWagen } from "./cars/VolksWagen";
 
+import {
+    Audi,
+    Bmw,
+    Honda,
+    Hyundai,
+    LandRover,
+    Lexus,
+    Mazda,
+    Mercedes,
+    Nissan,
+    Subaru,
+    Toyota,
+    VolksWagen,
+} from "./cars";
+import {
+    Convertibles,
+    Hatchback,
+    Pickups,
+    Saloons,
+    Suvs,
+    Vans,
+} from "./cartypes";
+import { Filter } from "./svgs/Filter";
 
 const WhatFits = () => {
     const [activeTab, setActiveTab] = useState("name");
@@ -22,8 +33,7 @@ const WhatFits = () => {
         { icon: Car, name: "Sedan" },
         { icon: Truck, name: "SUV" },
     ];
-  
-
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
         <section className="flex flex-col w-full py-12">
@@ -75,7 +85,7 @@ const WhatFits = () => {
                                         <Search className="w-5 h-5" />
                                     </span>
                                 </div>
-                                <div className="bg-white py-6">
+                                <div className="py-6">
                                     <h1 className="text-2xl font-bold text-gray-800 mb-4">
                                         Filter by Budget
                                     </h1>
@@ -99,41 +109,229 @@ const WhatFits = () => {
                                         ))}
                                     </ul>
                                     <div className="py-3">
-                                        <Button>Clear</Button>
+                                        <button className="bg-[#8fafd6] px-6 py-2 rounded-md  font-bold">
+                                            Clear
+                                        </button>
+                                    </div>
+                                    {/* advanced search */}
+                                    <div className=" container mx-auto  py-6">
+                                        {/* Toggle Button */}
+                                        <button
+                                            onClick={() => setIsOpen(!isOpen)}
+                                            className="font-bold flex w-full justify-between"
+                                        >
+                                            {isOpen
+                                                ? "Hide Advanced Search"
+                                                : "Click here for Advanced Search"}
+                                            <div className="h-8 w-8">
+                                                <Filter />
+                                            </div>
+                                        </button>
+
+                                        {/* Advanced Search Form */}
+                                        <div
+                                            className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                                                isOpen
+                                                    ? "max-h-screen opacity-100"
+                                                    : "max-h-0 opacity-0"
+                                            }`}
+                                        >
+                                            <form className="mt-4 y-6">
+                                                <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                                                    Brand & Model
+                                                </h2>
+
+                                                {/* Vehicle Brand and Model */}
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700">
+                                                            Vehicle Brand
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Enter brand"
+                                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700">
+                                                            Brand Model
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Enter model"
+                                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                {/* Year of Manufacture */}
+                                                <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                                                    Year of Manufacture
+                                                </h2>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700">
+                                                            Min YOM
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            placeholder="Minimum year"
+                                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700">
+                                                            Max YOM
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            placeholder="Maximum year"
+                                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                {/* Price and Currency */}
+                                                <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                                                    Price & Currency
+                                                </h2>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700">
+                                                            Min Price
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            placeholder="Minimum price"
+                                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700">
+                                                            Max Price
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            placeholder="Maximum price"
+                                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700">
+                                                        Currency
+                                                    </label>
+                                                    <select className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+                                                        <option>
+                                                            All Currencies
+                                                        </option>
+                                                        <option>USD</option>
+                                                        <option>EUR</option>
+                                                        <option>KES</option>
+                                                    </select>
+                                                </div>
+
+                                                {/* Vehicle Location */}
+                                                <h2 className="text-lg font-semibold text-gray-800 my-4">
+                                                    Vehicle Location
+                                                </h2>
+                                                <div className="flex items-center space-x-4 mb-4">
+                                                    <label className="inline-flex items-center">
+                                                        <input
+                                                            type="radio"
+                                                            name="location"
+                                                            value="kenya"
+                                                            className="form-radio text-blue-600"
+                                                        />
+                                                        <span className="ml-2">
+                                                            Available in Kenya
+                                                        </span>
+                                                    </label>
+                                                    <label className="inline-flex items-center">
+                                                        <input
+                                                            type="radio"
+                                                            name="location"
+                                                            value="import"
+                                                            className="form-radio text-blue-600"
+                                                        />
+                                                        <span className="ml-2">
+                                                            Direct
+                                                            Import/International
+                                                            Stock
+                                                        </span>
+                                                    </label>
+                                                    <label className="inline-flex items-center">
+                                                        <input
+                                                            type="radio"
+                                                            name="location"
+                                                            value="both"
+                                                            className="form-radio text-blue-600"
+                                                        />
+                                                        <span className="ml-2">
+                                                            Both
+                                                        </span>
+                                                    </label>
+                                                </div>
+
+                                                {/* Submit Button */}
+                                                <Button
+                                                    type="submit"
+                                                    className="mt-4 w-full px-6 py-6 text-lg flex items-center text-center"
+                                                >
+                                                    Search
+                                                </Button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         )}
                         {activeTab === "brand" && (
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 max-w-3xl mx-auto">
-                                {[Toyota, Audi, Bmw, Honda, Subaru, Nissan, Hyundai, Lexus, Mazda, Mercedes, LandRover, VolksWagen].map(
-                                    (Brand, index) => (
-                                        <button
-                                            key={index}
-                                            className="flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out"
-                                        >
-                                            <Brand className="w-16 h-16 mb-2 text-gray-800" />
-                                            <span className="text-sm font-medium text-gray-700">
-                                                {Brand.name}
-                                            </span>
-                                        </button>
-                                    )
-                                )}
+                                {[
+                                    Toyota,
+                                    Audi,
+                                    Bmw,
+                                    Honda,
+                                    Subaru,
+                                    Nissan,
+                                    Hyundai,
+                                    Lexus,
+                                    Mazda,
+                                    Mercedes,
+                                    LandRover,
+                                    VolksWagen,
+                                ].map((Brand, index) => (
+                                    <button
+                                        key={index}
+                                        className="flex flex-col items-center p-4 "
+                                    >
+                                        <Brand className="w-16 h-16 mb-2 text-gray-800" />
+                                        <span className="text-sm font-medium text-gray-700">
+                                            {Brand.name}
+                                        </span>
+                                    </button>
+                                ))}
                             </div>
                         )}
 
                         {activeTab === "body" && (
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
-                                {bodyTypes.map((type) => (
-                                    <button
-                                        key={type.name}
-                                        className="flex flex-col items-center p-4 bg-white rounded-md shadow hover:shadow-md transition duration-300"
+                            <div className="grid grid-cols-3 gap-4">
+                                {[
+                                    { Icon: Suvs },
+                                    { Icon: Hatchback },
+                                    { Icon: Pickups },
+                                    { Icon: Vans },
+                                    { Icon: Saloons },
+                                    { Icon: Convertibles },
+                                ].map(({ Icon, index }) => (
+                                    <a
+                                        key={index}
+                                        className="flex cursor-pointer items-center justify-center py-8  transition duration-300 ease-in-out group"
                                     >
-                                        <type.icon className="w-12 h-12 mb-2 text-indigo-600" />
-                                        <span className="text-sm font-medium text-gray-800">
-                                            {type.name}
-                                        </span>
-                                    </button>
+                                        <Icon className="w-16 h-16 transition-colors duration-300" />
+                                    </a>
                                 ))}
                             </div>
                         )}

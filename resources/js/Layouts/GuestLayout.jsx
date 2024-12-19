@@ -1,43 +1,23 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import { Link } from '@inertiajs/react';
+import React from "react";
 
-export default function GuestLayout({auth, children }) {
+import Navbar from "@/Components/Navbar";
+import Footer from "@/Components/Footer";
+import Breadcrumbs from "@/Components/Breadcrumbs";
+
+export default function GuestLayout({ auth, children, breadcrumbs }) {
+     console.log("Breadcrumbs:", breadcrumbs);
+
     return (
-        <div className="flex min-h-screen flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0">
-            <div>
-                <Link href="/">
-                    <ApplicationLogo className="h-20 w-20 fill-current text-gray-500" />
-                </Link>
-                <nav className="-mx-3 flex flex-1 justify-end">
-                    {auth.user ? (
-                        <Link
-                            href={route("dashboard")}
-                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                        >
-                            Dashboard
-                        </Link>
-                    ) : (
-                        <>
-                            <Link
-                                href={route("login")}
-                                className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                            >
-                                Log in
-                            </Link>
-                            <Link
-                                href={route("register")}
-                                className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                            >
-                                Register
-                            </Link>
-                        </>
-                    )}
-                </nav>
-            </div>
+        <div className="flex flex-col min-h-screen bg-[#f0f9f4] dark:bg-[#060f0a]">
+            <Navbar />
+            <header>
+                <Breadcrumbs breadcrumbs={breadcrumbs} />
+            </header>
+            {/* Main Content */}
+            <main className="flex-grow">{children}</main>
 
-            <div className="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg">
-                {children}
-            </div>
+            {/* Footer */}
+            <Footer />
         </div>
     );
 }
