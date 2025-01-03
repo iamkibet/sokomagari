@@ -7,34 +7,34 @@ import BorderHover from "./BorderHover";
 const Feature = ({ Icon, value }) => (
     <div className="flex flex-col gap-y-1 items-center">
         <div className="h-6 w-6 mb-1">
-            <Icon  />
+            <Icon />
         </div>
-        <p className="text-sm text-gray-600 text-center font-figtree">{value}</p>
+        <p className="text-sm text-center font-figtree">
+            {value}
+        </p>
     </div>
 );
 
 const CarCard = ({ car }) => {
-    console.log(car);
-
     return (
-        <div className=" bg-[#8fafd6]/10 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl">
+        <div className=" bg-[#8fafd6]/10 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl text-gray-800 dark:text-neutral-400">
             <div className="relative">
                 <img
                     src={`https://kai-and-karo.ams3.cdn.digitaloceanspaces.com/media/vehicles/images/adc4d701-726e-471d-bdfb-daa6267246ca.jpeg`}
                     alt={`${car.make} ${car.model}`}
                     className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
                 />
-                <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded-full text-xs font-semibold text-gray-700">
+                <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded-full text-xs font-semibold ">
                     {car.condition}
                 </div>
             </div>
 
             <div className="p-4">
                 <div className="flex justify-between items-center mb-2">
-                    <h3 className="text-lg font-bold text-gray-800">
+                    <h3 className="text-lg font-bold ">
                         {car.make} {car.model}
                     </h3>
-                    <span className="text-sm font-medium text-gray-600">
+                    <span className="text-sm font-medium ">
                         {car.year}
                     </span>
                 </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class VehicleController extends Controller
@@ -11,16 +12,29 @@ class VehicleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+
         $cars = Car::where('availability', 'Available')
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->get(); // Get all available cars
 
+        $perPage = 100;
+        $page = $request->input('page', 1);
+        $totalCars = $cars->count();
+        $totalPages = ceil($totalCars / $perPage);
 
+        // Manually paginate the collection
+        $paginatedCars = $cars->forPage($page, $perPage);
 
         return Inertia::render('Vehicles/Index', [
-            'cars' => $cars,
+            'cars' => [
+                'data' => $paginatedCars,
+                'current_page' => $page,
+                'per_page' => $perPage,
+                'total' => $totalCars,
+                'last_page' => $totalPages,
+            ],
         ]);
     }
 

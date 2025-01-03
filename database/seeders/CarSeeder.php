@@ -94,7 +94,7 @@ class CarSeeder extends Seeder
                 'mileage' => rand(10000, 90000),
                 'condition' => ['New', 'Used'][rand(0, 1)],
                 'location' => ['Nairobi, Kenya', 'Mombasa, Kenya', 'Kisumu, Kenya'][rand(0, 2)],
-                'availability' => ['Available', 'Pending'][rand(0, 1)],
+                'availability' => 'Available',
                 'drive' => ['4WD', 'FWD', 'RWD'][rand(0, 2)],
                 'engine_size' => rand(1500, 4000),
                 'fuel_type' => ['Petrol', 'Diesel'][rand(0, 1)],

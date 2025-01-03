@@ -8,9 +8,9 @@ const ThemeSwitcher = () => {
     const { toggleTheme, theme } = useTheme();
 
     return (
-        <button
+        <a
             onClick={toggleTheme}
-            className="flex items-center transition duration-200"
+            className="flex items-center transition duration-200 cursor-pointer"
             aria-label="Toggle Dark Mode"
         >
             {theme === "light" ? (
@@ -22,7 +22,7 @@ const ThemeSwitcher = () => {
                     <Sun />
                 </div>
             )}
-        </button>
+        </a>
     );
 };
 

@@ -54,9 +54,9 @@ const Slider = ({ cars }) => {
     };
 
     return (
-        <section >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-black mb-6 sm:mb-8">
+        <section>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-gray-800 dark:text-neutral-400">
+                <h2 className="text-2xl sm:text-3xl font-extrabold  mb-6 sm:mb-8">
                     Featured Cars
                 </h2>
                 <div className="relative">
@@ -81,7 +81,7 @@ const Slider = ({ cars }) => {
                         >
                             <a
                                 href="/all-cars"
-                                className="bg-black/15 text-black px-6 py-3 rounded-full text-lg font-medium hover:bg-black/20 transition-colors duration-300"
+                                className="bg-black/15  px-6 py-3 rounded-full text-lg font-medium hover:bg-black/20 transition-colors duration-300"
                             >
                                 View All Cars
                             </a>
