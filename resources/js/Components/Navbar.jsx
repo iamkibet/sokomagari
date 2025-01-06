@@ -6,6 +6,7 @@ import ThemeSwitcher from "./ThemeSwitcher";
 import { Link } from "@inertiajs/react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import { Arrow } from "@radix-ui/react-select";
+import { ArrowDown } from "./svgs/ArrowDown";
 
 const LocationSvg = (
     <svg
@@ -89,11 +90,7 @@ const Navbar = () => {
         <Link
             href={href}
             className={`flex uppercase font-bold items-center px-4 py-4 transition-all 
-            ${
-                active
-                    ? "border-t-2 border-[#f75d34]"
-                    : "border-t-2 border-transparent"
-            }
+            ${active ? "border-t-2 border-[#f75d34]" : ""}
             hover:border-t-2 border-[#f75d34]`}
         >
             {children}
@@ -134,17 +131,40 @@ const Navbar = () => {
     );
 
     return (
-        <header className="bg-[#f0f9f4] dark:bg-[#060f0a] sticky top-0 z-[9999] border-b shadow-lg dark:border-gray-800">
-            <section className="border-b-2 py-4">
-                <MaxWidthWrapper className="flex items-center justify-between px-2 ">
-                    <Link href="/">
-                        <ApplicationLogo className="h-12 w-auto fill-current text-gray-800 dark:text-neutral-400" />
-                    </Link>
+        <header className="bg-[rgb(255,255,255)] dark:bg-[#060f0a] sticky top-0 z-[9999] border-none md:border-b shadow-none md:shadow-sm dark:border-gray-800">
+            <section>
+                <MaxWidthWrapper className="flex md:items-center justify-between flex-col space-y-2 md:flex-row md:space-y-0   border-b-[0.5px] py-4">
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center">
+                            {/* Mobile Menu Button */}
+                            <button onClick={toggleMenu} className="md:hidden">
+                                {isMenuOpen ? (
+                                    <div className="h-8 w-8">
+                                        <Close />
+                                    </div>
+                                ) : (
+                                    <div className="h-8 w-8">
+                                        {" "}
+                                        <Hambuger />
+                                    </div>
+                                )}
+                            </button>
+                            <img
+                                className=" h-10 md:h-16 max-w-[1/4] w-full"
+                                src="/assets/sokomagarilogo.png"
+                                alt="logo"
+                            />
+                        </div>
+                        <div className="flex items-center gap-1 md:hidden">
+                            <a href="/"> {heartSvg}</a>
+                            <a href="/">{userProfileSvg}</a>
+                        </div>
+                    </div>
 
-                    <form className="max-w-md w-full">
+                    <form className="max-w-md w-full items-center">
                         <div className="flex">
                             <button
-                                className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
+                                className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center  border border-gray-300 rounded-s-full hover:bg-gray-200 focus:ring-4 focus:outline-none    dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
                                 type="button"
                             >
                                 All
@@ -154,55 +174,21 @@ const Navbar = () => {
                                 id="dropdown"
                                 className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
                             >
-                                <ul
-                                    className="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                    aria-labelledby="dropdown-button"
-                                >
-                                    <li>
-                                        <button
-                                            type="button"
-                                            className="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                        >
-                                            Mockups
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button
-                                            type="button"
-                                            className="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                        >
-                                            Templates
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button
-                                            type="button"
-                                            className="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                        >
-                                            Design
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button
-                                            type="button"
-                                            className="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                        >
-                                            Logos
-                                        </button>
-                                    </li>
+                                <ul>
+                                    <li>Stuff</li>
                                 </ul>
                             </div>
                             <div className="relative w-full">
                                 <input
                                     type="search"
                                     id="search-dropdown"
-                                    className="block pl-9 p-2.5 w-full z-20 text-sm rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+                                    className="block pl-6 md:pl-9 p-2.5 w-full z-20 text-sm rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300   dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
                                     placeholder="Search or ask a question"
                                     required
                                 />
 
                                 <svg
-                                    className="w-4 h-4 flex items-center text-center absolute top-4 start-3"
+                                    className="w-3 h-3 md:w-4 md:h-4 flex items-center text-center absolute top-4 start-2 md:start-3"
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
                                     viewBox="0 0 20 20"
@@ -215,11 +201,29 @@ const Navbar = () => {
                                         d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
                                     />
                                 </svg>
+                                {/* mic svg */}
+                                <a href="/">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        className="w-5 h-5 flex md:hidden items-center text-center absolute top-3 end-2 cursor-pointer"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
+                                        />
+                                    </svg>
+                                </a>
+
                                 <span className="sr-only">Search</span>
                             </div>
                         </div>
                     </form>
-                    <div className="flex items-center justify-between space-x-4">
+                    <div className="hidden md:flex items-center justify-between space-x-4">
                         <p className="flex items-center text-xs">
                             English <span>{DownSvg}</span>
                         </p>
@@ -235,64 +239,67 @@ const Navbar = () => {
                 <MaxWidthWrapper>
                     <div className="flex justify-between items-center">
                         {/* Desktop Menu */}
-                        <div>
-                            <nav className="hidden md:flex space-x-4 ">
-                                <DropdownMenuItem
-                                    title="Vehicles"
-                                    items={[
-                                        {
-                                            href: "/vehicles",
-                                            text: "All Vehicles",
-                                        },
-                                        {
-                                            href: "/contact",
-                                            text: "Available in Kenya",
-                                        },
-                                        { href: "/faq", text: "Direct import" },
-                                    ]}
-                                    active={isActive("/vehicles")}
-                                />
-                                <DropdownMenuItem
-                                    title="Bikes"
-                                    items={[
-                                        { href: "/bikes", text: "All Bikes" },
-                                        {
-                                            href: "/contact",
-                                            text: "Available in Kenya",
-                                        },
-                                        { href: "/faq", text: "Direct import" },
-                                    ]}
-                                    active={isActive("/bikes")}
-                                />
-                                <MenuItem href={route("login")}>
-                                    Sell Your Car
-                                </MenuItem>
-                                <MenuItem href={route("about")}>About</MenuItem>
-                                <MenuItem href={route("contact")}>
-                                    Contact
-                                </MenuItem>
-                                <MenuItem href={route("faq")}>FAQ</MenuItem>
-                                <ThemeSwitcher />
-                            </nav>
-                            <div>
-                                {LocationSvg} <span>Select City</span> {Arrows}
-                            </div>
+
+                        <nav className="hidden md:flex space-x-4 ">
+                            <DropdownMenuItem
+                                title="New Cars"
+                                items={[
+                                    {
+                                        href: "/vehicles",
+                                        text: "New cars",
+                                    },
+                                    {
+                                        href: "/contact",
+                                        text: "Available in Kenya",
+                                    },
+                                    { href: "/faq", text: "Direct import" },
+                                ]}
+                                active={isActive("/vehicles")}
+                            />
+                            <DropdownMenuItem
+                                title="Used Cars"
+                                items={[
+                                    { href: "/bikes", text: "All Bikes" },
+                                    {
+                                        href: "/contact",
+                                        text: "Available in Kenya",
+                                    },
+                                    { href: "/faq", text: "Direct import" },
+                                ]}
+                                active={isActive("/bikes")}
+                            />
+                            <DropdownMenuItem
+                                title="News & Reviews"
+                                items={[
+                                    { href: "/bikes", text: "All Bikes" },
+                                    {
+                                        href: "/contact",
+                                        text: "Available in Kenya",
+                                    },
+                                    { href: "/faq", text: "Direct import" },
+                                ]}
+                                active={isActive("/bikes")}
+                            />
+                            <DropdownMenuItem
+                                title="Videos"
+                                items={[
+                                    { href: "/bikes", text: "All Bikes" },
+                                    {
+                                        href: "/contact",
+                                        text: "Available in Kenya",
+                                    },
+                                    { href: "/faq", text: "Direct import" },
+                                ]}
+                                active={isActive("/bikes")}
+                            />
+
+                            <ThemeSwitcher />
+                        </nav>
+                        <div className="hidden md:flex items-center gap-2 text-sm">
+                            {LocationSvg} <span>Select City</span> <ArrowDown />
                         </div>
                     </div>
 
-                    {/* Mobile Menu Button */}
-                    <button onClick={toggleMenu} className="md:hidden">
-                        {isMenuOpen ? (
-                            <div className="h-8 w-8">
-                                <Close />
-                            </div>
-                        ) : (
-                            <div className="h-8 w-8">
-                                {" "}
-                                <Hambuger />
-                            </div>
-                        )}
-                    </button>
                     {/* Mobile Menu */}
                     {isMenuOpen && (
                         <nav className="md:hidden mt-4 space-y-2">

@@ -22,6 +22,12 @@ export default {
                 md: "calc(var(--radius) - 2px)",
                 sm: "calc(var(--radius) - 4px)",
             },
+            screens: {
+                "3xl": "1920px", // Define a new breakpoint
+            },
+            maxWidth: {
+                "screen-3xl": "1920px", // Add a custom max-width class
+            },
             colors: {
                 background: "hsl(var(--background))",
                 foreground: "hsl(var(--foreground))",
@@ -34,7 +40,7 @@ export default {
                     foreground: "hsl(var(--popover-foreground))",
                 },
                 primary: {
-                    DEFAULT: "hsl(var(--primary))",
+                    DEFAULT: "#f75d34",
                     foreground: "hsl(var(--primary-foreground))",
                 },
                 secondary: {

@@ -55,10 +55,7 @@ const Slider = ({ cars }) => {
 
     return (
         <section>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-gray-800 dark:text-neutral-400">
-                <h2 className="text-2xl sm:text-3xl font-extrabold  mb-6 sm:mb-8">
-                    Featured Cars
-                </h2>
+            
                 <div className="relative">
                     <div
                         ref={sliderRef}
@@ -111,7 +108,6 @@ const Slider = ({ cars }) => {
                         </button>
                     )}
                 </div>
-            </div>
         </section>
     );
 };
