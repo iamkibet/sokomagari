@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\CarCategory;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,10 +16,11 @@ return new class extends Migration
             $table->id();
             $table->string('make');                  // Car manufacturer
             $table->string('model');                 // Car model
-            $table->integer('year');                    // Year of manufacture
+            $table->integer('year');   // Year of manufacture    
+            $table->string('condition');  // required condition        
             $table->decimal('price', 10, 2);         // Price of the car
             $table->integer('mileage');              // Mileage in kilometers
-            $table->string('condition');             // New or Used
+            $table->string('category')->nullable();         // suv, hatchback, sedan, luxury
             $table->string('location')->default('Nairobi, Kenya'); // Current location
             $table->string('availability')->default('Available');  // Available or Sold
             $table->string('drive')->nullable();     // 4WD or 2WD

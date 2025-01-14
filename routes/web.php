@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CarController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleController;
 use App\Models\Car;
@@ -24,6 +25,8 @@ Route::get('/', function () {
 Route::get('/about', function () {
     return Inertia::render('About');
 })->name('about');
+
+Route::get('/{category?}', [CarController::class, 'index'])->name('cars.index');
 
 Route::get('/contact', function () {
     return Inertia::render('Contact');

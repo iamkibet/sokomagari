@@ -98,7 +98,7 @@ const Navbar = () => {
     );
 
     const DropdownMenuItem = ({ title, items, active }) => (
-        <div className="relative group">
+        <div className="relative group cursor-pointer">
             {/* Trigger */}
             <div
                 className={`flex uppercase font-bold items-center gap-1 py-4 transition-all 
@@ -109,7 +109,7 @@ const Navbar = () => {
                 }
                 hover:border-t-2 hover:border-[#f75d34]`}
             >
-                <a className="text-gray-800 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-gray-200">
+                <a className=" hover:text-gray-900 dark:hover:text-[#eae9fc]">
                     {title}
                 </a>
                 {DownSvg}
@@ -131,9 +131,9 @@ const Navbar = () => {
     );
 
     return (
-        <header className="bg-[rgb(255,255,255)] dark:bg-[#060f0a] sticky top-0 z-[9999] border-none md:border-b shadow-none md:shadow-sm dark:border-gray-800">
+        <header className=" text-[#040316] dark:text-[#eae9fc] bg-[#fbfbfe] dark:bg-[rgb(33,33,33)] sticky top-0 z-[9999] border-none md:border-b shadow-none md:shadow-sm dark:border-gray-800">
             <section>
-                <MaxWidthWrapper className="flex md:items-center justify-between flex-col space-y-2 md:flex-row md:space-y-0   border-b-[0.5px] py-4">
+                <MaxWidthWrapper className="flex md:items-center justify-between flex-col space-y-4 md:flex-row md:space-y-0   border-b-[0.5px] py-4">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center">
                             {/* Mobile Menu Button */}
@@ -149,11 +149,8 @@ const Navbar = () => {
                                     </div>
                                 )}
                             </button>
-                            <img
-                                className=" h-10 md:h-16 max-w-[1/4] w-full"
-                                src="/assets/sokomagarilogo.png"
-                                alt="logo"
-                            />
+
+                            <ApplicationLogo />
                         </div>
                         <div className="flex items-center gap-1 md:hidden">
                             <a href="/"> {heartSvg}</a>
@@ -164,7 +161,7 @@ const Navbar = () => {
                     <form className="max-w-md w-full items-center">
                         <div className="flex">
                             <button
-                                className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center  border border-gray-300 rounded-s-full hover:bg-gray-200 focus:ring-4 focus:outline-none    dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
+                                className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center  border border-gray-300 rounded-s-full hover:bg-gray-200 dark:bg-[#01010400] focus:ring-4 focus:outline-none  dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
                                 type="button"
                             >
                                 All
@@ -178,11 +175,10 @@ const Navbar = () => {
                                     <li>Stuff</li>
                                 </ul>
                             </div>
-                            <div className="relative w-full">
+                            <div className="dark:bg-[#01010400] dark:bg-opacity-75 relative w-full">
                                 <input
                                     type="search"
-                                    id="search-dropdown"
-                                    className="block pl-6 md:pl-9 p-2.5 w-full z-20 text-sm rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300   dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
+                                    className="block pl-6 md:pl-9 p-2.5 w-full z-20 text-sm rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 dark:bg-[#01010400] bg-opacity-75  dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400  "
                                     placeholder="Search or ask a question"
                                     required
                                 />

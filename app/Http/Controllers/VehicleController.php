@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Car;
+use App\Models\CarCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -14,6 +15,8 @@ class VehicleController extends Controller
      */
     public function index(Request $request)
     {
+
+      
 
         $cars = Car::where('availability', 'Available')
             ->orderBy('created_at', 'desc')
@@ -35,6 +38,7 @@ class VehicleController extends Controller
                 'total' => $totalCars,
                 'last_page' => $totalPages,
             ],
+            
         ]);
     }
 

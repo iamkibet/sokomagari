@@ -13,6 +13,13 @@ export default {
 
     theme: {
         extend: {
+            scrollSnapType: {
+                x: "x mandatory",
+            },
+            scrollSnapAlign: {
+                start: "start",
+            },
+
             fontFamily: {
                 sans: ['"Noto Sans HK"', ...defaultTheme.fontFamily.sans], // Default is Playfair
                 figtree: ["Figtree", ...defaultTheme.fontFamily.sans],

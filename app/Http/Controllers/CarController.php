@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CarController extends Controller
 {
@@ -12,8 +13,51 @@ class CarController extends Controller
      */
     public function index()
     {
-        $cars = Car::all();
-        return response()->json($cars);
+        $cars = Car::paginate(25);
+        return Inertia::render('Vehicles/Index', ['cars' => $cars]);
+    }
+
+    /**
+     * Filtered cars.
+     */
+    public function filteredCars(Request $request)
+    {
+        $query = Car::query();
+
+        if ($request->has('make')) {
+            $query->where('make', $request->input('make'));
+        }
+
+        if ($request->has('model')) {
+            $query->where('model', $request->input('model'));
+        }
+
+        if ($request->has('year')) {
+            $query->where('year', $request->input('year'));
+        }
+
+        if ($request->has('price_min')) {
+            $query->where('price', '>=', $request->input('price_min'));
+        }
+
+        if ($request->has('price_max')) {
+            $query->where('price', '<=', $request->input('price_max'));
+        }
+
+        if ($request->has('mileage_max')) {
+            $query->where('mileage', '<=', $request->input('mileage_max'));
+        }
+
+        if ($request->has('condition')) {
+            $query->where('condition', $request->input('condition'));
+        }
+
+        if ($request->has('location')) {
+            $query->where('location', $request->input('location'));
+        }
+
+        $cars = $query->get();
+        return Inertia::render('Cars/Filtered', ['cars' => $cars]);
     }
 
     /**
@@ -21,7 +65,7 @@ class CarController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Cars/Create');
     }
 
     /**
@@ -54,7 +98,7 @@ class CarController extends Controller
         ]);
 
         $car = Car::create($validated);
-        return response()->json($car, 201);
+        return redirect()->route('cars.show', $car->id);
     }
 
     /**
@@ -63,7 +107,7 @@ class CarController extends Controller
     public function show(string $id)
     {
         $car = Car::findOrFail($id);
-        return response()->json($car);
+        return Inertia::render('Cars/Show', ['car' => $car]);
     }
 
     /**
@@ -71,7 +115,8 @@ class CarController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $car = Car::findOrFail($id);
+        return Inertia::render('Cars/Edit', ['car' => $car]);
     }
 
     /**
@@ -106,7 +151,7 @@ class CarController extends Controller
         ]);
 
         $car->update($validated);
-        return response()->json($car);
+        return redirect()->route('cars.show', $car->id);
     }
 
     /**
@@ -116,6 +161,6 @@ class CarController extends Controller
     {
         $car = Car::findOrFail($id);
         $car->delete();
-        return response()->json(['message' => 'Car deleted successfully']);
+        return redirect()->route('cars.index');
     }
 }

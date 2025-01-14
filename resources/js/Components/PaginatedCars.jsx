@@ -3,35 +3,30 @@ import CarCard from "./CarCard";
 import { Paginator } from "./Paginator";
 
 const PaginatedCars = ({ cars }) => {
-    const [carList, setCarList] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const carsPerPage = 10;
+    const [carList, setCarList] = useState(cars.data || []); // Cars data from Laravel
+    const [currentPage, setCurrentPage] = useState(cars.current_page || 1); // Current page
+    const [totalPages, setTotalPages] = useState(cars.last_page || 1); // Total pages
 
-    useEffect(() => {
-        if (cars && cars.data) {
-            setCarList(cars.data);
-            setTotalPages(Math.ceil(cars.data.length / carsPerPage));
+    const fetchPage = async (pageNumber) => {
+        try {
+            const response = await axios.get(`/vehicles?page=${pageNumber}`);
+            setCarList(response.data.data);
+            setCurrentPage(response.data.current_page);
+            setTotalPages(response.data.last_page);
+        } catch (error) {
+            console.error("Failed to fetch cars:", error);
         }
-    }, [cars]);
-
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    if (!cars || !cars.data) {
-        return <div>Loading...</div>;
-    }
-
-    const indexOfLastCar = currentPage * carsPerPage;
-    const indexOfFirstCar = indexOfLastCar - carsPerPage;
-    const currentCars = carList.slice(indexOfFirstCar, indexOfLastCar);
+    const handlePageChange = (pageNumber) => {
+        fetchPage(pageNumber);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
     return (
         <div className="container mx-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {currentCars.map((car) => (
+                {carList.map((car) => (
                     <CarCard key={car.id} car={car} />
                 ))}
             </div>

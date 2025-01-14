@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Car;
+use App\Models\CarCategory;
 
 class CarSeeder extends Seeder
 {
@@ -12,6 +13,8 @@ class CarSeeder extends Seeder
      */
     public function run()
     {
+       
+
         $cars = [
             [
                 'make' => 'Toyota',
@@ -21,6 +24,7 @@ class CarSeeder extends Seeder
                 'mileage' => 12000,
                 'condition' => 'New',
                 'location' => 'Nairobi, Kenya',
+                'category' => 'SUV',
                 'availability' => 'Available',
                 'drive' => '4WD',
                 'engine_size' => 2400,
@@ -43,6 +47,7 @@ class CarSeeder extends Seeder
                 'price' => 2500000,
                 'mileage' => 45000,
                 'condition' => 'Used',
+                'category' => 'Sedan',
                 'location' => 'Mombasa, Kenya',
                 'availability' => 'Available',
                 'drive' => 'FWD',
@@ -66,6 +71,7 @@ class CarSeeder extends Seeder
                 'price' => 9500000,
                 'mileage' => 15000,
                 'condition' => 'New',
+                'category' => 'SUV',
                 'location' => 'Nairobi, Kenya',
                 'availability' => 'Available',
                 'drive' => 'RWD',
@@ -92,6 +98,7 @@ class CarSeeder extends Seeder
                 'year' => rand(2015, 2023),
                 'price' => rand(1500000, 10000000),
                 'mileage' => rand(10000, 90000),
+                'category' => 'sedan',
                 'condition' => ['New', 'Used'][rand(0, 1)],
                 'location' => ['Nairobi, Kenya', 'Mombasa, Kenya', 'Kisumu, Kenya'][rand(0, 2)],
                 'availability' => 'Available',

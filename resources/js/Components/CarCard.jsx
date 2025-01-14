@@ -1,68 +1,57 @@
 import React from "react";
-import { Speedometer } from "./svgs/Speedometer";
-import { FuelPump } from "./svgs/FuelPump";
-import { Transmission } from "./svgs/Transmission";
-import BorderHover from "./BorderHover";
 
 const Feature = ({ Icon, value }) => (
     <div className="flex flex-col gap-y-1 items-center">
         <div className="h-6 w-6 mb-1">
             <Icon />
         </div>
-        <p className="text-sm text-center font-figtree">
-            {value}
-        </p>
+        <p className="text-sm text-center font-figtree">{value}</p>
     </div>
 );
 
 const CarCard = ({ car }) => {
+    const formatPrice = (price) => {
+        if (price >= 1_000_000) {
+            return (price / 1_000_000).toFixed(1).toLowerCase() + "M";
+        } else if (price >= 1_000) {
+            return (price / 1_000).toFixed(1).toLowerCase() + "K";
+        } else {
+            return price.toString();
+        }
+    };
+
     return (
-        <div className=" bg-[#8fafd6]/10 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl text-gray-800 dark:text-neutral-400">
+        <div className=" my-3 border rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl w-[264px] md:w-[300px]">
             <div className="relative">
                 <img
                     src={`https://kai-and-karo.ams3.cdn.digitaloceanspaces.com/media/vehicles/images/adc4d701-726e-471d-bdfb-daa6267246ca.jpeg`}
                     alt={`${car.make} ${car.model}`}
-                    className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
+                    className="w-full  object-cover"
                 />
                 <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded-full text-xs font-semibold ">
                     {car.condition}
                 </div>
             </div>
 
-            <div className="p-4">
+            <div className="flex flex-col gap-y-2 p-4">
                 <div className="flex justify-between items-center mb-2">
-                    <h3 className="text-lg font-bold ">
+                    <h3 className="text-md font-bold ">
                         {car.make} {car.model}
                     </h3>
-                    <span className="text-sm font-medium ">
-                        {car.year}
-                    </span>
+                    <span className="text-sm font-medium ">{car.year}</span>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 pt-2 mb-4">
-                    <Feature
-                        Icon={Speedometer}
-                        value={`${car.mileage.toLocaleString()} km`}
-                    />
-                    <Feature Icon={FuelPump} value={car.fuel_type} />
-                    <Feature Icon={Transmission} value={car.transmission} />
-                </div>
-
-                <div className="flex justify-between items-center">
-                    <p className="text-xl font-figtree font-extrabold">
-                        KSH{" "}
-                        {Number(car.price).toLocaleString("en-KE", {
-                            minimumFractionDigits: 0,
-                            maximumFractionDigits: 0,
-                        })}
+                <div className="flex items-center">
+                    <p className="text-lg  font-extrabold">
+                        KSH {formatPrice(car.price)}
                     </p>
-
-                    <BorderHover>
-                        <a href={`/cars/${car.id}`} className="text-[#57c18a]">
-                            View Details
-                        </a>
-                    </BorderHover>
                 </div>
+                <a
+                    href={`/cars/${car.id}`}
+                    className="flex items-center justify-center border border-primary rounded-lg w-full py-2 text-primary"
+                >
+                    View car details
+                </a>
             </div>
         </div>
     );
