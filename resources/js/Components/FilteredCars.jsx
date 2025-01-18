@@ -8,23 +8,7 @@ import { router, usePage } from "@inertiajs/react";
 
 const Index = () => {
     const { vehicles, filters } = usePage().props;
-    const arrowRight = (
-        <svg
-            className="w-3 h-3 flex-shrink-0 mx-2.5"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
-        >
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-            />
-        </svg>
-    );
+
     // filters local state
     const [filterData, setFilterData] = useState({
         make: filters.make || "",
@@ -46,26 +30,7 @@ const Index = () => {
         });
     };
 
-    // handling budget filter
-    const handleBudgetFilter = (min, max) => {
-        setFilterData({
-            ...filterData,
-            price_min: min,
-            price_max: max,
-        });
-        router.get(
-            route("vehicles.index"),
-            {
-                price_min: min,
-                price_max: max,
-            },
-            {
-                preserveState: true,
-            }
-        );
-    };
-
-    // handling search
+    // handling search input
     const handleSearch = (e) => {
         setFilterData({
             ...filterData,
@@ -90,6 +55,24 @@ const Index = () => {
     };
 
     const [isOpen, setIsOpen] = useState(false);
+
+    const arrowRight = (
+        <svg
+            className="w-3 h-3 flex-shrink-0 mx-2.5"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+        >
+            <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+            />
+        </svg>
+    );
 
     return (
         <GuestLayout>
@@ -137,7 +120,23 @@ const Index = () => {
                                 className={`${
                                     b.label ? "bg-gray-200" : ""
                                 } cursor-pointer border py-3 px-4`}
-                                onClick={() => handleBudgetFilter(b.min, b.max)}
+                                onClick={() => {
+                                    setFilterData({
+                                        ...filterData,
+                                        price_min: b.min,
+                                        price_max: b.max,
+                                    });
+                                    router.get(
+                                        route("vehicles.index"),
+                                        {
+                                            price_min: b.min,
+                                            price_max: b.max,
+                                        },
+                                        {
+                                            preserveState: true,
+                                        }
+                                    );
+                                }}
                             >
                                 {b.label}
                             </li>

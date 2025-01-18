@@ -6,6 +6,9 @@ import { ArrowLeft } from "./svgs/ArrowLeft";
 import { ArrowRight } from "./svgs/ArrowRight";
 import { Oops } from "./svgs/Oops";
 
+
+
+
 const arrowRight = (
     <svg
         className="flex w-6 h-6 pl-2"

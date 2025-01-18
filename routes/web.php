@@ -26,7 +26,7 @@ Route::get('/about', function () {
     return Inertia::render('About');
 })->name('about');
 
-Route::get('/{category?}', [CarController::class, 'index'])->name('cars.index');
+Route::get('/{category?}', [VehicleController::class, 'index'])->name('cars.index');
 
 Route::get('/contact', function () {
     return Inertia::render('Contact');

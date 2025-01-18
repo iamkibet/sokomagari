@@ -10,6 +10,8 @@ const Feature = ({ Icon, value }) => (
 );
 
 const CarCard = ({ car }) => {
+    
+    
     const formatPrice = (price) => {
         if (price >= 1_000_000) {
             return (price / 1_000_000).toFixed(1).toLowerCase() + "M";
