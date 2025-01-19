@@ -150,7 +150,9 @@ const Navbar = () => {
                                 )}
                             </button>
 
-                            <ApplicationLogo />
+                            <a href="/" className="cursor-pointer">
+                                <ApplicationLogo />
+                            </a>
                         </div>
                         <div className="flex items-center gap-1 md:hidden">
                             <a href="/"> {heartSvg}</a>

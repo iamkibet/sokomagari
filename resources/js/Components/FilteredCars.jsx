@@ -1,241 +1,129 @@
-import React, { useState } from "react";
-import MaxWidthWrapper from "@/Components/MaxWidthWrapper";
-import SecondaryButton from "@/Components/SecondaryButton";
-import { Filter } from "@/Components/svgs/Filter";
-import GuestLayout from "@/Layouts/GuestLayout";
-import FilteredCars from "@/Components/FilteredCars";
 import { router, usePage } from "@inertiajs/react";
+import React, { useState } from "react";
+import DetailedVehicleCard from "@/Components/DetailedVehicleCard";
+import Loader from "./Loader";
 
-const Index = () => {
-    const { vehicles, filters } = usePage().props;
+const FilteredCars = ({ filterData, applyFilters }) => {
+    const { vehicles } = usePage().props;
+    const currentPage = vehicles.current_page;
+    const lastPage = vehicles.last_page;
+    const totalPages = vehicles.last_page;
 
-    // filters local state
-    const [filterData, setFilterData] = useState({
-        make: filters.make || "",
-        model: filters.model || "",
-        year: filters.year || "",
-        price_min: filters.price_min || "",
-        price_max: filters.price_max || "",
-        mileage_max: filters.mileage_max || "",
-        condition: filters.condition || "",
-        location: filters.location || "",
-        search: "",
-    });
+    const startPage = Math.max(1, currentPage - 1);
+    const endPage = Math.min(lastPage, currentPage + 1);
 
-    // handling filter change
-    const handleFilterChange = (e) => {
-        setFilterData({
-            ...filterData,
-            [e.target.name]: e.target.value,
+    const links = [];
+
+    // Previous Page Link
+    if (currentPage > 1) {
+        links.push({
+            url: vehicles.prev_page_url,
+            label: "&laquo; Previous",
+            active: false,
         });
-    };
+    }
 
-    // handling search input
-    const handleSearch = (e) => {
-        setFilterData({
-            ...filterData,
-            search: e.target.value,
+    // Page Number Links
+    for (let i = startPage; i <= endPage; i++) {
+        links.push({
+            label: i.toString(),
+            url: vehicles.links.find((link) => link.label === i.toString())
+                ?.url,
+            active: i === currentPage,
         });
-        router.get(
-            route("vehicles.index"),
-            {
-                search: e.target.value,
-            },
-            {
-                preserveState: true,
-            }
+    }
+
+    // Add next link if needed
+    if (currentPage < totalPages) {
+        links.push({
+            label: "Next &raquo;",
+            url: vehicles.next_page_url,
+        });
+    }
+
+    if (!vehicles)
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <Loader />
+            </div>
         );
-    };
 
-    // submitting the filters
-    const applyFilters = () => {
-        router.get(route("vehicles.index"), filterData, {
-            preserveState: true,
-        });
-    };
-
-    const [isOpen, setIsOpen] = useState(false);
-
-    const arrowRight = (
-        <svg
-            className="w-3 h-3 flex-shrink-0 mx-2.5"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
-        >
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-            />
-        </svg>
-    );
+    if (vehicles.data.length === 0)
+        return (
+            <div className=" flex flex-col items-center justify-center py-8 px-4 text-center bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
+                <svg
+                    class="w-12 h-12 dark:text-gray-400 text-gray-700"
+                    stroke="currentColor"
+                    fill="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 24 24"
+                    height="200px"
+                    width="200px"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <g id="File_Off">
+                        <g>
+                            <path d="M4,3.308a.5.5,0,0,0-.7.71l.76.76v14.67a2.5,2.5,0,0,0,2.5,2.5H17.44a2.476,2.476,0,0,0,2.28-1.51l.28.28c.45.45,1.16-.26.7-.71Zm14.92,16.33a1.492,1.492,0,0,1-1.48,1.31H6.56a1.5,1.5,0,0,1-1.5-1.5V5.778Z"></path>
+                            <path d="M13.38,3.088v2.92a2.5,2.5,0,0,0,2.5,2.5h3.07l-.01,6.7a.5.5,0,0,0,1,0V8.538a2.057,2.057,0,0,0-.75-1.47c-1.3-1.26-2.59-2.53-3.89-3.8a3.924,3.924,0,0,0-1.41-1.13,6.523,6.523,0,0,0-1.71-.06H6.81a.5.5,0,0,0,0,1Zm4.83,4.42H15.88a1.5,1.5,0,0,1-1.5-1.5V3.768Z"></path>
+                        </g>
+                    </g>
+                </svg>
+                <h3 class="text-xl font-medium mt-4 text-gray-700 dark:text-gray-200">
+                    Oops! No vehicles in this category
+                </h3>
+                <p class="text-gray-500 dark:text-gray-400 mt-2">
+                    The items you are looking for could not be located.
+                </p>
+                <button
+                    className="flex items-center my-3 bg-primary py-2 px-4 rounded-md text-white text-lg"
+                    href="/vehicles"
+                >
+                    {" "}
+                    Browse Vehicles
+                </button>
+            </div>
+        );
 
     return (
-        <GuestLayout>
-            <MaxWidthWrapper className="flex py-10">
-                <div className="w-1/4">
-                    <ol className="flex items-center whitespace-nowrap">
-                        <li className="flex items-center text-sm text-gray-800 dark:text-neutral-400">
-                            Home {arrowRight}
-                        </li>
-                        <li className="flex items-center text-sm text-gray-800 dark:text-neutral-400">
-                            Vehicles {arrowRight}
-                        </li>
-                        <li className="text-sm font-semibold text-gray-800 truncate dark:text-neutral-400">
-                            Available
-                        </li>
-                    </ol>
-                    <div className="flex flex-col gap-1 py-6">
-                        <h1 className="font-bold text-sm text-gray-800 dark:text-neutral-400">
-                            Search Vehicle
-                        </h1>
-                        <input
-                            type="text"
-                            placeholder="Search Bikes, Cars..."
-                            value={filterData.search}
-                            onChange={handleSearch}
-                            className="w-full p-4 border rounded-md"
-                        />
+        <div>
+            {/* Vehicle List */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                {vehicles.data.map((vehicle) => (
+                    <div key={vehicle.id} className="flex ">
+                        <DetailedVehicleCard car={vehicle} />
                     </div>
-                    <h1 className="text-xl font-bold text-gray-800 dark:text-neutral-400 mb-4">
-                        Filter by Budget
-                    </h1>
-                    <ul className="flex-wrap sm:flex gap-2">
-                        {[
-                            { label: "0-500K", min: 0, max: 500000 },
-                            { label: "500K-1M", min: 500000, max: 1000000 },
-                            { label: "1M-2M", min: 1000000, max: 2000000 },
-                            { label: "2M-3M", min: 2000000, max: 3000000 },
-                            { label: "3M-4M", min: 3000000, max: 4000000 },
-                            { label: "4M-5M", min: 4000000, max: 5000000 },
-                            { label: "5M-10M", min: 5000000, max: 10000000 },
-                            { label: "Above 10M", min: 10000000, max: null },
-                        ].map((b) => (
-                            <li
-                                key={b.label}
-                                className={`${
-                                    b.label ? "bg-gray-200" : ""
-                                } cursor-pointer border py-3 px-4`}
-                                onClick={() => {
-                                    setFilterData({
-                                        ...filterData,
-                                        price_min: b.min,
-                                        price_max: b.max,
-                                    });
-                                    router.get(
-                                        route("vehicles.index"),
-                                        {
-                                            price_min: b.min,
-                                            price_max: b.max,
-                                        },
-                                        {
-                                            preserveState: true,
-                                        }
-                                    );
-                                }}
-                            >
-                                {b.label}
-                            </li>
-                        ))}
-                    </ul>
+                ))}
+            </div>
 
-                    <SecondaryButton className="my-4">
-                        Clear Filters
-                    </SecondaryButton>
-
+            {/* Pagination Links */}
+            <div className="flex justify-center mt-4 space-x-2">
+                {links.map((link, index) => (
                     <button
-                        onClick={() => setIsOpen(!isOpen)}
-                        className="font-bold flex w-full justify-between border-b py-1"
+                        key={index}
+                        disabled={!link.url}
+                        onClick={() =>
+                            router.get(link.url, {}, { preserveState: true })
+                        }
+                        className={`px-4 py-2 text-sm rounded-md ${
+                            link.active
+                                ? "bg-primary text-white hover:bg-primary-dark"
+                                : !link.url
+                                ? "bg-gray-200 text-gray-500"
+                                : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                        }`}
                     >
-                        {isOpen
-                            ? "Hide Advanced Search"
-                            : "Click here for Advanced Search"}
-                        <div className="h-8 w-8">
-                            <Filter />
-                        </div>
+                        {link.label === "Next &raquo;"
+                            ? "Next"
+                            : link.label === "&laquo; Previous"
+                            ? "Previous"
+                            : link.label}
                     </button>
-                    {isOpen && (
-                        <div className="mt-4">
-                            <select className="w-full p-2 mb-2">
-                                <option value="">Brand</option>
-                                <option value="Toyota">Toyota</option>
-                                <option value="Honda">Honda</option>
-                            </select>
-                            <input
-                                type="number"
-                                placeholder="Min Year"
-                                className="w-full p-2 mb-2"
-                            />
-                            <input
-                                type="number"
-                                placeholder="Max Year"
-                                className="w-full p-2 mb-2"
-                            />
-                            <label>
-                                Price Min:
-                                <input
-                                    type="number"
-                                    name="price_min"
-                                    value={filterData.price_min}
-                                    onChange={handleFilterChange}
-                                />
-                            </label>
-                            <label>
-                                Price Max:
-                                <input
-                                    type="number"
-                                    name="price_max"
-                                    value={filterData.price_max}
-                                    onChange={handleFilterChange}
-                                />
-                            </label>
-                            <label>
-                                Mileage Max:
-                                <input
-                                    type="number"
-                                    name="mileage_max"
-                                    value={filterData.mileage_max}
-                                    onChange={handleFilterChange}
-                                />
-                            </label>
-                            <label>
-                                Condition:
-                                <select
-                                    name="condition"
-                                    value={filterData.condition}
-                                    onChange={handleFilterChange}
-                                >
-                                    <option value="">Select Condition</option>
-                                    <option value="new">New</option>
-                                    <option value="used">Used</option>
-                                </select>
-                            </label>
-                            <label>
-                                Location:
-                                <input
-                                    type="text"
-                                    name="location"
-                                    value={filterData.location}
-                                    onChange={handleFilterChange}
-                                />
-                            </label>
-                        </div>
-                    )}
-                </div>
+                ))}
+            </div>
 
-                <div className="w-3/4 pl-6">
-                    <FilteredCars
-                        filterData={filterData}
-                        applyFilters={applyFilters}
-                    />
-                </div>
-            </MaxWidthWrapper>
-        </GuestLayout>
+          
+        </div>
     );
 };
 
-export default Index;
+export default FilteredCars;

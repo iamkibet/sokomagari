@@ -69,12 +69,16 @@ class VehicleController extends Controller
         }
 
         // Get paginated results
-        $cars = $query->orderBy('created_at', 'desc')->paginate(10);
+        $cars = $query->orderBy('created_at', 'desc')->paginate(5);
+
+        //get all vehicles
+        $allcars = Car::all();
 
         // Return Inertia response
         return Inertia::render('Vehicles/Index', [
             'vehicles' => $cars,
             'filters' => $validated,
+            'allcars' => $allcars
         ]);
     }
 
