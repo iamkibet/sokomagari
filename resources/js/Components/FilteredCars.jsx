@@ -79,7 +79,7 @@ const FilteredCars = ({ filterData, applyFilters }) => {
                     href="/vehicles"
                 >
                     {" "}
-                    Browse Vehicles
+                    Browse More Vehicles
                 </button>
             </div>
         );
@@ -120,8 +120,6 @@ const FilteredCars = ({ filterData, applyFilters }) => {
                     </button>
                 ))}
             </div>
-
-          
         </div>
     );
 };

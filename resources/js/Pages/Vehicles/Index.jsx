@@ -7,7 +7,7 @@ import FilteredCars from "@/Components/FilteredCars";
 import { router, usePage } from "@inertiajs/react";
 import VehicleSlider from "@/Components/VehicleSlider";
 
-const Index = ({allcars}) => {
+const Index = ({ allcars }) => {
     const { vehicles, filters } = usePage().props;
     const arrowRight = (
         <svg
@@ -39,6 +39,26 @@ const Index = ({allcars}) => {
         search: "",
     });
 
+    const ClearFilters = () => {
+        setFilterData({
+            make: "",
+            model: "",
+            year: "",
+            price_min: "",
+            price_max: "",
+            mileage_max: "",
+            condition: "",
+            location: "",
+            search: "",
+        });
+
+        setActiveFilter(null); //resets the budget filter
+
+        router.get(route("vehicles.index"), {}, { preserveState: true });
+    };
+
+    const [activeFilter, setActiveFilter] = useState(false);
+
     // handling filter change
     const handleFilterChange = (e) => {
         setFilterData({
@@ -48,12 +68,13 @@ const Index = ({allcars}) => {
     };
 
     // handling budget filter
-    const handleBudgetFilter = (min, max) => {
+    const handleBudgetFilter = (min, max, label) => {
         setFilterData({
             ...filterData,
             price_min: min,
             price_max: max,
         });
+        setActiveFilter(label);
         router.get(
             route("vehicles.index"),
             {
@@ -154,10 +175,16 @@ const Index = ({allcars}) => {
                                 <li
                                     key={b.label}
                                     className={`${
-                                        b.label ? "bg-gray-200" : ""
+                                        b.label === activeFilter
+                                            ? "bg-primary text-white" // Active filter color
+                                            : "bg-gray-200"
                                     } cursor-pointer border py-3 px-4`}
                                     onClick={() =>
-                                        handleBudgetFilter(b.min, b.max)
+                                        handleBudgetFilter(
+                                            b.min,
+                                            b.max,
+                                            b.label
+                                        )
                                     }
                                 >
                                     {b.label}
@@ -165,7 +192,10 @@ const Index = ({allcars}) => {
                             ))}
                         </ul>
 
-                        <SecondaryButton className="my-4">
+                        <SecondaryButton
+                            className="my-4"
+                            onClick={ClearFilters}
+                        >
                             Clear Filters
                         </SecondaryButton>
 

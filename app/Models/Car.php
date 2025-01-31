@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Car extends Model
 {
@@ -39,8 +40,28 @@ class Car extends Model
         'engine_size' => 'integer',
         'horse_power' => 'integer',
         'torque' => 'integer',
-        'acceleration' => 'decimal:2', 
+        'acceleration' => 'decimal:2',
         'images' => 'array',
         'is_sell_on_behalf' => 'boolean',
     ];
+
+    public function getImageUrlsAttribute()
+    {
+        return collect($this->images)->map(function ($image) {
+            return asset($image); // Uses correct path now
+        })->toArray();
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($car) {
+            $car->slug = Str::slug($car->make . '-' . $car->model . '-' . $car->year);
+        });
+
+        static::updating(function ($car) {
+            $car->slug = Str::slug($car->make . '-' . $car->model . '-' . $car->year);
+        });
+    }
 }

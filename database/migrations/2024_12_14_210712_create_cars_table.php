@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('condition');  // required condition        
             $table->decimal('price', 10, 2);         // Price of the car
             $table->integer('mileage');              // Mileage in kilometers
+            $table->string('slug')->unique();        // URL slug
             $table->string('category')->nullable();         // suv, hatchback, sedan, luxury
             $table->string('location')->default('Nairobi, Kenya'); // Current location
             $table->string('availability')->default('Available');  // Available or Sold
@@ -32,7 +33,7 @@ return new class extends Migration
             $table->decimal('acceleration', 4, 2)->nullable(); // Acceleration (0-100 kph) in seconds
             $table->text('description')->nullable(); // Additional description
             $table->json('images')->nullable();      // Array of image URLs
-            $table->boolean('is_sell_on_behalf')->default(false); // True if the car is a sell-on-behalf listing
+            $table->boolean('is_sell_on_behalf')->nullable()->default(false); // True if the car is a sell-on-behalf listing
             $table->string('owner_name')->nullable(); // Owner name (if sell-on-behalf)
             $table->string('owner_email')->nullable(); // Owner email (if sell-on-behalf)
             $table->string('owner_phone')->nullable(); // Owner phone (if sell-on-behalf)

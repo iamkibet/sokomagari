@@ -26,7 +26,7 @@ Route::get('/about', function () {
     return Inertia::render('About');
 })->name('about');
 
-Route::get('/{category?}', [VehicleController::class, 'index'])->name('cars.index');
+
 
 Route::get('/contact', function () {
     return Inertia::render('Contact');
@@ -36,7 +36,18 @@ Route::get('/faq', function () {
     return Inertia::render('FAQ');
 })->name('faq');
 
-Route::resource('vehicles', VehicleController::class, ['names' => ['index' => 'vehicles.index',]]);
+Route::resource('vehicles', VehicleController::class, ['names' => ['index' => 'vehicles.index']]);
+Route::get('/vehicles/{slug}', [VehicleController::class, 'show'])->name('vehicles.show');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/vehicles/create', [VehicleController::class, 'create'])->name('vehicles.create');
+    Route::post('/vehicles', [VehicleController::class, 'store'])->name('vehicles.store');
+    Route::get('/vehicles/{slug}/edit', [VehicleController::class, 'edit'])->name('vehicles.edit');
+    Route::put('/vehicles/{slug}', [VehicleController::class, 'update'])->name('vehicles.update');
+    Route::delete('/vehicles/{slug}', [VehicleController::class, 'destroy'])->name('vehicles.destroy');
+});
+
+
+
 
 
 Route::get('/dashboard', function () {
@@ -49,4 +60,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Dynamic Route with Constraint
+Route::get('/{category}', [VehicleController::class, 'index'])
+    ->where('category', 'cars|trucks|bikes') // Matches only specific categories
+    ->name('cars.index');
 require __DIR__ . '/auth.php';

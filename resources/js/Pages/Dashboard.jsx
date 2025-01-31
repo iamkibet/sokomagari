@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import Create from './Vehicles/Create';
 
 export default function Dashboard() {
     return (
@@ -16,7 +17,11 @@ export default function Dashboard() {
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <div className="p-6 text-gray-900">
-                            You're logged in!
+                            <h3 className="text-lg font-medium mb-4">
+                                Create a Vehicle
+                            </h3>
+                            {/* Render the Create form component */}
+                            <Create />
                         </div>
                     </div>
                 </div>

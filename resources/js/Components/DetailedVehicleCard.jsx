@@ -20,7 +20,7 @@ const DetailedVehicleCard = ({ car }) => {
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-           className="h-4 w-4"
+            className="h-4 w-4"
         >
             <path
                 stroke-linecap="round"
@@ -56,7 +56,7 @@ const DetailedVehicleCard = ({ car }) => {
         <div className=" my-3 border rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl w-full">
             <div className="relative">
                 <img
-                    src={`https://kai-and-karo.ams3.cdn.digitaloceanspaces.com/media/vehicles/images/adc4d701-726e-471d-bdfb-daa6267246ca.jpeg`}
+                    src={car.images}
                     alt={`${car.make} ${car.model}`}
                     className="w-full  object-cover"
                 />
@@ -89,7 +89,7 @@ const DetailedVehicleCard = ({ car }) => {
                     </p>
                 </div>
                 <a
-                    href={`/cars/${car.id}`}
+                    href={`/vehicles/${car.slug}`}
                     className="flex items-center  w-full py-2 text-primary font-bold "
                 >
                     View more details {arrowRight}

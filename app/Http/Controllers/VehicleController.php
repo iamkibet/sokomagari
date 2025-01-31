@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class VehicleController extends Controller
@@ -90,7 +91,7 @@ class VehicleController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Cars/Create');
+        return Inertia::render('Vehicles/Create');
     }
 
     /**
@@ -98,6 +99,7 @@ class VehicleController extends Controller
      */
     public function store(Request $request)
     {
+        // Validation and creation logic here
         $validated = $request->validate([
             'make' => 'required|string|max:255',
             'model' => 'required|string|max:255',
@@ -115,24 +117,42 @@ class VehicleController extends Controller
             'torque' => 'integer|nullable',
             'acceleration' => 'numeric|nullable',
             'description' => 'string|nullable',
-            'images' => 'array|nullable',
-            'is_sell_on_behalf' => 'boolean',
+            'images' => 'required|array|min:1',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_sell_on_behalf' => 'nullable|boolean',
             'owner_name' => 'string|nullable',
             'owner_email' => 'email|nullable',
             'owner_phone' => 'string|nullable',
         ]);
 
-        $car = Car::create($validated);
-        return redirect()->route('cars.show', $car->id);
+        // Handle image uploads
+        if ($request->hasFile('images')) {
+            $images = [];
+            foreach ($request->file('images') as $image) {
+                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                //$image->storeAs('public/vehicles', $imageName);
+                $images[] = Storage::disk('public')->putFileAs('vehicles/', $image, $imageName);
+                //'storage/vehicles/' . $imageName;
+            }
+            $validated['images'] = $images;
+        }
+
+        Car::create($validated);
+        return redirect()->route('vehicles.index')->with('success', 'Vehicle created successfully.');
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        $car = Car::findOrFail($id);
-        return Inertia::render('Cars/Show', ['car' => $car]);
+        $car = Car::where('slug', $id)
+            ->firstOrFail();
+        $car->image_urls = collect($car->images)->map(function ($image) {
+            return asset($image);
+        });
+        return Inertia::render('Vehicles/Show', ['vehicle' => $car]);
     }
 
     /**
@@ -168,7 +188,8 @@ class VehicleController extends Controller
             'torque' => 'integer|nullable',
             'acceleration' => 'numeric|nullable',
             'description' => 'string|nullable',
-            'images' => 'array|nullable',
+            'images' => 'required|array|min:1',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:4048',
             'is_sell_on_behalf' => 'boolean|nullable',
             'owner_name' => 'string|nullable',
             'owner_email' => 'email|nullable',
