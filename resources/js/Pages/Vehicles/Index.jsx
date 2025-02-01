@@ -7,7 +7,14 @@ import FilteredCars from "@/Components/FilteredCars";
 import { router, usePage } from "@inertiajs/react";
 import VehicleSlider from "@/Components/VehicleSlider";
 
-const Index = ({ allcars }) => {
+const Index = () => {
+    const { allcars } = usePage().props;
+
+    console.log(allcars);
+    
+
+
+
     const { vehicles, filters } = usePage().props;
     const arrowRight = (
         <svg
@@ -284,6 +291,7 @@ const Index = ({ allcars }) => {
 
                 <div className="w-3/4 pl-6">
                     <FilteredCars
+                        allcars={allcars.data}
                         filterData={filterData}
                         applyFilters={applyFilters}
                     />
@@ -292,12 +300,14 @@ const Index = ({ allcars }) => {
             <MaxWidthWrapper>
                 <VehicleSlider
                     title="Latest cars"
-                    items={allcars.filter((allcars) => allcars.year > 2021)}
+                    items={allcars.data.filter(
+                        (allcars) => allcars.year > 2021
+                    )}
                     viewMoreLink="/cars"
                 />
                 <VehicleSlider
                     title="Affordable Cars"
-                    items={allcars}
+                    items={allcars.data}
                     filterFn={(items) =>
                         items.filter((allcars) => allcars.price < 20000)
                     }

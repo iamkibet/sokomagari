@@ -8,6 +8,7 @@ import FilterForm from "@/Components/ui/FilterForm";
 import VehicleSlider from "@/Components/VehicleSlider";
 
 export default function Welcome({ cars, categories }) {
+  
     const [currentCar, setCurrentCar] = useState(0);
     const heroimages = [
         {
@@ -60,7 +61,7 @@ export default function Welcome({ cars, categories }) {
                 </div>
                 <VehicleSlider
                     title="The most searched cars"
-                    items={cars}
+                    items={cars.data}
                     categories={[
                         { id: "all", label: "All" },
                         { id: "sedan", label: "Sedan" },
@@ -76,13 +77,13 @@ export default function Welcome({ cars, categories }) {
 
                 <VehicleSlider
                     title="Latest cars"
-                    items={cars.filter((car) => car.year > 2021)}
+                    items={cars.data.filter((car) => car.year > 2021)}
                     viewMoreLink="/cars"
                 />
 
                 <VehicleSlider
                     title="Affordable Cars"
-                    items={cars}
+                    items={cars.data}
                     filterFn={(items) =>
                         items.filter((car) => car.price < 20000)
                     }

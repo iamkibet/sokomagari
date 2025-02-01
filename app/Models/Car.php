@@ -45,10 +45,18 @@ class Car extends Model
         'is_sell_on_behalf' => 'boolean',
     ];
 
+
+
+    public function getThumbnailAttribute()
+    {
+        return $this->images ? $this->images[0] : null;
+    }
+
+    // Update existing image_urls accessor
     public function getImageUrlsAttribute()
     {
         return collect($this->images)->map(function ($image) {
-            return asset($image); // Uses correct path now
+            return asset('storage/' . $image);
         })->toArray();
     }
 

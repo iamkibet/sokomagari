@@ -3,11 +3,14 @@ import React, { useState } from "react";
 import DetailedVehicleCard from "@/Components/DetailedVehicleCard";
 import Loader from "./Loader";
 
-const FilteredCars = ({ filterData, applyFilters }) => {
-    const { vehicles } = usePage().props;
-    const currentPage = vehicles.current_page;
-    const lastPage = vehicles.last_page;
-    const totalPages = vehicles.last_page;
+const FilteredCars = ({allcars, filterData, applyFilters }) => {
+    
+    console.log(allcars);
+    
+    
+    const currentPage = allcars.current_page;
+    const lastPage = allcars.last_page;
+    const totalPages = allcars.last_page;
 
     const startPage = Math.max(1, currentPage - 1);
     const endPage = Math.min(lastPage, currentPage + 1);
@@ -17,7 +20,7 @@ const FilteredCars = ({ filterData, applyFilters }) => {
     // Previous Page Link
     if (currentPage > 1) {
         links.push({
-            url: vehicles.prev_page_url,
+            url: allcars.prev_page_url,
             label: "&laquo; Previous",
             active: false,
         });
@@ -27,8 +30,7 @@ const FilteredCars = ({ filterData, applyFilters }) => {
     for (let i = startPage; i <= endPage; i++) {
         links.push({
             label: i.toString(),
-            url: vehicles.links.find((link) => link.label === i.toString())
-                ?.url,
+            url: allcars.links.find((link) => link.label === i.toString())?.url,
             active: i === currentPage,
         });
     }
@@ -37,18 +39,18 @@ const FilteredCars = ({ filterData, applyFilters }) => {
     if (currentPage < totalPages) {
         links.push({
             label: "Next &raquo;",
-            url: vehicles.next_page_url,
+            url: allcars.next_page_url,
         });
     }
 
-    if (!vehicles)
+    if (!allcars)
         return (
             <div className="flex justify-center items-center h-screen">
                 <Loader />
             </div>
         );
 
-    if (vehicles.data.length === 0)
+    if (allcars.length === 0)
         return (
             <div className=" flex flex-col items-center justify-center py-8 px-4 text-center bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
                 <svg
@@ -88,9 +90,9 @@ const FilteredCars = ({ filterData, applyFilters }) => {
         <div>
             {/* Vehicle List */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                {vehicles.data.map((vehicle) => (
-                    <div key={vehicle.id} className="flex ">
-                        <DetailedVehicleCard car={vehicle} />
+                {allcars.map((car) => (
+                    <div key={car.id} className="flex ">
+                        <DetailedVehicleCard car={car} />
                     </div>
                 ))}
             </div>

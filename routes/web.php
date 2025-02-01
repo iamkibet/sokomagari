@@ -4,15 +4,13 @@ use App\Http\Controllers\CarController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleController;
 use App\Models\Car;
+use App\Services\CarService;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    $cars = Car::where('availability', 'Available')
-        ->orderBy('created_at', 'desc')
-        ->limit(10)
-        ->get();
+    $cars = (new CarService)->allCars();
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),

@@ -1,16 +1,9 @@
 import React from "react";
 
-const Feature = ({ Icon, value }) => (
-    <div className="flex flex-col gap-y-1 items-center">
-        <div className="h-6 w-6 mb-1">
-            <Icon />
-        </div>
-        <p className="text-sm text-center font-figtree">{value}</p>
-    </div>
-);
-
 const CarCard = ({ car }) => {
-    
+
+
+    console.log(car);
     
     const formatPrice = (price) => {
         if (price >= 1_000_000) {
@@ -26,7 +19,7 @@ const CarCard = ({ car }) => {
         <div className=" my-3 border rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl w-[264px] md:w-[300px]">
             <div className="relative">
                 <img
-                    src={`https://kai-and-karo.ams3.cdn.digitaloceanspaces.com/media/vehicles/images/adc4d701-726e-471d-bdfb-daa6267246ca.jpeg`}
+                    src={car.thumbnail}
                     alt={`${car.make} ${car.model}`}
                     className="w-full  object-cover"
                 />

@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Car;
+use App\Services\CarService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class VehicleController extends Controller
 {
+
+
     /**
      * Display a listing of the resource.
      */
@@ -69,15 +72,18 @@ class VehicleController extends Controller
             $query->where('mileage', '<=', $request->input('mileage_max'));
         }
 
-        // Get paginated results
-        $cars = $query->orderBy('created_at', 'desc')->paginate(5);
 
-        //get all vehicles
-        $allcars = Car::all();
+
+
+
+
+        
+
+        $allcars = (new CarService)->allCars();
 
         // Return Inertia response
         return Inertia::render('Vehicles/Index', [
-            'vehicles' => $cars,
+            
             'filters' => $validated,
             'allcars' => $allcars
         ]);

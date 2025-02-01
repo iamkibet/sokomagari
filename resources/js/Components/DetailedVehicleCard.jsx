@@ -1,8 +1,6 @@
 import React from "react";
 
 const DetailedVehicleCard = ({ car }) => {
-    console.log(car);
-
     const formatPrice = (price) => {
         if (price >= 1_000_000) {
             return (price / 1_000_000).toFixed(1).toLowerCase() + "M";
@@ -56,7 +54,7 @@ const DetailedVehicleCard = ({ car }) => {
         <div className=" my-3 border rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl w-full">
             <div className="relative">
                 <img
-                    src={car.images}
+                    src={car.thumbnail}
                     alt={`${car.make} ${car.model}`}
                     className="w-full  object-cover"
                 />
