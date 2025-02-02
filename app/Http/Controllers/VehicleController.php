@@ -75,15 +75,11 @@ class VehicleController extends Controller
 
 
 
-
-
-        
-
         $allcars = (new CarService)->allCars();
 
         // Return Inertia response
         return Inertia::render('Vehicles/Index', [
-            
+
             'filters' => $validated,
             'allcars' => $allcars
         ]);
@@ -124,7 +120,7 @@ class VehicleController extends Controller
             'acceleration' => 'numeric|nullable',
             'description' => 'string|nullable',
             'images' => 'required|array|min:1',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif',
             'is_sell_on_behalf' => 'nullable|boolean',
             'owner_name' => 'string|nullable',
             'owner_email' => 'email|nullable',
@@ -158,7 +154,13 @@ class VehicleController extends Controller
         $car->image_urls = collect($car->images)->map(function ($image) {
             return asset($image);
         });
-        return Inertia::render('Vehicles/Show', ['vehicle' => $car]);
+
+        $similarcars = (new CarService)->similarcars($car->slug);
+
+        return Inertia::render(
+            'Vehicles/Show',
+            ['vehicle' => $car, 'similarcars' => $similarcars]
+        );
     }
 
     /**

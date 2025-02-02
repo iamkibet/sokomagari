@@ -5,10 +5,27 @@ import "react-image-gallery/styles/css/image-gallery.css";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import GuestLayout from "@/Layouts/GuestLayout";
 import Modal from "@/Components/Modal";
+import MaxWidthWrapper from "@/Components/MaxWidthWrapper";
+import VehicleSlider from "@/Components/VehicleSlider";
+import DetailedVehicleCard from "@/Components/DetailedVehicleCard";
 
 const Show = () => {
-    const { vehicle } = usePage().props;
+    const { vehicle, similarcars } = usePage().props;
 
+    console.log(similarcars);
+    
+
+    const details = [
+        { label: "Year of Manufacture", value: vehicle.year },
+        { label: "Current Location", value: vehicle.location },
+        { label: "Mileage", value: `${vehicle.mileage} miles` },
+        { label: "Condition", value: vehicle.condition },
+        { label: "Engine Size", value: `${vehicle.engine_size} CC` },
+        { label: "Transmission", value: vehicle.transmission },
+        { label: "Torque", value: vehicle.torque },
+        { label: "Accelaration", value: vehicle.acceleration },
+        { label: "Transmission", value: vehicle.transmission },
+    ];
     const images = vehicle.image_urls
         ? vehicle.image_urls.map((image) => ({
               original: image,
@@ -68,8 +85,12 @@ const Show = () => {
             />
         </svg>
     );
-    // Format price with commas
-    const formattedPrice = vehicle.price.toLocaleString();
+
+    //foratting prices
+    const formattedPrice = Number(vehicle.price).toLocaleString("en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    });
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -79,11 +100,11 @@ const Show = () => {
 
     return (
         <GuestLayout>
-            <div className="container mx-auto pt-2 ">
+            <MaxWidthWrapper>
                 <div className="flex flex-wrap -mx-4">
                     {/* Image Gallery Section */}
                     <div className="w-full xl:w-1/2 p-4">
-                        <div className="sticky top-16">
+                        <div className="">
                             <ImageGallery
                                 items={images}
                                 showThumbnails={true}
@@ -93,6 +114,31 @@ const Show = () => {
                                 lazyLoad={true}
                                 additionalClass="rounded-lg shadow-lg"
                             />
+                        </div>
+                        <div className="w-full pt-4">
+                            <h1 className="flex w-full text-sm justify-between">
+                                Price
+                                <span className="text-base font-bold">
+                                    KES {formattedPrice}
+                                </span>
+                            </h1>
+
+                            <ul className="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+                                {details.map((detail, index) => (
+                                    <li key={index} className="py-3 sm:py-4">
+                                        <div className="flex items-center space-x-4">
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-sm  text-gray-900 truncate dark:text-white">
+                                                    {detail.label}
+                                                </p>
+                                            </div>
+                                            <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                                {detail.value}
+                                            </div>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                     </div>
 
@@ -130,16 +176,16 @@ const Show = () => {
                                 </div>
                             </Modal>
 
-                            <div className="flex items-center mt-6 gap-4">
+                            <div className="mt-6 grid gap-4 sm:grid-cols-2">
                                 <a
-                                    href=""
-                                    className="flex items-center gap-2 py-3 px-4 rounded-md bg-[rgb(34,195,94)] text-white hover:bg-[rgb(30,170,80)] dark:bg-[rgb(30,170,80)] dark:hover:bg-[rgb(26,150,70)] transition-colors"
+                                    href="https://wa.me/+254720449012"
+                                    className="flex items-center justify-center gap-2 py-3 px-4 rounded-md bg-[rgb(34,195,94)] text-white hover:bg-[rgb(30,170,80)] dark:bg-[rgb(30,170,80)] dark:hover:bg-[rgb(26,150,70)] transition-colors"
                                 >
-                                    {whatsappSvg} Enquire via whatsapp
+                                    {whatsappSvg} Enquire via WhatsApp
                                 </a>
                                 <a
-                                    href=""
-                                    className="flex items-center justify-center w-[209px] gap-3 py-3 px-4 rounded-md bg-black text-white hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
+                                    href="tel:+254720449012"
+                                    className="flex items-center justify-center gap-3 py-3 px-4 rounded-md bg-black text-white hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
                                 >
                                     {callSvg} Call Now
                                 </a>
@@ -147,7 +193,25 @@ const Show = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+                <div className="mt-10">
+                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+                        Similar Cars
+                    </h2>
+                    {similarcars.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                            {similarcars.map((car) => (
+                                <div key={car.id} className="flex ">
+                                    <DetailedVehicleCard car={car} />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-gray-600 dark:text-gray-300">
+                            No similar cars found.
+                        </p>
+                    )}
+                </div>
+            </MaxWidthWrapper>
         </GuestLayout>
     );
 };
