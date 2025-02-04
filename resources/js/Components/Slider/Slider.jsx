@@ -77,7 +77,7 @@ const Slider = ({ cars }) => {
                             }`}
                         >
                             <a
-                                href="/all-cars"
+                                href="/vehicles"
                                 className="bg-black/15  px-6 py-3 rounded-full text-lg font-medium hover:bg-black/20 transition-colors duration-300"
                             >
                                 View All Cars

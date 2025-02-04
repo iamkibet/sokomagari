@@ -72,13 +72,13 @@ export default function Welcome({ cars, categories }) {
                             ? items
                             : items.filter((car) => car.category === category)
                     }
-                    viewMoreLink="/cars"
+                    viewMoreLink="/vehicles"
                 />
 
                 <VehicleSlider
                     title="Latest cars"
                     items={cars.data.filter((car) => car.year > 2021)}
-                    viewMoreLink="/cars"
+                    viewMoreLink="/vehicles"
                 />
 
                 <VehicleSlider
@@ -87,7 +87,7 @@ export default function Welcome({ cars, categories }) {
                     filterFn={(items) =>
                         items.filter((car) => car.price < 20000)
                     }
-                    viewMoreLink="/affordable-cars"
+                    viewMoreLink="/vehicles"
                 />
 
                 <WhatFits />

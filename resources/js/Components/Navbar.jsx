@@ -7,6 +7,8 @@ import { Link } from "@inertiajs/react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import { Arrow } from "@radix-ui/react-select";
 import { ArrowDown } from "./svgs/ArrowDown";
+import DropdownMenuItem from "./DropDownMenuItem";
+import SearchBar from "./SearchBar";
 
 const LocationSvg = (
     <svg
@@ -97,39 +99,6 @@ const Navbar = () => {
         </Link>
     );
 
-    const DropdownMenuItem = ({ title, items, active }) => (
-        <div className="relative group cursor-pointer">
-            {/* Trigger */}
-            <div
-                className={`flex uppercase font-bold items-center gap-1 py-4 transition-all 
-                ${
-                    active
-                        ? "border-t-2 border-[#f75d34]"
-                        : "border-t-2 border-transparent"
-                }
-                hover:border-t-2 hover:border-[#f75d34]`}
-            >
-                <a className=" hover:text-gray-900 dark:hover:text-[#eae9fc]">
-                    {title}
-                </a>
-                {DownSvg}
-            </div>
-
-            {/* Dropdown Menu */}
-            <div className="absolute right-[50] mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all transform translate-y-2 pointer-events-none group-hover:pointer-events-auto">
-                {items.map((item, index) => (
-                    <a
-                        key={index}
-                        href={item.href}
-                        className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    >
-                        {item.text}
-                    </a>
-                ))}
-            </div>
-        </div>
-    );
-
     return (
         <header className=" text-[#040316] dark:text-[#eae9fc] bg-[#fbfbfe] dark:bg-[rgb(33,33,33)] sticky top-0 z-[9999] border-none md:border-b shadow-none md:shadow-sm dark:border-gray-800">
             <section>
@@ -160,76 +129,13 @@ const Navbar = () => {
                         </div>
                     </div>
 
-                    <form className="max-w-md w-full items-center">
-                        <div className="flex">
-                            <button
-                                className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center  border border-gray-300 rounded-s-full hover:bg-gray-200 dark:bg-[#01010400] focus:ring-4 focus:outline-none  dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
-                                type="button"
-                            >
-                                All
-                                {DownSvg}
-                            </button>
-                            <div
-                                id="dropdown"
-                                className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-                            >
-                                <ul>
-                                    <li>Stuff</li>
-                                </ul>
-                            </div>
-                            <div className="dark:bg-[#01010400] dark:bg-opacity-75 relative w-full">
-                                <input
-                                    type="search"
-                                    className="block pl-6 md:pl-9 p-2.5 w-full z-20 text-sm rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 dark:bg-[#01010400] bg-opacity-75  dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400  "
-                                    placeholder="Search or ask a question"
-                                    required
-                                />
-
-                                <svg
-                                    className="w-3 h-3 md:w-4 md:h-4 flex items-center text-center absolute top-4 start-2 md:start-3"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 20 20"
-                                >
-                                    <path
-                                        stroke="currentColor"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                                    />
-                                </svg>
-                                {/* mic svg */}
-                                <a href="/">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.5"
-                                        stroke="currentColor"
-                                        className="w-5 h-5 flex md:hidden items-center text-center absolute top-3 end-2 cursor-pointer"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
-                                        />
-                                    </svg>
-                                </a>
-
-                                <span className="sr-only">Search</span>
-                            </div>
-                        </div>
-                    </form>
+                    <SearchBar />
                     <div className="hidden md:flex items-center justify-between space-x-4">
                         <p className="flex items-center text-xs">
                             English <span>{DownSvg}</span>
                         </p>
                         <a href="/"> {heartSvg}</a>
-                        <a className="flex gap-2 text-sm">
-                            {" "}
-                            {userProfileSvg}Login / Register
-                        </a>
+                        <a className="flex gap-2 text-sm"> {userProfileSvg}</a>
                     </div>
                 </MaxWidthWrapper>
             </section>

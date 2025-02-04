@@ -3,11 +3,12 @@ import React, { useState } from "react";
 import DetailedVehicleCard from "@/Components/DetailedVehicleCard";
 import Loader from "./Loader";
 
-const FilteredCars = ({allcars, filterData, applyFilters }) => {
-    
+const FilteredCars = () => {
+    const { allcars } = usePage().props;
+
     console.log(allcars);
     
-    
+
     const currentPage = allcars.current_page;
     const lastPage = allcars.last_page;
     const totalPages = allcars.last_page;
@@ -90,7 +91,7 @@ const FilteredCars = ({allcars, filterData, applyFilters }) => {
         <div>
             {/* Vehicle List */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                {allcars.map((car) => (
+                {allcars.data.map((car) => (
                     <div key={car.id} className="flex ">
                         <DetailedVehicleCard car={car} />
                     </div>

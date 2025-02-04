@@ -169,13 +169,13 @@ const VehicleSlider = ({
                                 The items you are looking for could not be
                                 located.
                             </p>
-                            <button
+                            <a
                                 className="flex items-center my-3 bg-primary py-2 px-4 rounded-md text-white text-lg"
                                 href="/vehicles"
                             >
                                 {" "}
                                 Browse More Vehicles
-                            </button>
+                            </a>
                         </div>
                     )}
 
@@ -206,7 +206,7 @@ const VehicleSlider = ({
                                     }`}
                                 >
                                     <a
-                                        href="/vehivles"
+                                        href="/vehicles"
                                         className="bg-black/15  px-6 py-3 rounded-full text-lg font-medium hover:bg-black/20 transition-colors duration-300"
                                     >
                                         View All Cars

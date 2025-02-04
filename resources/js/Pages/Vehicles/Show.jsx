@@ -12,8 +12,8 @@ import DetailedVehicleCard from "@/Components/DetailedVehicleCard";
 const Show = () => {
     const { vehicle, similarcars } = usePage().props;
 
-    console.log(similarcars);
-    
+   
+
 
     const details = [
         { label: "Year of Manufacture", value: vehicle.year },
@@ -26,8 +26,8 @@ const Show = () => {
         { label: "Accelaration", value: vehicle.acceleration },
         { label: "Transmission", value: vehicle.transmission },
     ];
-    const images = vehicle.image_urls
-        ? vehicle.image_urls.map((image) => ({
+    const images = vehicle.images
+        ? vehicle.images.map((image) => ({
               original: image,
               thumbnail: image,
           }))

@@ -46,17 +46,22 @@ class Car extends Model
     ];
 
 
+    protected $appends = ['thumbnail', 'image_urls'];
 
     public function getThumbnailAttribute()
     {
-        return $this->images ? $this->images[0] : null;
+        if (is_array($this->images) && count($this->images) > 0) {
+            $cleanPath = ltrim($this->images[0], '/');
+            return asset("storage/{$cleanPath}");
+        }
+        return asset('https://github.com/iamkibet/assets/blob/main/thumbnail.png?raw=true');
     }
 
-    // Update existing image_urls accessor
     public function getImageUrlsAttribute()
     {
         return collect($this->images)->map(function ($image) {
-            return asset('storage/' . $image);
+            $cleanPath = ltrim($image, '/');
+            return asset("storage/{$cleanPath}");
         })->toArray();
     }
 

@@ -20,6 +20,7 @@ Route::get('/', function () {
 })->name('home');
 
 
+
 Route::get('/about', function () {
     return Inertia::render('About');
 })->name('about');
@@ -35,6 +36,7 @@ Route::get('/faq', function () {
 })->name('faq');
 
 Route::resource('vehicles', VehicleController::class, ['names' => ['index' => 'vehicles.index']]);
+Route::get('/vehicles/search', [VehicleController::class, 'search'])->name('vehicles.search');
 Route::get('/vehicles/{slug}', [VehicleController::class, 'show'])->name('vehicles.show');
 Route::middleware(['auth'])->group(function () {
     Route::get('/vehicles/create', [VehicleController::class, 'create'])->name('vehicles.create');
@@ -57,6 +59,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
 
 // Dynamic Route with Constraint
 Route::get('/{category}', [VehicleController::class, 'index'])

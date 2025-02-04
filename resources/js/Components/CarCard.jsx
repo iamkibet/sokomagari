@@ -3,7 +3,8 @@ import React from "react";
 const CarCard = ({ car }) => {
 
 
-    console.log(car);
+console.log();
+
     
     const formatPrice = (price) => {
         if (price >= 1_000_000) {
@@ -42,7 +43,7 @@ const CarCard = ({ car }) => {
                     </p>
                 </div>
                 <a
-                    href={`/cars/${car.id}`}
+                    href={`/vehicles/${car.slug}`}
                     className="flex items-center justify-center border border-primary rounded-lg w-full py-2 text-primary"
                 >
                     View car details

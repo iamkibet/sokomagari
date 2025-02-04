@@ -8,14 +8,10 @@ import { router, usePage } from "@inertiajs/react";
 import VehicleSlider from "@/Components/VehicleSlider";
 
 const Index = () => {
-    const { allcars } = usePage().props;
+    const { allcars, vehicles, filters } = usePage().props;
 
-    console.log(allcars);
-    
+    console.log(allcars.data);
 
-
-
-    const { vehicles, filters } = usePage().props;
     const arrowRight = (
         <svg
             className="w-3 h-3 flex-shrink-0 mx-2.5"

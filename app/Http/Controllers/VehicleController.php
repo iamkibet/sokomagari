@@ -47,12 +47,21 @@ class VehicleController extends Controller
             }
         }
 
-        // Apply search query
+        // Add this at the start of your existing method
         if ($request->has('search')) {
+            $query = Car::query();
             $query->where(function ($q) use ($request) {
                 $q->where('make', 'LIKE', '%' . $request->input('search') . '%')
                     ->orWhere('model', 'LIKE', '%' . $request->input('search') . '%');
             });
+
+            $allcars = $query->through(function ($car) {
+                $car->thumbnail = $car->thumbnail;
+                $car->images = $car->image_urls;
+                return $car;
+            });
+        } else {
+            $allcars = (new CarService)->allCars();
         }
 
         // Apply range filters
@@ -133,7 +142,7 @@ class VehicleController extends Controller
             foreach ($request->file('images') as $image) {
                 $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
                 //$image->storeAs('public/vehicles', $imageName);
-                $images[] = Storage::disk('public')->putFileAs('vehicles/', $image, $imageName);
+                $images[] = Storage::disk('public')->putFileAs('vehicles', $image, $imageName);
                 //'storage/vehicles/' . $imageName;
             }
             $validated['images'] = $images;
@@ -149,19 +158,25 @@ class VehicleController extends Controller
      */
     public function show(string $id)
     {
-        $car = Car::where('slug', $id)
-            ->firstOrFail();
-        $car->image_urls = collect($car->images)->map(function ($image) {
-            return asset($image);
-        });
+        $car = Car::where('slug', $id)->firstOrFail();
 
-        $similarcars = (new CarService)->similarcars($car->slug);
 
-        return Inertia::render(
-            'Vehicles/Show',
-            ['vehicle' => $car, 'similarcars' => $similarcars]
-        );
+        return Inertia::render('Vehicles/Show', [
+            'vehicle' => $car,
+            'similarcars' => (new CarService)->similarcars($car->slug)
+
+
+        ]);
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $results = (new CarService)->search($query);
+        dd($request);
+        return response()->json($results);
+    }
+
 
     /**
      * Show the form for editing the specified resource.
