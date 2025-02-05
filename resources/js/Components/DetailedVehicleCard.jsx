@@ -1,7 +1,7 @@
 import React from "react";
 
 const DetailedVehicleCard = ({ car }) => {
-  
+
 
     const formatPrice = (price) => {
         if (price >= 1_000_000) {

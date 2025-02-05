@@ -19,80 +19,62 @@ class VehicleController extends Controller
     {
         // Validate input
         $validated = $request->validate([
-            'make' => 'string|nullable',
-            'model' => 'string|nullable',
-            'year' => 'integer|nullable',
-            'price_min' => 'numeric|nullable|min:0',
-            'price_max' => 'numeric|nullable|min:0',
-            'mileage_max' => 'numeric|nullable|min:0',
-            'condition' => 'string|nullable|in:new,used',
-            'location' => 'string|nullable',
-            'search' => 'string|nullable',
+            'make'         => 'string|nullable',
+            'model'        => 'string|nullable',
+            'year'         => 'integer|nullable',
+            'price_min'    => 'numeric|nullable|min:0',
+            'price_max'    => 'numeric|nullable|min:0',
+            'mileage_max'  => 'numeric|nullable|min:0',
+            'condition'    => 'string|nullable|in:new,used',
+            'location'     => 'string|nullable',
+            'search'       => 'string|nullable',
         ]);
 
+        // Start building the query
         $query = Car::query();
 
-        // Apply filters dynamically
-        $filters = [
-            'make' => $validated['make'] ?? null,
-            'model' => $validated['model'] ?? null,
-            'year' => $validated['year'] ?? null,
-            'condition' => $validated['condition'] ?? null,
-            'location' => $validated['location'] ?? null,
-        ];
-
-        foreach ($filters as $key => $value) {
-            if ($value) {
-                $query->where($key, $value);
+        // Apply simple filters using an array of keys
+        foreach (['make', 'model', 'year', 'condition', 'location'] as $filter) {
+            if (!empty($validated[$filter])) {
+                $query->where($filter, $validated[$filter]);
             }
         }
 
-        // Add this at the start of your existing method
-        if ($request->has('search')) {
-            $query = Car::query();
-            $query->where(function ($q) use ($request) {
-                $q->where('make', 'LIKE', '%' . $request->input('search') . '%')
-                    ->orWhere('model', 'LIKE', '%' . $request->input('search') . '%');
+        // Apply search filter if present
+        if (!empty($validated['search'])) {
+            $query->where(function ($q) use ($validated) {
+                $q->where('make', 'LIKE', '%' . $validated['search'] . '%')
+                    ->orWhere('model', 'LIKE', '%' . $validated['search'] . '%');
             });
-
-            $allcars = $query->through(function ($car) {
-                $car->thumbnail = $car->thumbnail;
-                $car->images = $car->image_urls;
-                return $car;
-            });
-        } else {
-            $allcars = (new CarService)->allCars();
         }
 
-        // Apply range filters
-        if ($request->has(['price_min', 'price_max'])) {
-            $query->whereBetween('price', [$request->input('price_min'), $request->input('price_max')]);
+        // Apply price range filters
+        if (!empty($validated['price_min']) && !empty($validated['price_max'])) {
+            $query->whereBetween('price', [$validated['price_min'], $validated['price_max']]);
+        } elseif (!empty($validated['price_min'])) {
+            $query->where('price', '>=', $validated['price_min']);
+        } elseif (!empty($validated['price_max'])) {
+            $query->where('price', '<=', $validated['price_max']);
         }
 
-        if ($request->has('price_min') && !$request->has('price_max')) {
-            $query->where('price', '>=', $request->input('price_min'));
+        // Apply mileage filter
+        if (!empty($validated['mileage_max'])) {
+            $query->where('mileage', '<=', $validated['mileage_max']);
         }
 
-        if ($request->has('price_max') && !$request->has('price_min')) {
-            $query->where('price', '<=', $request->input('price_max'));
-        }
+        // Set how many records per page you want to show
+        $perPage = 12;
+        $allcars = $query->latest()->paginate($perPage);
 
-        if ($request->has('mileage_max')) {
-            $query->where('mileage', '<=', $request->input('mileage_max'));
-        }
-
-
-
-
-        $allcars = (new CarService)->allCars();
-
-        // Return Inertia response
+        // Use an API Resource to transform the cars.
+        // Assuming you have created a CarResource that returns only the needed fields (like thumbnail and image_urls)
         return Inertia::render('Vehicles/Index', [
-
             'filters' => $validated,
-            'allcars' => $allcars
+            'allcars' => \App\Http\Resources\CarResource::collection($allcars),
         ]);
     }
+
+
 
 
 
@@ -140,10 +122,13 @@ class VehicleController extends Controller
         if ($request->hasFile('images')) {
             $images = [];
             foreach ($request->file('images') as $image) {
+
                 $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                //$image->storeAs('public/vehicles', $imageName);
-                $images[] = Storage::disk('public')->putFileAs('vehicles', $image, $imageName);
-                //'storage/vehicles/' . $imageName;
+
+                // Store the file in the 'vehicles' folder on the 'public' disk
+                $storedPath = Storage::disk('public')->putFileAs('vehicles', $image, $imageName);
+
+                $images[] = $storedPath;
             }
             $validated['images'] = $images;
         }
@@ -158,14 +143,15 @@ class VehicleController extends Controller
      */
     public function show(string $id)
     {
-        $car = Car::where('slug', $id)->firstOrFail();
 
+        $vehicle = (new CarService)->showcar($id);
+
+
+        $similarcars = (new CarService)->similarcars($vehicle->slug);
 
         return Inertia::render('Vehicles/Show', [
-            'vehicle' => $car,
-            'similarcars' => (new CarService)->similarcars($car->slug)
-
-
+            'vehicle' => $vehicle,
+            'similarcars' => $similarcars,
         ]);
     }
 
@@ -173,7 +159,7 @@ class VehicleController extends Controller
     {
         $query = $request->input('query');
         $results = (new CarService)->search($query);
-        dd($request);
+
         return response()->json($results);
     }
 

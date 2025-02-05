@@ -10,7 +10,8 @@ import VehicleSlider from "@/Components/VehicleSlider";
 const Index = () => {
     const { allcars, vehicles, filters } = usePage().props;
 
-    console.log(allcars.data);
+  console.log(allcars);
+  
 
     const arrowRight = (
         <svg

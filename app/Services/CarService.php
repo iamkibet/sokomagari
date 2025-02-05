@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Resources\CarResource;
+use App\Http\Resources\ShowCarResource;
 use App\Models\Car;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -17,33 +18,44 @@ class CarService
 
     public function allcars($perPage = 12)
     {
-        $cacheKey = "allcars_page_" . request()->get('page', 1);
-        $allcars = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($perPage) {
-            $cars = Car::latest()->paginate($perPage);
-
-            return $cars;
-        });
-        return CarResource::collection($allcars);
+        $allcars = Car::latest()->paginate($perPage);
+        // With the model's $appends in place, thumbnail and image_urls are included.
+        return \App\Http\Resources\CarResource::collection($allcars);
     }
+
+    public function showcar($slug)
+    {
+        $cacheKey = "showcar_{$slug}";
+
+
+        $car = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($slug) {
+            return Car::where('slug', $slug)->firstOrFail();
+        });
+
+
+        return new ShowCarResource($car);
+    }
+
 
     public function similarcars($slug)
     {
-        $cacheKey = "similarcars_" . $slug;
-        $similarCars = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($slug) {
-            $vehicle = Car::where('slug', $slug)->firstOrFail();
-            $cars = Car::where('id', '!=', $vehicle->id)
-                ->where(function ($query) use ($vehicle) {
-                    $query->where('make', $vehicle->make)
-                        ->orWhere('model', $vehicle->model);
-                })
-                ->orderBy('created_at', 'desc')
-                ->limit(20)
-                ->get();
+        $vehicle = Car::where('slug', $slug)->firstOrFail();
 
-            return CarResource::collection($cars);
-        });
+        $similarCars = Car::where('id', '!=', $vehicle->id)
+            ->where(function ($query) use ($vehicle) {
+                $query->where('make', $vehicle->make)
+                    ->orWhere('model', $vehicle->model);
+            })
+            ->orderBy('created_at', 'desc')
+            ->limit(20)
+            ->get()
+            ->map(function ($car) {
 
-        return $similarCars;
+                return $car;
+            });
+
+
+        return \App\Http\Resources\CarResource::collection($similarCars);
     }
 
     public function search($query, $limit = 5)
@@ -52,8 +64,7 @@ class CarService
             ->orWhere('model', 'like', "%{$query}%")
             ->limit($limit)
             ->get();
-            dd($results);
 
-        return CarResource::collection($results);
+        return \App\Http\Resources\CarResource::collection($results);
     }
 }
