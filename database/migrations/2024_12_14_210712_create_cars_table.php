@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2);         // Price of the car
             $table->integer('mileage');              // Mileage in kilometers
             $table->string('slug')->unique();        // URL slug
-            $table->string('category')->nullable();         // suv, hatchback, sedan, luxury
+            $table->string('type')->default('sedan');         // suv, hatchback, sedan, luxury
             $table->string('location')->default('Nairobi, Kenya'); // Current location
             $table->string('availability')->default('Available');  // Available or Sold
             $table->string('drive')->nullable();     // 4WD or 2WD

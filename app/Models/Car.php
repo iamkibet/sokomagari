@@ -14,6 +14,7 @@ class Car extends Model
         'price',
         'mileage',
         'condition',
+        'type',
         'location',
         'availability',
         'drive',
@@ -29,6 +30,11 @@ class Car extends Model
         'owner_name',
         'owner_email',
         'owner_phone',
+        'comfort_features',
+        'safety_features',
+        'annual_insurance_cost',
+        'highway_fuel_efficiency',
+        'urban_fuel_efficiency'
     ];
 
     /**
@@ -43,7 +49,13 @@ class Car extends Model
         'acceleration' => 'decimal:2',
         'images' => 'array',
         'is_sell_on_behalf' => 'boolean',
+        'comfort_features' => 'array',
+        'safety_features' => 'array',
+        'annual_insurance_cost'   => 'decimal:2',
+        'highway_fuel_efficiency' => 'decimal:2',
+        'urban_fuel_efficiency'   => 'decimal:2',
     ];
+
 
 
     protected $appends = ['thumbnail', 'image_urls'];
@@ -70,11 +82,37 @@ class Car extends Model
         parent::boot();
 
         static::creating(function ($car) {
-            $car->slug = Str::slug($car->make . '-' . $car->model . '-' . $car->year);
+            $car->slug = static::generateUniqueSlug($car);
         });
 
         static::updating(function ($car) {
-            $car->slug = Str::slug($car->make . '-' . $car->model . '-' . $car->year);
+            $car->slug = static::generateUniqueSlug($car);
         });
+    }
+    /**
+     * Generate a unique slug for the car.
+     *
+     * @param  \App\Models\Car  $car
+     * @return string
+     */
+
+    protected static function generateUniqueSlug($car)
+    {
+        $baseSlug = Str::slug($car->make . '-' . $car->model . '-' . $car->year);
+        $slug = $baseSlug;
+        $counter = 1;
+
+        // When updating, exclude the current record from the check
+        while (static::where('slug', $slug)
+            ->when($car->id, function ($query, $id) use ($car) {
+                return $query->where('id', '!=', $car->id);
+            })
+            ->exists()
+        ) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
     }
 }

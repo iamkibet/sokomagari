@@ -92,50 +92,114 @@ class VehicleController extends Controller
      */
     public function store(Request $request)
     {
-        // Validation and creation logic here
-        $validated = $request->validate([
-            'make' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
-            'year' => 'required|integer',
-            'price' => 'required|numeric',
-            'mileage' => 'required|integer',
-            'condition' => 'required|string',
-            'location' => 'string',
-            'availability' => 'string',
-            'drive' => 'string|nullable',
-            'engine_size' => 'integer',
-            'fuel_type' => 'string|nullable',
-            'horse_power' => 'integer|nullable',
-            'transmission' => 'string|nullable',
-            'torque' => 'integer|nullable',
-            'acceleration' => 'numeric|nullable',
-            'description' => 'string|nullable',
-            'images' => 'required|array|min:1',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif',
-            'is_sell_on_behalf' => 'nullable|boolean',
-            'owner_name' => 'string|nullable',
-            'owner_email' => 'email|nullable',
-            'owner_phone' => 'string|nullable',
+    
+        // Process feature arrays first.
+        $comfortFeatures = [];
+        foreach ($request->all() as $key => $value) {
+            if (str_starts_with($key, 'comfort_features_')) {
+
+                $cleanKey = str_replace('comfort_features_', '', $key);
+                $comfortFeatures[$cleanKey] = $value;
+            }
+        }
+
+
+        $safetyFeatures = [];
+        foreach ($request->all() as $key => $value) {
+            if (str_starts_with($key, 'safety_features_')) {
+                $cleanKey = str_replace('safety_features_', '', $key);
+                $safetyFeatures[$cleanKey] = $value;
+            }
+        }
+        dd($request->all());
+
+
+        $request->merge([
+            'is_sell_on_behalf' => (bool) $request->is_sell_on_behalf,
+            'comfort_features'  => $comfortFeatures,
+            'safety_features'   => $safetyFeatures
         ]);
 
-        // Handle image uploads
+       
+
+
+        $validated = $request->validate([
+            'make'                     => 'required|string|max:255',
+            'model'                    => 'required|string|max:255',
+            'year'                     => 'required|integer',
+            'type'                     => 'required|string',
+            'price'                    => 'required|numeric',
+            'mileage'                  => 'required|integer',
+            'condition'                => 'required|string',
+            'location'                 => 'string',
+            'availability'             => 'string',
+            'drive'                    => 'string|nullable',
+            'engine_size'              => 'integer',
+            'fuel_type'                => 'string|nullable',
+            'horse_power'              => 'integer|nullable',
+            'transmission'             => 'string|nullable',
+            'torque'                   => 'integer|nullable',
+            'acceleration'             => 'numeric|nullable',
+            'description'              => 'string|nullable',
+            'images'                   => 'required|array|min:1',
+            'images.*'                 => 'image|mimes:jpeg,png,jpg,gif',
+            'is_sell_on_behalf'        => 'nullable|boolean',
+            'owner_name'               => 'string|nullable',
+            'owner_email'              => 'email|nullable',
+            'owner_phone'              => 'string|nullable',
+
+            'comfort_features' => 'array',
+            'comfort_features.heated_seats'      => 'sometimes|boolean',
+            'comfort_features.power_windows' => 'sometimes|boolean',
+            'comfort_features.trimming' => 'sometimes|string',
+            'comfort_features.powered_tailgate' => 'sometimes|boolean',
+            'comfort_features.steering_controls' => 'sometimes|boolean',
+            'comfort_features.phone_connectivity' => 'sometimes|boolean',
+            'comfort_features.auto_start_stop' => 'sometimes|boolean',
+            'comfort_features.isofix_anchors' => 'sometimes|boolean',
+            'comfort_features.paddle_shifts' => 'sometimes|boolean',
+            'comfort_features.apple_carplay' => 'sometimes|boolean',
+            'comfort_features.fm_radio' => 'sometimes|boolean',
+            'comfort_features.keyless_entry' => 'sometimes|boolean',
+
+            'safety_features' => 'array',
+            'safety_features.gps_tracker'    => 'sometimes|boolean',
+            'safety_features.srs_airbags' => 'sometimes|boolean',
+            'safety_features.reverse_camera' => 'sometimes|boolean',
+            'safety_features.lane_assistance' => 'sometimes|boolean',
+            'safety_features.parking_sensors' => 'sometimes|boolean',
+            'safety_features.cruise_control' => 'sometimes|boolean',
+            'safety_features.abs' => 'sometimes|boolean',
+            'safety_features.emergency_braking' => 'sometimes|boolean',
+            'safety_features.immobilizer' => 'sometimes|boolean',
+            'safety_features.stability_control' => 'sometimes|boolean',
+            'safety_features.tyre_pressure_monitor' => 'sometimes|boolean',
+            'safety_features.brake_force_distribution' => 'sometimes|boolean',
+
+
+            'annual_insurance_cost'    => 'nullable|numeric|min:0',
+            'highway_fuel_efficiency'  => 'nullable|numeric|min:0',
+            'urban_fuel_efficiency'    => 'nullable|numeric|min:0',
+        ]);
+
+        // Handle image uploads.
         if ($request->hasFile('images')) {
             $images = [];
             foreach ($request->file('images') as $image) {
-
                 $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-
-                // Store the file in the 'vehicles' folder on the 'public' disk
+                // Store the file in the 'vehicles' folder on the 'public' disk.
                 $storedPath = Storage::disk('public')->putFileAs('vehicles', $image, $imageName);
-
                 $images[] = $storedPath;
             }
             $validated['images'] = $images;
         }
 
         Car::create($validated);
+
+
         return redirect()->route('vehicles.index')->with('success', 'Vehicle created successfully.');
     }
+
 
 
     /**
@@ -170,7 +234,7 @@ class VehicleController extends Controller
     public function edit(string $id)
     {
         $car = Car::findOrFail($id);
-        return Inertia::render('Cars/Edit', ['car' => $car]);
+        return Inertia::render('Vehicles/Edit', ['car' => $car]);
     }
 
     /**
