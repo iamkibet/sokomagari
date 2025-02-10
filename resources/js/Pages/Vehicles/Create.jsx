@@ -6,7 +6,7 @@ import StepProgress from "@/Components/StepProgress";
 const LOCAL_STORAGE_KEY = "vehicleCreateForm";
 
 const Create = () => {
-    const { data, setData, post, errors, transform } = useForm({
+    const { data, setData, post, errors } = useForm({
         // Basic Details
         make: "",
         model: "",
@@ -102,32 +102,7 @@ const Create = () => {
         { id: 4, title: "Media & Finalize" },
     ];
 
-    transform(() => {
-        const formData = new FormData();
-
-        // Append all top-level fields
-        Object.entries(data).forEach(([key, value]) => {
-            if (key === "images") {
-                // Handle image files
-                value.forEach((file) => formData.append("images[]", file));
-            } else if (typeof value === "object" && !Array.isArray(value)) {
-                // Handle nested objects (comfort_features and safety_features)
-                Object.entries(value).forEach(([subKey, subValue]) => {
-                    formData.append(`${key}[${subKey}]`, subValue);
-                });
-            } else {
-                // Handle primitive values
-                formData.append(key, value);
-            }
-
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
-        });
-
-        return formData;
-    });
-
+    
     // Handle image input changes and set preview URLs
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files || []);
@@ -187,6 +162,46 @@ const Create = () => {
             )}
         </div>
     );
+
+    const SelectField = ({
+        label,
+        name,
+        value,
+        onChange,
+        options = [],
+        error,
+        required = false,
+        containerClass = "",
+        selectClass = "",
+        ...rest
+    }) => {
+        return (
+            <div className={`mb-4 ${containerClass}`}>
+                <label
+                    htmlFor={name}
+                    className="block text-sm font-medium mb-1"
+                >
+                    {label}
+                    <select
+                        id={name}
+                        name={name}
+                        value={value}
+                        onChange={onChange}
+                        required={required}
+                        className={`w-full p-2 border rounded-md mt-1 ${selectClass}`}
+                        {...rest}
+                    >
+                        {options.map((option, index) => (
+                            <option key={index} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+                {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+            </div>
+        );
+    };
 
     // Reusable checkbox renderer
     const renderCheckbox = (label, path) => {
@@ -471,7 +486,7 @@ const Create = () => {
                                         </label>
                                         <input
                                             type="text"
-                                            name="comfort_features[trimming]"
+                                            name="comfort_features.trimming"
                                             value={
                                                 data.comfort_features.trimming
                                             }
@@ -501,8 +516,7 @@ const Create = () => {
                                         </label>
                                         <select
                                             value={
-                                                data.comfort_features
-                                                    .seat_material
+                                                data.comfort_features.seat_material
                                             }
                                             onChange={(e) =>
                                                 setData(
@@ -512,7 +526,7 @@ const Create = () => {
                                             }
                                             className="w-full p-2 border rounded"
                                         >
-                                            <option value="">
+                                            <option>
                                                 Select Material
                                             </option>
                                             <option value="Leather">

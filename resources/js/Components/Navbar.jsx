@@ -100,7 +100,7 @@ const Navbar = () => {
     );
 
     return (
-        <header className=" text-[#040316] dark:text-[#eae9fc] bg-[#fbfbfe] dark:bg-[rgb(33,33,33)] sticky top-0 z-[9999] border-none md:border-b shadow-none md:shadow-sm dark:border-gray-800">
+        <header className=" text-[#040316] dark:text-[#eae9fc] bg-[#fbfbfe] dark:bg-[rgb(33,33,33)] sticky top-0 z-[999] border-none md:border-b shadow-none md:shadow-sm dark:border-gray-800">
             <section>
                 <MaxWidthWrapper className="flex md:items-center justify-between flex-col space-y-4 md:flex-row md:space-y-0   border-b-[0.5px] py-4">
                     <div className="flex justify-between items-center">

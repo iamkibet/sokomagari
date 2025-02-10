@@ -20,6 +20,10 @@ class ShowCarResource extends JsonResource
             'model' => $this->model,
             'year' => $this->year,
             'price' => $this->price,
+            'torque' => $this->torque,
+            'acceleration' => $this->acceleration,
+            'type' => $this->type,
+            'engine_size' => $this->engine_size,
             'thumbnail' => $this->thumbnail,
             'location' => $this->location,
             'condition' => $this->condition,
@@ -28,9 +32,12 @@ class ShowCarResource extends JsonResource
             'mileage' => $this->mileage,
             'slug' => $this->slug,
             'thumbnail'  => $this->thumbnail,
+            'annual_insurance_cost' => $this->annual_insurance_cost,
+            'highway_fuel_efficiency' => $this->highway_fuel_efficiency,
+            'urban_fuel_efficiency' => $this->urban_fuel_efficiency,
             'image_urls' => $this->image_urls,
+            'comfort_features' => $this->comfort_features,
+            'safety_features' => $this->safety_features,
         ];
-
-     
     }
 }

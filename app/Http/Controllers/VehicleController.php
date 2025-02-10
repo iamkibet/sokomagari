@@ -92,9 +92,9 @@ class VehicleController extends Controller
      */
     public function store(Request $request)
     {
-    
+
         // Process feature arrays first.
-        $comfortFeatures = [];
+        $comfortFeatures = $request->input('comfort_features');
         foreach ($request->all() as $key => $value) {
             if (str_starts_with($key, 'comfort_features_')) {
 
@@ -104,23 +104,32 @@ class VehicleController extends Controller
         }
 
 
-        $safetyFeatures = [];
+        $safetyFeatures = $request->input('safety_features');
         foreach ($request->all() as $key => $value) {
             if (str_starts_with($key, 'safety_features_')) {
                 $cleanKey = str_replace('safety_features_', '', $key);
                 $safetyFeatures[$cleanKey] = $value;
+                $request->input('safety_features')[$cleanKey] = $value;
             }
         }
-        dd($request->all());
+
+        // Get the original comfort_features array if it exists.
+        // $existingComfortFeatures = $request->input('comfort_features', []);
+
+        // // Merge in the keys processed from underscore keys.
+        // $mergedComfortFeatures = array_merge($existingComfortFeatures, $comfortFeatures);
+
 
 
         $request->merge([
-            'is_sell_on_behalf' => (bool) $request->is_sell_on_behalf,
             'comfort_features'  => $comfortFeatures,
             'safety_features'   => $safetyFeatures
         ]);
 
-       
+
+
+
+
 
 
         $validated = $request->validate([
@@ -134,7 +143,7 @@ class VehicleController extends Controller
             'location'                 => 'string',
             'availability'             => 'string',
             'drive'                    => 'string|nullable',
-            'engine_size'              => 'integer',
+            'engine_size'              => 'required|integer',
             'fuel_type'                => 'string|nullable',
             'horse_power'              => 'integer|nullable',
             'transmission'             => 'string|nullable',
@@ -197,6 +206,8 @@ class VehicleController extends Controller
         Car::create($validated);
 
 
+
+
         return redirect()->route('vehicles.index')->with('success', 'Vehicle created successfully.');
     }
 
@@ -216,6 +227,7 @@ class VehicleController extends Controller
         return Inertia::render('Vehicles/Show', [
             'vehicle' => $vehicle,
             'similarcars' => $similarcars,
+            
         ]);
     }
 
