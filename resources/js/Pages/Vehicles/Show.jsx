@@ -15,7 +15,7 @@ const Show = () => {
     } = usePage().props;
 
     console.log(vehicle);
-    
+
     const {
         comfort_features,
         safety_features,
@@ -214,6 +214,15 @@ const Show = () => {
         </svg>
     );
 
+    const shareUrl = window.location.href;
+
+    const shareLinks = {
+        whatsapp: `https://wa.me/?text=${encodeURIComponent(shareUrl)}`,
+        facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+            shareUrl
+        )}`,
+        x: `https://x.com/intent/tweet?url=${encodeURIComponent(shareUrl)}`,
+    };
     const formattedPrice = Number(vehicle.price).toLocaleString("en-US", {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
@@ -365,12 +374,15 @@ const Show = () => {
                                                 based on average rates.
                                             </p>
                                             <p className="text-xl font-bold t mt-4">
-                                               KES:  {annual_insurance_cost} / Annually
+                                                KES: {annual_insurance_cost} /
+                                                Annually
                                             </p>{" "}
                                         </div>
 
                                         <div className="flex flex-col h-1/2 text-center items-center justify-center bg-gray-100 w-full gap-y-2">
-                                            <h1 className="flex flex-col items-center text-center justify-center font-bold">{fuelSVG} Fuel</h1>
+                                            <h1 className="flex flex-col items-center text-center justify-center font-bold">
+                                                {fuelSVG} Fuel
+                                            </h1>
                                             <p>
                                                 Highway:{" "}
                                                 {highway_fuel_efficiency}{" "}
@@ -397,6 +409,40 @@ const Show = () => {
                                 >
                                     {callSvg} Call Now
                                 </a>
+                            </div>
+                            <div className="mt-6">
+                                <p className="text-gray-600 font-semibold mb-2">
+                                    Share this:
+                                </p>
+                                <div className="flex items-center  space-x-10 mt-4">
+                                    <a
+                                        href={shareLinks.whatsapp}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        title="Share on WhatsApp"
+                                    >
+                                        <img src="/svgs/whatsapp.svg" alt="Share to whatsapp" srcset="" />
+                                    </a>
+                                    <a
+                                        href={shareLinks.facebook}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        title="Share on Facebook"
+                                    >
+                                        <img
+                                            src="/svgs/facebook.svg"
+                                            alt="Facebok"
+                                        />
+                                    </a>
+                                    <a
+                                        href={shareLinks.x}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        title="Share on x"
+                                    >
+                                        <img src="/svgs/x.svg" alt="X" />
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

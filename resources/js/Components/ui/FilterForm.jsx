@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import { RadioGroup } from "@radix-ui/react-radio-group";
 import { ArrowRight } from "../svgs/ArrowRight";
+import { useForm } from "@inertiajs/react";
 
 const FilterForm = () => {
-    // State to manage the active tabs
     const [activeTab, setActiveTab] = useState("new");
     const [activeInNewTab, setActiveInNewTab] = useState("budget");
     const [activeInUsedTab, setActiveInUsedTab] = useState("budget");
@@ -60,6 +60,10 @@ const FilterForm = () => {
             />
         </svg>
     );
+
+    const { data, setData, get } = useForm({
+        
+    })
     return (
         <div className="bg-white dark:bg-[#010104] dark:bg-opacity-45 w-full md:max-w-[348px]  max-h-[443px] rounded-xl py-6 px-4 sm:py-[19px] sm:px-[24px] shadow-lg overflow-y-auto">
             <h2 className="text-center text-2xl sm:text-3xl font-bold tracking-tight mb-4">

@@ -146,26 +146,29 @@ const Navbar = () => {
 
                         <nav className="hidden md:flex space-x-4 ">
                             <DropdownMenuItem
-                                title="New Cars"
+                                title="Vehicles"
                                 items={[
                                     {
                                         href: "/vehicles",
-                                        text: "New cars",
+                                        text: "All Vehicles",
                                     },
                                     {
-                                        href: "/contact",
+                                        href: "/Vehicles",
                                         text: "Available in Kenya",
                                     },
-                                    { href: "/faq", text: "Direct import" },
+                                    {
+                                        href: "/vehicles",
+                                        text: "Direct import",
+                                    },
                                 ]}
                                 active={isActive("/vehicles")}
                             />
                             <DropdownMenuItem
-                                title="Used Cars"
+                                title="Bikes"
                                 items={[
                                     { href: "/bikes", text: "All Bikes" },
                                     {
-                                        href: "/contact",
+                                        href: "/vehicles",
                                         text: "Available in Kenya",
                                     },
                                     { href: "/faq", text: "Direct import" },
@@ -175,24 +178,23 @@ const Navbar = () => {
                             <DropdownMenuItem
                                 title="News & Reviews"
                                 items={[
-                                    { href: "/bikes", text: "All Bikes" },
+                                    { href: "/vehicles", text: "Blog" },
                                     {
-                                        href: "/contact",
-                                        text: "Available in Kenya",
+                                        href: "/vehicles",
+                                        text: "News & More",
                                     },
-                                    { href: "/faq", text: "Direct import" },
                                 ]}
                                 active={isActive("/bikes")}
                             />
                             <DropdownMenuItem
-                                title="Videos"
+                                title="About Us"
                                 items={[
-                                    { href: "/bikes", text: "All Bikes" },
+                                    { href: "/faq", text: "FAQ" },
                                     {
-                                        href: "/contact",
-                                        text: "Available in Kenya",
+                                        href: "/vehicles",
+                                        text: "About Us",
                                     },
-                                    { href: "/faq", text: "Direct import" },
+                                    { href: "/faq", text: "Contact" },
                                 ]}
                                 active={isActive("/bikes")}
                             />

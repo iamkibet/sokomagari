@@ -30,17 +30,17 @@ class VehicleController extends Controller
             'search'       => 'string|nullable',
         ]);
 
-        // Start building the query
+        
         $query = Car::query();
 
-        // Apply simple filters using an array of keys
+      
         foreach (['make', 'model', 'year', 'condition', 'location'] as $filter) {
             if (!empty($validated[$filter])) {
                 $query->where($filter, $validated[$filter]);
             }
         }
 
-        // Apply search filter if present
+       
         if (!empty($validated['search'])) {
             $query->where(function ($q) use ($validated) {
                 $q->where('make', 'LIKE', '%' . $validated['search'] . '%')
@@ -57,17 +57,14 @@ class VehicleController extends Controller
             $query->where('price', '<=', $validated['price_max']);
         }
 
-        // Apply mileage filter
         if (!empty($validated['mileage_max'])) {
             $query->where('mileage', '<=', $validated['mileage_max']);
         }
 
-        // Set how many records per page you want to show
         $perPage = 12;
         $allcars = $query->latest()->paginate($perPage);
 
-        // Use an API Resource to transform the cars.
-        // Assuming you have created a CarResource that returns only the needed fields (like thumbnail and image_urls)
+     
         return Inertia::render('Vehicles/Index', [
             'filters' => $validated,
             'allcars' => \App\Http\Resources\CarResource::collection($allcars),
@@ -113,24 +110,10 @@ class VehicleController extends Controller
             }
         }
 
-        // Get the original comfort_features array if it exists.
-        // $existingComfortFeatures = $request->input('comfort_features', []);
-
-        // // Merge in the keys processed from underscore keys.
-        // $mergedComfortFeatures = array_merge($existingComfortFeatures, $comfortFeatures);
-
-
-
         $request->merge([
             'comfort_features'  => $comfortFeatures,
             'safety_features'   => $safetyFeatures
         ]);
-
-
-
-
-
-
 
         $validated = $request->validate([
             'make'                     => 'required|string|max:255',

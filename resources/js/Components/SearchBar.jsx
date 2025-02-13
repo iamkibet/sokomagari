@@ -38,7 +38,7 @@ const SearchBar = () => {
     };
 
     const handleViewAll = () => {
-        router.get(route("vehicles.index", { search: query }));
+        router.get(route("vehicles.search", { search: query }));
     };
 
     const DownSvg = (
@@ -64,8 +64,8 @@ const SearchBar = () => {
                 {/* "All" Button */}
                 <button
                     type="button"
-                    className="flex-shrink-0 z-10 inline-flex items-center gap-2 py-2 px-4 text-sm font-medium text-white bg-gradient-to-r from-green-500 to-green-600 rounded-l-full 
-                     hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 dark:focus:ring-green-400"
+                    className="flex-shrink-0 z-10 inline-flex items-center gap-2 py-2 px-4 text-sm font-medium border  rounded-l-full 
+                      focus:outline-none focus:ring-2 "
                 >
                     All
                     {DownSvg}

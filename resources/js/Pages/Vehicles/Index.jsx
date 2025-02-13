@@ -10,8 +10,7 @@ import VehicleSlider from "@/Components/VehicleSlider";
 const Index = () => {
     const { allcars, vehicles, filters } = usePage().props;
 
-  console.log(allcars);
-  
+    console.log(allcars);
 
     const arrowRight = (
         <svg
@@ -63,52 +62,15 @@ const Index = () => {
 
     const [activeFilter, setActiveFilter] = useState(false);
 
-    // handling filter change
-    const handleFilterChange = (e) => {
-        setFilterData({
-            ...filterData,
-            [e.target.name]: e.target.value,
-        });
-    };
-
-    // handling budget filter
-    const handleBudgetFilter = (min, max, label) => {
-        setFilterData({
-            ...filterData,
-            price_min: min,
-            price_max: max,
-        });
-        setActiveFilter(label);
-        router.get(
-            route("vehicles.index"),
-            {
-                price_min: min,
-                price_max: max,
-            },
-            {
-                preserveState: true,
-            }
-        );
-    };
-
     // handling search
     const handleSearch = (e) => {
         setFilterData({
             ...filterData,
             search: e.target.value,
         });
-        router.get(
-            route("vehicles.index"),
-            {
-                search: e.target.value,
-            },
-            {
-                preserveState: true,
-            }
-        );
     };
 
-    // submitting the filters
+
     const applyFilters = () => {
         router.get(route("vehicles.index"), filterData, {
             preserveState: true,
@@ -283,6 +245,7 @@ const Index = () => {
                                 </label>
                             </div>
                         )}
+                        <button onClick={applyFilters} className="px-4 py-3 bg-black text-white w-full mt-4 font-bold text-xl hover:bg-black/70">Search</button>
                     </div>
                 </div>
 
@@ -300,7 +263,7 @@ const Index = () => {
                     items={allcars.data.filter(
                         (allcars) => allcars.year > 2021
                     )}
-                    viewMoreLink="/cars"
+                    viewMoreLink="/vehicles"
                 />
                 <VehicleSlider
                     title="Affordable Cars"
