@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Car;
-use App\Models\CarCategory;
+use Faker\Factory as Faker;
 
 class CarSeeder extends Seeder
 {
@@ -13,7 +13,21 @@ class CarSeeder extends Seeder
      */
     public function run()
     {
-       
+
+        $getPlaceholderImages = function () {
+            $baseUrl = 'https://placehold.co/640x480';
+            $images = [];
+
+            // Generate 5 unique placeholder image URLs
+            for ($i = 1; $i <= 5; $i++) {
+                $images[] = $baseUrl . '?text=Car+Image+' . $i . '&font=roboto';
+            }
+
+            return $images;
+        };
+
+
+        $faker = Faker::create();
 
         $cars = [
             [
@@ -24,7 +38,7 @@ class CarSeeder extends Seeder
                 'mileage' => 12000,
                 'condition' => 'New',
                 'location' => 'Nairobi, Kenya',
-                'category' => 'SUV',
+                'type' => 'SUV',
                 'availability' => 'Available',
                 'drive' => '4WD',
                 'engine_size' => 2400,
@@ -34,7 +48,7 @@ class CarSeeder extends Seeder
                 'torque' => 400,
                 'acceleration' => 11.00,
                 'description' => 'A reliable and luxurious SUV perfect for off-road and city driving.',
-                'images' => ['land_cruiser_1.jpg', 'land_cruiser_2.jpg'],
+                'images' => json_encode($getPlaceholderImages(), JSON_UNESCAPED_SLASHES),
                 'is_sell_on_behalf' => false,
                 'owner_name' => null,
                 'owner_email' => null,
@@ -47,7 +61,7 @@ class CarSeeder extends Seeder
                 'price' => 2500000,
                 'mileage' => 45000,
                 'condition' => 'Used',
-                'category' => 'Sedan',
+                'type' => 'Sedan',
                 'location' => 'Mombasa, Kenya',
                 'availability' => 'Available',
                 'drive' => 'FWD',
@@ -58,7 +72,7 @@ class CarSeeder extends Seeder
                 'torque' => 174,
                 'acceleration' => 8.50,
                 'description' => 'A compact sedan known for its fuel efficiency and reliability.',
-                'images' => ['civic_1.jpg', 'civic_2.jpg'],
+                'images' => json_encode($getPlaceholderImages(), JSON_UNESCAPED_SLASHES),
                 'is_sell_on_behalf' => true,
                 'owner_name' => 'John Doe',
                 'owner_email' => 'johndoe@example.com',
@@ -71,7 +85,7 @@ class CarSeeder extends Seeder
                 'price' => 9500000,
                 'mileage' => 15000,
                 'condition' => 'New',
-                'category' => 'SUV',
+                'type' => 'SUV',
                 'location' => 'Nairobi, Kenya',
                 'availability' => 'Available',
                 'drive' => 'RWD',
@@ -82,7 +96,7 @@ class CarSeeder extends Seeder
                 'torque' => 620,
                 'acceleration' => 6.40,
                 'description' => 'A luxury sedan offering unmatched comfort and performance.',
-                'images' => ['e_class_1.jpg', 'e_class_2.jpg'],
+                'images' => json_encode($getPlaceholderImages(), JSON_UNESCAPED_SLASHES),
                 'is_sell_on_behalf' => false,
                 'owner_name' => null,
                 'owner_email' => null,
@@ -98,7 +112,7 @@ class CarSeeder extends Seeder
                 'year' => rand(2015, 2023),
                 'price' => rand(1500000, 10000000),
                 'mileage' => rand(10000, 90000),
-                'category' => 'sedan',
+                'type' => 'sedan',
                 'condition' => ['New', 'Used'][rand(0, 1)],
                 'location' => ['Nairobi, Kenya', 'Mombasa, Kenya', 'Kisumu, Kenya'][rand(0, 2)],
                 'availability' => 'Available',
@@ -110,7 +124,7 @@ class CarSeeder extends Seeder
                 'torque' => rand(150, 700),
                 'acceleration' => rand(5, 12) + rand(0, 99) / 100,
                 'description' => 'A great vehicle for everyday use.',
-                'images' => ['car_' . $i . '_1.jpg', 'car_' . $i . '_2.jpg'],
+                'images' => json_encode($getPlaceholderImages(), JSON_UNESCAPED_SLASHES),
                 'is_sell_on_behalf' => rand(0, 1),
                 'owner_name' => rand(0, 1) ? 'Owner ' . $i : null,
                 'owner_email' => rand(0, 1) ? 'owner' . $i . '@example.com' : null,

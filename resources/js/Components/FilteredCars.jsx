@@ -1,17 +1,13 @@
-import { router, usePage } from "@inertiajs/react";
-import React, { useState } from "react";
+import { router } from "@inertiajs/react";
+import React from "react";
 import DetailedVehicleCard from "@/Components/DetailedVehicleCard";
 import Loader from "./Loader";
 
-const FilteredCars = () => {
-    const { allcars } = usePage().props;
-
-    console.log(allcars);
+const FilteredCars = ({ cars }) => {
     
-
-    const currentPage = allcars.current_page;
-    const lastPage = allcars.last_page;
-    const totalPages = allcars.last_page;
+    const currentPage = cars?.current_page || 1;
+    const lastPage = cars?.last_page || 1;
+    const totalPages = cars?.last_page || 1;
 
     const startPage = Math.max(1, currentPage - 1);
     const endPage = Math.min(lastPage, currentPage + 1);
@@ -21,7 +17,7 @@ const FilteredCars = () => {
     // Previous Page Link
     if (currentPage > 1) {
         links.push({
-            url: allcars.prev_page_url,
+            url: cars?.prev_page_url,
             label: "&laquo; Previous",
             active: false,
         });
@@ -31,7 +27,7 @@ const FilteredCars = () => {
     for (let i = startPage; i <= endPage; i++) {
         links.push({
             label: i.toString(),
-            url: allcars.links.find((link) => link.label === i.toString())?.url,
+            url: cars?.links?.find((link) => link.label === i.toString())?.url,
             active: i === currentPage,
         });
     }
@@ -40,25 +36,26 @@ const FilteredCars = () => {
     if (currentPage < totalPages) {
         links.push({
             label: "Next &raquo;",
-            url: allcars.next_page_url,
+            url: cars?.next_page_url,
         });
     }
 
-    if (!allcars)
+    if (!cars) {
         return (
             <div className="flex justify-center items-center h-screen">
                 <Loader />
             </div>
         );
+    }
 
-    if (allcars.length === 0)
+    if (!cars || cars.length === 0) {
         return (
-            <div className=" flex flex-col items-center justify-center py-8 px-4 text-center bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
+            <div className="flex flex-col items-center justify-center py-8 px-4 text-center bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
                 <svg
-                    class="w-12 h-12 dark:text-gray-400 text-gray-700"
+                    className="w-12 h-12 dark:text-gray-400 text-gray-700"
                     stroke="currentColor"
                     fill="currentColor"
-                    stroke-width="0"
+                    strokeWidth="0"
                     viewBox="0 0 24 24"
                     height="200px"
                     width="200px"
@@ -71,28 +68,28 @@ const FilteredCars = () => {
                         </g>
                     </g>
                 </svg>
-                <h3 class="text-xl font-medium mt-4 text-gray-700 dark:text-gray-200">
+                <h3 className="text-xl font-medium mt-4 text-gray-700 dark:text-gray-200">
                     Oops! No vehicles in this category
                 </h3>
-                <p class="text-gray-500 dark:text-gray-400 mt-2">
+                <p className="text-gray-500 dark:text-gray-400 mt-2">
                     The items you are looking for could not be located.
                 </p>
                 <button
                     className="flex items-center my-3 bg-primary py-2 px-4 rounded-md text-white text-lg"
-                    href="/vehicles"
+                    onClick={() => router.get("/vehicles")}
                 >
-                    {" "}
                     Browse More Vehicles
                 </button>
             </div>
         );
+    }
 
     return (
         <div>
             {/* Vehicle List */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                {allcars.data.map((car) => (
-                    <div key={car.id} className="flex ">
+                {cars.map((car) => (
+                    <div key={car.id} className="flex">
                         <DetailedVehicleCard car={car} />
                     </div>
                 ))}

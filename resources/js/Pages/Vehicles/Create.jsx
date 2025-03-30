@@ -102,7 +102,6 @@ const Create = () => {
         { id: 4, title: "Media & Finalize" },
     ];
 
-    
     // Handle image input changes and set preview URLs
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files || []);
@@ -516,7 +515,8 @@ const Create = () => {
                                         </label>
                                         <select
                                             value={
-                                                data.comfort_features.seat_material
+                                                data.comfort_features
+                                                    .seat_material
                                             }
                                             onChange={(e) =>
                                                 setData(
@@ -526,9 +526,7 @@ const Create = () => {
                                             }
                                             className="w-full p-2 border rounded"
                                         >
-                                            <option>
-                                                Select Material
-                                            </option>
+                                            <option>Select Material</option>
                                             <option value="Leather">
                                                 Leather
                                             </option>

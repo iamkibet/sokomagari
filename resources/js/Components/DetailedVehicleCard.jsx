@@ -1,8 +1,7 @@
 import React from "react";
 
 const DetailedVehicleCard = ({ car }) => {
-
-
+    
     const formatPrice = (price) => {
         if (price >= 1_000_000) {
             return (price / 1_000_000).toFixed(1).toLowerCase() + "M";

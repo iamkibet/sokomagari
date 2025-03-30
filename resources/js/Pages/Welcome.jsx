@@ -6,18 +6,20 @@ import GuestLayout from "@/Layouts/GuestLayout";
 import MaxWidthWrapper from "@/Components/MaxWidthWrapper";
 import FilterForm from "@/Components/ui/FilterForm";
 import VehicleSlider from "@/Components/VehicleSlider";
+import { Head } from "@inertiajs/react";
 
 export default function Welcome({ cars, categories }) {
-  
     const [currentCar, setCurrentCar] = useState(0);
+   
+
     const heroimages = [
         {
-            image: "https://stimg.cardekho.com/images/uploadimages/1735897382911/CD-MasterHead-Desktop_1686x548px.jpg",
+            image: "/images/image 1.avif",
             model: "Hyundai Creta",
             description: "Description 1",
         },
         {
-            image: "https://stimg.cardekho.com/images/uploadimages/1735909214588/CD-MasterHead-Desktop_1686x548px-(2).jpg",
+            image: "/images/image 2.avif",
             model: "Maruti Suzuki Baleno",
             description: "Description 2",
         },
@@ -25,37 +27,45 @@ export default function Welcome({ cars, categories }) {
 
     return (
         <GuestLayout>
+            <Head>
+                <title>Home</title>
+                <meta
+                    name="best car sales website"
+                    content="this is the best website for buying and selling websites in kenya"
+                />
+            </Head>
             <div className="flex flex-col items-center justify-center overflow-x-hidden">
-                <div className="relative flex items-center justify-center w-full">
-                    {/* Content */}
-
-                    <div className="flex md:absolute md:block top-4  md:top-[54px] md:left-[90px] z-10 w-full md:w-md:max-w-[348px]">
+                <div className="relative mx-auto w-full lg:max-w-[1300px] xl:max-w-[1600px] flex flex-col md:flex-row items-center justify-center ">
+                    {/* Filter Form - Hidden on Mobile */}
+                    <div className="hidden md:block w-full max-w-[348px] z-10 md:absolute md:top-[54px] md:left-[90px]">
                         <FilterForm />
                     </div>
 
-                    <div className="hidden md:flex flex-col md:flex-row w-full">
-                        {/* Right side car display */}
-                        <div className="w-full relative ">
+                    <div className="w-full md:flex md:justify-end relative">
+                        <div className="w-full lg:max-w-[110%] xl:max-w-[120%]">
                             <img
                                 src={heroimages[currentCar].image}
                                 alt="Car"
-                                className="w-full h-[500px]   md:h-[546px]  md:object-cover transition-all duration-300"
+                                className="w-full h-[300px] md:h-[546px] object-cover transition-all duration-500  shadow-lg"
                             />
-                            <div className="absolute bottom-4 md:bottom-20 left-1/2 transform -translate-x-1/2 z-[100] flex justify-center items-center space-x-2 md:space-x-4 py-2 px-2 md:px-4 rounded-xl w-full md:max-w-[500px]">
-                                {heroimages.map((car, index) => (
-                                    <button
-                                        key={index}
-                                        className={`px-2 md:px-4 py-1 md:py-2 text-sm md:text-base transition-all duration-300 ${
-                                            currentCar === index
-                                                ? "border-b-4 border-white text-white"
-                                                : "border-b text-gray-300 hover:text-white"
-                                        }`}
-                                        onClick={() => setCurrentCar(index)}
-                                    >
-                                        {car.model}
-                                    </button>
-                                ))}
-                            </div>
+                        </div>
+
+                        {/* Car Model Buttons */}
+                        <div className="absolute bottom-4 md:bottom-20 left-1/2 transform -translate-x-1/2 flex flex-wrap justify-center gap-2 md:gap-4 z-20">
+                            {heroimages.map((car, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => setCurrentCar(index)}
+                                    className={`px-3 py-1 text-sm md:text-base font-medium transition-all duration-300
+                                ${
+                                    currentCar === index
+                                        ? "text-white border-b-2"
+                                        : "text-white border-b-[0.5px] border-white"
+                                }`}
+                                >
+                                    {car.model}
+                                </button>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -91,7 +101,6 @@ export default function Welcome({ cars, categories }) {
                 />
 
                 <WhatFits />
-
             </div>
         </GuestLayout>
     );

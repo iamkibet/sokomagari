@@ -27,6 +27,8 @@ class CarResource extends JsonResource
             'transmission' => $this->transmission,
             'mileage' => $this->mileage,
             'slug' => $this->slug,
+            'comfort_features' => $this->comfort_features ?? [],
+            'safety_features' => $this->safety_features ?? []
         ];
        
     }

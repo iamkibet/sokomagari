@@ -4,14 +4,73 @@ import SecondaryButton from "@/Components/SecondaryButton";
 import { Filter } from "@/Components/svgs/Filter";
 import GuestLayout from "@/Layouts/GuestLayout";
 import FilteredCars from "@/Components/FilteredCars";
-import { router, usePage } from "@inertiajs/react";
+import { Head, router, usePage } from "@inertiajs/react";
 import VehicleSlider from "@/Components/VehicleSlider";
 
 const Index = () => {
-    const { allcars, vehicles, filters } = usePage().props;
+    const { results, filters = {} } = usePage().props;
+    const [isLoading, setIsLoading] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [activeFilter, setActiveFilter] = useState(null);
 
-    console.log(allcars);
+    // Initialize filter state with received filters or defaults
+    const [filterData, setFilterData] = useState({
+        make: filters.make || "",
+        model: filters.model || "",
+        year_min: filters.year_min || "",
+        year_max: filters.year_max || "",
+        price_min: filters.price_min || "",
+        price_max: filters.price_max || "",
+        mileage_max: filters.mileage_max || "",
+        condition: filters.condition || "",
+        location: filters.location || "",
+        search: filters.search || "",
+    });
 
+    // Handle all filter changes
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        setFilterData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    // Handle budget filter buttons
+    const handleBudgetFilter = (min, max, label) => {
+        setFilterData((prev) => ({
+            ...prev,
+            price_min: min,
+            price_max: max,
+        }));
+        setActiveFilter(label);
+    };
+
+    // Clear all filters
+    const ClearFilters = () => {
+        setFilterData({
+            make: "",
+            model: "",
+            year_min: "",
+            year_max: "",
+            price_min: "",
+            price_max: "",
+            mileage_max: "",
+            condition: "",
+            location: "",
+            search: "",
+        });
+        setActiveFilter(null);
+        router.get(route("vehicles.index"));
+    };
+
+    // Submit filters to backend
+    const applyFilters = () => {
+        setIsLoading(true);
+        router.get(route("vehicles.index"), filterData, {
+            preserveState: true,
+            onFinish: () => setIsLoading(false),
+        });
+    };
+
+    // Breadcrumb arrow component
     const arrowRight = (
         <svg
             className="w-3 h-3 flex-shrink-0 mx-2.5"
@@ -29,104 +88,89 @@ const Index = () => {
             />
         </svg>
     );
-    // filters local state
-    const [filterData, setFilterData] = useState({
-        make: filters.make || "",
-        model: filters.model || "",
-        year: filters.year || "",
-        price_min: filters.price_min || "",
-        price_max: filters.price_max || "",
-        mileage_max: filters.mileage_max || "",
-        condition: filters.condition || "",
-        location: filters.location || "",
-        search: "",
-    });
-
-    const ClearFilters = () => {
-        setFilterData({
-            make: "",
-            model: "",
-            year: "",
-            price_min: "",
-            price_max: "",
-            mileage_max: "",
-            condition: "",
-            location: "",
-            search: "",
-        });
-
-        setActiveFilter(null); //resets the budget filter
-
-        router.get(route("vehicles.index"), {}, { preserveState: true });
-    };
-
-    const [activeFilter, setActiveFilter] = useState(false);
-
-    // handling search
-    const handleSearch = (e) => {
-        setFilterData({
-            ...filterData,
-            search: e.target.value,
-        });
-    };
-
-
-    const applyFilters = () => {
-        router.get(route("vehicles.index"), filterData, {
-            preserveState: true,
-        });
-    };
-
-    const [isOpen, setIsOpen] = useState(false);
 
     return (
         <GuestLayout>
+            <Head>
+                <title>Vehicles</title>
+                <meta
+                    name="description"
+                    content="Kenya's best car rental and purchase platform"
+                />
+            </Head>
+
             <MaxWidthWrapper className="flex py-10 overflow-visible">
-                <div className="relative  w-1/4 ">
-                    {" "}
-                    <div className="  sticky top-36 self-start">
+                {/* Filters Sidebar */}
+                <div className="flex w-full">
+                    <div className="w-1/4 sticky top-36 self-start">
+                        {/* Breadcrumbs */}
                         <ol className="flex items-center whitespace-nowrap">
-                            <li className="flex items-center text-sm text-gray-800 dark:text-neutral-400">
+                            <li className="flex items-center text-sm text-gray-800">
                                 <a href="/" className="cursor-pointer">
                                     Home
                                 </a>{" "}
                                 {arrowRight}
                             </li>
-                            <li className="flex items-center text-sm text-gray-800 dark:text-neutral-400">
+                            <li className="flex items-center text-sm text-gray-800">
                                 <a href="/vehicles" className="cursor-pointer">
-                                    Vehicles{" "}
-                                </a>
+                                    Vehicles
+                                </a>{" "}
                                 {arrowRight}
                             </li>
-                            <li className="text-sm font-semibold text-gray-800 truncate dark:text-neutral-400">
+                            <li className="text-sm font-semibold text-gray-800 truncate">
                                 <a href="/vehicles" className="cursor-pointer">
                                     Available
                                 </a>
                             </li>
                         </ol>
+
+                        {/* Search Input */}
                         <div className="flex flex-col gap-1 py-6">
-                            <h1 className="font-bold text-sm text-gray-800 dark:text-neutral-400">
+                            <h1 className="font-bold text-sm text-gray-800">
                                 Search Vehicle
                             </h1>
                             <input
                                 type="text"
                                 placeholder="Search Bikes, Cars..."
+                                name="search"
                                 value={filterData.search}
-                                onChange={handleSearch}
+                                onChange={handleFilterChange}
                                 className="w-full p-4 border rounded-md"
                             />
                         </div>
-                        <h1 className="text-xl font-bold text-gray-800 dark:text-neutral-400 mb-4">
+
+                        {/* Budget Filters */}
+                        <h1 className="text-xl font-bold text-gray-800 mb-4">
                             Filter by Budget
                         </h1>
                         <ul className="flex-wrap sm:flex gap-2">
                             {[
                                 { label: "0-500K", min: 0, max: 500000 },
-                                { label: "500K-1M", min: 500000, max: 1000000 },
-                                { label: "1M-2M", min: 1000000, max: 2000000 },
-                                { label: "2M-3M", min: 2000000, max: 3000000 },
-                                { label: "3M-4M", min: 3000000, max: 4000000 },
-                                { label: "4M-5M", min: 4000000, max: 5000000 },
+                                {
+                                    label: "500K-1M",
+                                    min: 500000,
+                                    max: 1000000,
+                                },
+                                {
+                                    label: "1M-2M",
+                                    min: 1000000,
+                                    max: 2000000,
+                                },
+                                {
+                                    label: "2M-3M",
+                                    min: 2000000,
+                                    max: 3000000,
+                                },
+                                {
+                                    label: "3M-4M",
+                                    min: 3000000,
+                                    max: 4000000,
+                                },
+                                {
+                                    label: "4M-5M",
+                                    min: 4000000,
+                                    max: 5000000,
+                                },
                                 {
                                     label: "5M-10M",
                                     min: 5000000,
@@ -142,7 +186,7 @@ const Index = () => {
                                     key={b.label}
                                     className={`${
                                         b.label === activeFilter
-                                            ? "bg-primary text-white" // Active filter color
+                                            ? "bg-primary text-white"
                                             : "bg-gray-200"
                                     } cursor-pointer border py-3 px-4`}
                                     onClick={() =>
@@ -158,6 +202,7 @@ const Index = () => {
                             ))}
                         </ul>
 
+                        {/* Advanced Filters */}
                         <SecondaryButton
                             className="my-4"
                             onClick={ClearFilters}
@@ -176,104 +221,126 @@ const Index = () => {
                                 <Filter />
                             </div>
                         </button>
+
                         {isOpen && (
-                            <div className="mt-4">
-                                <select className="w-full p-2 mb-2">
+                            <div className="mt-4 space-y-2">
+                                <select
+                                    name="make"
+                                    value={filterData.make}
+                                    onChange={handleFilterChange}
+                                    className="w-full p-2 mb-2"
+                                >
                                     <option value="">Brand</option>
                                     <option value="Toyota">Toyota</option>
                                     <option value="Honda">Honda</option>
                                 </select>
+
                                 <input
                                     type="number"
+                                    name="year_min"
                                     placeholder="Min Year"
-                                    className="w-full p-2 mb-2"
+                                    value={filterData.year_min}
+                                    onChange={handleFilterChange}
+                                    className="w-full p-2"
                                 />
+
                                 <input
                                     type="number"
+                                    name="year_max"
                                     placeholder="Max Year"
-                                    className="w-full p-2 mb-2"
+                                    value={filterData.year_max}
+                                    onChange={handleFilterChange}
+                                    className="w-full p-2"
                                 />
-                                <label>
-                                    Price Min:
+
+                                <div className="space-y-2">
                                     <input
                                         type="number"
                                         name="price_min"
+                                        placeholder="Min Price (KES)"
                                         value={filterData.price_min}
                                         onChange={handleFilterChange}
+                                        className="w-full p-2"
                                     />
-                                </label>
-                                <label>
-                                    Price Max:
+
                                     <input
                                         type="number"
                                         name="price_max"
+                                        placeholder="Max Price (KES)"
                                         value={filterData.price_max}
                                         onChange={handleFilterChange}
+                                        className="w-full p-2"
                                     />
-                                </label>
-                                <label>
-                                    Mileage Max:
+
                                     <input
                                         type="number"
                                         name="mileage_max"
+                                        placeholder="Max Mileage (km)"
                                         value={filterData.mileage_max}
                                         onChange={handleFilterChange}
+                                        className="w-full p-2"
                                     />
-                                </label>
-                                <label>
-                                    Condition:
+
                                     <select
                                         name="condition"
                                         value={filterData.condition}
                                         onChange={handleFilterChange}
+                                        className="w-full p-2"
                                     >
-                                        <option value="">
-                                            Select Condition
-                                        </option>
+                                        <option value="">Condition</option>
                                         <option value="new">New</option>
                                         <option value="used">Used</option>
                                     </select>
-                                </label>
-                                <label>
-                                    Location:
+
                                     <input
                                         type="text"
                                         name="location"
+                                        placeholder="Location"
                                         value={filterData.location}
                                         onChange={handleFilterChange}
+                                        className="w-full p-2"
                                     />
-                                </label>
+                                </div>
                             </div>
                         )}
-                        <button onClick={applyFilters} className="px-4 py-3 bg-black text-white w-full mt-4 font-bold text-xl hover:bg-black/70">Search</button>
+
+                        {/* Search Button */}
+                        <button
+                            onClick={applyFilters}
+                            disabled={isLoading}
+                            className={`px-4 py-3 bg-black text-white w-full mt-4 font-bold text-xl ${
+                                isLoading
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : "hover:bg-black/70"
+                            }`}
+                        >
+                            {isLoading ? "Searching..." : "Search"}
+                        </button>
+                    </div>
+                    {/* Results Section */}
+                    <div className="w-3/4 pl-6">
+                        <FilteredCars
+                            cars={results.data}
+                            filters={filterData}
+                            onApplyFilters={applyFilters}
+                        />
                     </div>
                 </div>
+            </MaxWidthWrapper>
+            {/* Featured Sections */}
+            <div className="mt-12 space-y-12">
+                <VehicleSlider
+                    title="Latest Cars"
+                    items={results.data.filter((car) => car.year > 2021)}
+                    viewMoreLink="/vehicles?year_min=2022"
+                />
 
-                <div className="w-3/4 pl-6">
-                    <FilteredCars
-                        allcars={allcars.data}
-                        filterData={filterData}
-                        applyFilters={applyFilters}
-                    />
-                </div>
-            </MaxWidthWrapper>
-            <MaxWidthWrapper>
                 <VehicleSlider
-                    title="Latest cars"
-                    items={allcars.data.filter(
-                        (allcars) => allcars.year > 2021
-                    )}
-                    viewMoreLink="/vehicles"
+                    title="Affordable Options"
+                    items={results.data.filter((car) => car.price < 2000000)}
+                    viewMoreLink="/vehicles?price_max=2000000"
                 />
-                <VehicleSlider
-                    title="Affordable Cars"
-                    items={allcars.data}
-                    filterFn={(items) =>
-                        items.filter((allcars) => allcars.price < 20000)
-                    }
-                    viewMoreLink="/affordable-cars"
-                />
-            </MaxWidthWrapper>
+            </div>
         </GuestLayout>
     );
 };

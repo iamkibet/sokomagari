@@ -5,66 +5,96 @@ namespace App\Services;
 use App\Http\Resources\CarResource;
 use App\Http\Resources\ShowCarResource;
 use App\Models\Car;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 
 class CarService
 {
-    public $request;
+    protected const CACHE_TTL = 30;
+    protected const SIMILAR_LIMIT = 4;
+    protected const SEARCH_LIMIT = 5;
+
+
+
+
     /**
-     * Create a new class instance.
+     * Get paginated list of all cars
      */
-    public function __construct() {}
-
-    public function allcars($perPage = 12)
+    public function allCars(array $filters = [], int $perPage = 12): Paginator
     {
-        $allcars = Car::latest()->paginate($perPage);
-        // With the model's $appends in place, thumbnail and image_urls are included.
-        return \App\Http\Resources\CarResource::collection($allcars);
+        return Car::filter($filters)
+            ->latest()
+            ->paginate($perPage);
     }
 
-    public function showcar($slug)
+    /**
+     * Get vehicle details with caching
+     */
+    public function getVehicleDetails(Car $vehicle): ShowCarResource
     {
-        $cacheKey = "showcar_{$slug}";
+        $cacheKey = "vehicle_{$vehicle->slug}";
 
-
-        $car = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($slug) {
-            return Car::where('slug', $slug)->firstOrFail();
-        });
-
-
-        return new ShowCarResource($car);
+        return Cache::remember(
+            $cacheKey,
+            now()->addMinutes(self::CACHE_TTL),
+            fn() => new ShowCarResource($vehicle->loadMissing('features'))
+        );
     }
 
-
-    public function similarcars($slug)
+    /**
+     * Get similar vehicles
+     */
+    public function getSimilarVehicles(Car $vehicle, int $limit = self::SIMILAR_LIMIT): Collection
     {
-        $vehicle = Car::where('slug', $slug)->firstOrFail();
-
-        $similarCars = Car::where('id', '!=', $vehicle->id)
+        return Car::whereNot('id', $vehicle->id)
             ->where(function ($query) use ($vehicle) {
                 $query->where('make', $vehicle->make)
                     ->orWhere('model', $vehicle->model);
             })
-            ->orderBy('created_at', 'desc')
-            ->limit(20)
-            ->get()
-            ->map(function ($car) {
-
-                return $car;
-            });
-
-
-        return \App\Http\Resources\CarResource::collection($similarCars);
-    }
-
-    public function search($query, $limit = 5)
-    {
-        $results = Car::where('make', 'like', "%{$query}%")
-            ->orWhere('model', 'like', "%{$query}%")
+            // ->with(['thumbnail'])
+            ->latest()
             ->limit($limit)
             ->get();
+    }
 
-        return \App\Http\Resources\CarResource::collection($results);
+    /**
+     * Search vehicles
+     */
+    public function searchVehicles(string $query, int $limit = self::SEARCH_LIMIT): Collection
+    {
+        return Car::whereFullText(['make', 'model'], $query)
+            // ->with(['thumbnail'])
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * Get API resource collection for cars
+     */
+    public function carResourceCollection(Paginator|Collection $cars): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    {
+        return CarResource::collection($cars);
+    }
+
+    public function getContextualSimilarVehicles(
+        array $searchFilters = [],
+        int $limit = 4
+    ): Collection {
+        $query = Car::query()
+            // ->with(['thumbnail'])
+            ->inRandomOrder()
+            ->limit($limit);
+
+        
+        if (!empty($searchFilters['make'])) {
+            $query->where('make', $searchFilters['make']);
+        }
+
+        if (!empty($searchFilters['model'])) {
+            $query->where('model', $searchFilters['model']);
+        }
+
+        return $query->get();
     }
 }

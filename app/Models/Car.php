@@ -1,8 +1,10 @@
 <?php
 
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Car extends Model
@@ -18,6 +20,7 @@ class Car extends Model
         'location',
         'availability',
         'drive',
+        'slug',
         'engine_size',
         'fuel_type',
         'horse_power',
@@ -54,26 +57,31 @@ class Car extends Model
         'annual_insurance_cost'   => 'decimal:2',
         'highway_fuel_efficiency' => 'decimal:2',
         'urban_fuel_efficiency'   => 'decimal:2',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
-
+    // Add this to use slugs for route binding
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
     protected $appends = ['thumbnail', 'image_urls'];
 
+    // Update your accessors to handle empty images
     public function getThumbnailAttribute()
     {
-        if (is_array($this->images) && count($this->images) > 0) {
-            $cleanPath = ltrim($this->images[0], '/');
-            return asset("storage/{$cleanPath}");
+        if (!empty($this->images) && is_array($this->images)) {
+            return Storage::url($this->images[0]);
         }
-        return asset('https://github.com/iamkibet/assets/blob/main/thumbnail.png?raw=true');
+        return asset('defaults/vehicle-thumbnail.png');
     }
 
     public function getImageUrlsAttribute()
     {
         return collect($this->images)->map(function ($image) {
-            $cleanPath = ltrim($image, '/');
-            return asset("storage/{$cleanPath}");
+            return Storage::url($image);
         })->toArray();
     }
 
@@ -96,6 +104,39 @@ class Car extends Model
      * @return string
      */
 
+    public function scopeFilter($query, array $filters)
+    {
+        return $query
+            ->when($filters['make'] ?? false, fn($q, $make) =>
+            $q->where('make', 'like', "%$make%"))
+            ->when($filters['model'] ?? false, fn($q, $model) =>
+            $q->where('model', 'like', "%$model%"))
+            ->when($filters['year'] ?? false, fn($q, $year) =>
+            $q->where('year', $year))
+            ->when($filters['price_min'] ?? false, fn($q, $price) =>
+            $q->where('price', '>=', $price))
+            ->when($filters['price_max'] ?? false, fn($q, $price) =>
+            $q->where('price', '<=', $price))
+            ->when($filters['mileage_max'] ?? false, fn($q, $mileage) =>
+            $q->where('mileage', '<=', $mileage))
+            ->when($filters['condition'] ?? false, fn($q, $condition) =>
+            $q->where('condition', $condition))
+            ->when($filters['year_min'] ?? false, fn($q, $year) =>
+            $q->where('year', '>=', $year))
+            ->when($filters['year_max'] ?? false, fn($q, $year) =>
+            $q->where('year', '<=', $year))
+            ->when($filters['location'] ?? false, fn($q, $location) =>
+            $q->where('location', 'like', "%$location%"))
+            ->when($filters['search'] ?? false, fn($q, $search) =>
+            $q->where(function ($query) use ($search) {
+                $query->where('make', 'like', "%$search%")
+                    ->orWhere('model', 'like', "%$search%")
+                    ->orWhere('description', 'like', "%$search%");
+            }));
+    }
+
+
+    
     protected static function generateUniqueSlug($car)
     {
         $baseSlug = Str::slug($car->make . '-' . $car->model . '-' . $car->year);

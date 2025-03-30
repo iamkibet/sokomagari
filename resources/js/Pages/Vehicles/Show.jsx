@@ -15,14 +15,28 @@ const Show = () => {
     } = usePage().props;
 
     console.log(vehicle);
-
     const {
+        make,
+        model,
+        year,
+        location,
+        mileage,
+        condition,
+        type,
+        engine_size,
+        transmission,
+        torque,
+        acceleration,
+        description,
+        price,
+        image_urls,
         comfort_features,
         safety_features,
-        urban_fuel_efficiency,
-        highway_fuel_efficiency,
         annual_insurance_cost,
+        highway_fuel_efficiency,
+        urban_fuel_efficiency,
     } = vehicle;
+
     const [expandedSection, setExpandedSection] = useState(null);
 
     const images = vehicle.image_urls
@@ -421,7 +435,11 @@ const Show = () => {
                                         rel="noopener noreferrer"
                                         title="Share on WhatsApp"
                                     >
-                                        <img src="/svgs/whatsapp.svg" alt="Share to whatsapp" srcset="" />
+                                        <img
+                                            src="/svgs/whatsapp.svg"
+                                            alt="Share to whatsapp"
+                                            srcset=""
+                                        />
                                     </a>
                                     <a
                                         href={shareLinks.facebook}

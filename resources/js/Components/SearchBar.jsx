@@ -1,7 +1,8 @@
+import { router } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
 
 const SearchBar = () => {
-    // Track focus to trigger the expansion of the search field
+   
     const [isFocused, setIsFocused] = useState(false);
     //component state
     const [query, setQuery] = useState("");
