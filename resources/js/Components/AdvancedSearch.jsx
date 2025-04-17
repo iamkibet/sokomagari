@@ -29,77 +29,77 @@ export const AdvancedSearch = (cars) => {
     const [activeTab, setActiveTab] = useState("name");
     const [isOpen, setIsOpen] = useState(false);
 
-        const [searchQuery, setSearchQuery] = useState("");
-        const [budget, setBudget] = useState("");
-        const [brand, setBrand] = useState("");
-        const [minYOM, setMinYOM] = useState("");
-        const [maxYOM, setMaxYOM] = useState("");
-        const [currentPage, setCurrentPage] = useState(1);
-        const [model, setModel] = useState("");
-        const [minPrice, setMinPrice] = useState("");
-        const [maxPrice, setMaxPrice] = useState("");
-    
-        const carsPerPage = 10;
-    
-        const [filteredCars, setFilteredCars] = useState([]);
-    
-        useEffect(() => {
-            if (Array.isArray(cars)) {
-                const filtered = cars.filter((car) => {
-                    const matchesSearchQuery = car.name
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase());
-                    const matchesBudget = budget
-                        ? car.price <= parseBudget(budget)
-                        : true;
-                    const matchesBrand = brand ? car.brand === brand : true;
-                    const matchesYOM =
-                        (!minYOM || car.year >= parseInt(minYOM)) &&
-                        (!maxYOM || car.year <= parseInt(maxYOM));
-                    return (
-                        matchesSearchQuery &&
-                        matchesBudget &&
-                        matchesBrand &&
-                        matchesYOM
-                    );
-                });
-                setFilteredCars(filtered);
-            } else {
-                setFilteredCars([]);
-            }
-            setCurrentPage(1);
-        }, [
-            searchQuery,
-            budget,
-            brand,
-            model,
-            minYOM,
-            maxYOM,
-            minPrice,
-            maxPrice,
-            cars,
-        ]);
-    
-        const parseBudget = (budget) => {
-            const [min, max] = budget.split("-").map(Number);
-            return max || min;
-        };
-    
-        const indexOfLastCar = currentPage * carsPerPage;
-        const indexOfFirstCar = indexOfLastCar - carsPerPage;
-        const currentCars = Array.isArray(filteredCars)
-            ? filteredCars.slice(indexOfFirstCar, indexOfLastCar)
-            : [];
-    
-        const paginate = (pageNumber) => setCurrentPage(pageNumber);
-    
-        const clearFilters = () => {
-            setSearchQuery("");
-            setBudget("");
-            setBrand("");
-            setMinYOM("");
-            setMaxYOM("");
-        };
+    const [searchQuery, setSearchQuery] = useState("");
+    const [budget, setBudget] = useState("");
+    const [brand, setBrand] = useState("");
+    const [minYOM, setMinYOM] = useState("");
+    const [maxYOM, setMaxYOM] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [model, setModel] = useState("");
+    const [minPrice, setMinPrice] = useState("");
+    const [maxPrice, setMaxPrice] = useState("");
+
+    const carsPerPage = 10;
+
+    const [filteredCars, setFilteredCars] = useState([]);
+
+    useEffect(() => {
+        if (Array.isArray(cars)) {
+            const filtered = cars.filter((car) => {
+                const matchesSearchQuery = car.name
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase());
+                const matchesBudget = budget
+                    ? car.price <= parseBudget(budget)
+                    : true;
+                const matchesBrand = brand ? car.brand === brand : true;
+                const matchesYOM =
+                    (!minYOM || car.year >= parseInt(minYOM)) &&
+                    (!maxYOM || car.year <= parseInt(maxYOM));
+                return (
+                    matchesSearchQuery &&
+                    matchesBudget &&
+                    matchesBrand &&
+                    matchesYOM
+                );
+            });
+            setFilteredCars(filtered);
+        } else {
+            setFilteredCars([]);
+        }
+        setCurrentPage(1);
+    }, [
+        searchQuery,
+        budget,
+        brand,
+        model,
+        minYOM,
+        maxYOM,
+        minPrice,
+        maxPrice,
+        cars,
+    ]);
+
+    const parseBudget = (budget) => {
+        const [min, max] = budget.split("-").map(Number);
+        return max || min;
+    };
+
+    const indexOfLastCar = currentPage * carsPerPage;
+    const indexOfFirstCar = indexOfLastCar - carsPerPage;
+    const currentCars = Array.isArray(filteredCars)
+        ? filteredCars.slice(indexOfFirstCar, indexOfLastCar)
+        : [];
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    const clearFilters = () => {
+        setSearchQuery("");
+        setBudget("");
+        setBrand("");
+        setMinYOM("");
+        setMaxYOM("");
+    };
 
     return (
         <div className="container mx-auto max-w-4xl mt-12 px-4 sm:px-6 lg:px-8">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MaxWidthWrapper from "@/Components/MaxWidthWrapper";
 import SecondaryButton from "@/Components/SecondaryButton";
 import { Filter } from "@/Components/svgs/Filter";
@@ -6,12 +6,29 @@ import GuestLayout from "@/Layouts/GuestLayout";
 import FilteredCars from "@/Components/FilteredCars";
 import { Head, router, usePage } from "@inertiajs/react";
 import VehicleSlider from "@/Components/VehicleSlider";
+import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 
 const Index = () => {
     const { results, filters = {} } = usePage().props;
     const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [activeFilter, setActiveFilter] = useState(null);
+
+    // Debug logging
+    useEffect(() => {
+        console.log("Index page received data:", {
+            results,
+            filters,
+            hasResults: !!results,
+            resultsData: results?.data,
+            pagination: {
+                current_page: results?.current_page,
+                last_page: results?.last_page,
+                total: results?.total,
+                per_page: results?.per_page,
+            },
+        });
+    }, [results, filters]);
 
     // Initialize filter state with received filters or defaults
     const [filterData, setFilterData] = useState({
@@ -25,12 +42,13 @@ const Index = () => {
         condition: filters.condition || "",
         location: filters.location || "",
         search: filters.search || "",
+        page: filters.page || 1,
     });
 
     // Handle all filter changes
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
-        setFilterData((prev) => ({ ...prev, [name]: value }));
+        setFilterData((prev) => ({ ...prev, [name]: value, page: 1 }));
     };
 
     // Handle budget filter buttons
@@ -39,6 +57,7 @@ const Index = () => {
             ...prev,
             price_min: min,
             price_max: max,
+            page: 1,
         }));
         setActiveFilter(label);
     };
@@ -56,6 +75,7 @@ const Index = () => {
             condition: "",
             location: "",
             search: "",
+            page: 1,
         });
         setActiveFilter(null);
         router.get(route("vehicles.index"));
@@ -68,6 +88,18 @@ const Index = () => {
             preserveState: true,
             onFinish: () => setIsLoading(false),
         });
+    };
+
+    // Handle page change
+    const handlePageChange = (page) => {
+        setFilterData((prev) => ({ ...prev, page }));
+        router.get(
+            route("vehicles.index"),
+            { ...filterData, page },
+            {
+                preserveState: true,
+            }
+        );
     };
 
     // Breadcrumb arrow component
@@ -320,8 +352,9 @@ const Index = () => {
                     {/* Results Section */}
                     <div className="w-3/4 pl-6">
                         <FilteredCars
-                            cars={results.data}
+                            cars={results}
                             filters={filterData}
+                            onPageChange={handlePageChange}
                             onApplyFilters={applyFilters}
                         />
                     </div>

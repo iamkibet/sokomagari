@@ -86,7 +86,7 @@ class CarService
             ->inRandomOrder()
             ->limit($limit);
 
-        
+
         if (!empty($searchFilters['make'])) {
             $query->where('make', $searchFilters['make']);
         }

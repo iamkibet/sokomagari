@@ -1,11 +1,12 @@
 import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import GuestLayout from "@/Layouts/GuestLayout";
 import React from "react";
 
 const About = () => {
     return (
-        <GuestLayout>
+        <AuthenticatedLayout>
             <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex flex-col items-center gap-y-3 ">
                     <h2 className="text-2xl sm:text-3xl font-extrabold text-black dark:text-gray-300">
@@ -28,7 +29,7 @@ const About = () => {
                     </div>
                 </div>
             </div>
-        </GuestLayout>
+        </AuthenticatedLayout>
     );
 };
 
