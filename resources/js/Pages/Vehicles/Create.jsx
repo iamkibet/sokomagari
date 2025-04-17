@@ -138,7 +138,7 @@ const Create = () => {
 
     // Reusable input renderer with inline error display
     const renderInput = (label, name, type = "text", options = {}) => (
-        <div className="mb-4">
+        <AuthenticatedLayout className="mb-4">
             <label className="block text-sm font-medium mb-1">
                 {label}
                 <input
@@ -159,7 +159,7 @@ const Create = () => {
             {errors[name] && (
                 <p className="text-red-500 text-sm mt-1">{errors[name]}</p>
             )}
-        </div>
+        </AuthenticatedLayout>
     );
 
     const SelectField = ({

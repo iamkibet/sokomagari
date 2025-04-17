@@ -129,7 +129,7 @@ const Navbar = () => {
                         </div>
                     </div>
 
-                    <SearchBar />
+             
                     <div className="hidden md:flex items-center justify-between space-x-4">
                         <p className="flex items-center text-xs">
                             English <span>{DownSvg}</span>

@@ -1,14 +1,16 @@
 <?php
 
-
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Car extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'make',
         'model',
@@ -136,7 +138,7 @@ class Car extends Model
     }
 
 
-    
+
     protected static function generateUniqueSlug($car)
     {
         $baseSlug = Str::slug($car->make . '-' . $car->model . '-' . $car->year);

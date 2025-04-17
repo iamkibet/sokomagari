@@ -10,7 +10,6 @@ import { Head } from "@inertiajs/react";
 
 export default function Welcome({ cars, categories }) {
     const [currentCar, setCurrentCar] = useState(0);
-   
 
     const heroimages = [
         {
@@ -27,11 +26,16 @@ export default function Welcome({ cars, categories }) {
 
     return (
         <GuestLayout>
-            <Head>
-                <title>Home</title>
-                <meta
-                    name="best car sales website"
-                    content="this is the best website for buying and selling websites in kenya"
+            <Head title="Welcome">
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link
+                    rel="preconnect"
+                    href="https://fonts.gstatic.com"
+                    crossOrigin="anonymous"
+                />
+                <link
+                    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+                    rel="stylesheet"
                 />
             </Head>
             <div className="flex flex-col items-center justify-center overflow-x-hidden">
@@ -87,7 +91,7 @@ export default function Welcome({ cars, categories }) {
 
                 <VehicleSlider
                     title="Latest cars"
-                    items={cars.data.filter((car) => car.year > 2021)}
+                    items={cars.data.filter((car) => car.year > 2016)}
                     viewMoreLink="/vehicles"
                 />
 

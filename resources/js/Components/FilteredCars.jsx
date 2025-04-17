@@ -1,54 +1,38 @@
 import { router } from "@inertiajs/react";
-import React from "react";
+import React, { useEffect } from "react";
 import DetailedVehicleCard from "@/Components/DetailedVehicleCard";
 import Loader from "./Loader";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const FilteredCars = ({ cars }) => {
-    
-    const currentPage = cars?.current_page || 1;
-    const lastPage = cars?.last_page || 1;
-    const totalPages = cars?.last_page || 1;
-
-    const startPage = Math.max(1, currentPage - 1);
-    const endPage = Math.min(lastPage, currentPage + 1);
-
-    const links = [];
-
-    // Previous Page Link
-    if (currentPage > 1) {
-        links.push({
-            url: cars?.prev_page_url,
-            label: "&laquo; Previous",
-            active: false,
+const FilteredCars = ({ cars, filters, onPageChange, onApplyFilters }) => {
+    // Debug logging
+    useEffect(() => {
+        console.log("FilteredCars received data:", {
+            cars,
+            filters,
+            hasData: cars?.data?.length > 0,
+            pagination: {
+                current_page: cars?.meta?.current_page,
+                last_page: cars?.meta?.last_page,
+                total: cars?.meta?.total,
+                per_page: cars?.meta?.per_page,
+            },
         });
-    }
+    }, [cars, filters]);
 
-    // Page Number Links
-    for (let i = startPage; i <= endPage; i++) {
-        links.push({
-            label: i.toString(),
-            url: cars?.links?.find((link) => link.label === i.toString())?.url,
-            active: i === currentPage,
-        });
-    }
-
-    // Add next link if needed
-    if (currentPage < totalPages) {
-        links.push({
-            label: "Next &raquo;",
-            url: cars?.next_page_url,
-        });
-    }
-
+    // Show loading state if cars is null or undefined
     if (!cars) {
+        console.log("No cars data available");
         return (
-            <div className="flex justify-center items-center h-screen">
+            <div className="flex justify-center items-center h-64">
                 <Loader />
             </div>
         );
     }
 
-    if (!cars || cars.length === 0) {
+    // Show empty state if no cars
+    if (!cars.data || cars.data.length === 0) {
+        console.log("No cars found in data:", cars);
         return (
             <div className="flex flex-col items-center justify-center py-8 px-4 text-center bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
                 <svg
@@ -69,57 +53,164 @@ const FilteredCars = ({ cars }) => {
                     </g>
                 </svg>
                 <h3 className="text-xl font-medium mt-4 text-gray-700 dark:text-gray-200">
-                    Oops! No vehicles in this category
+                    No vehicles found
                 </h3>
                 <p className="text-gray-500 dark:text-gray-400 mt-2">
-                    The items you are looking for could not be located.
+                    Try adjusting your search filters
                 </p>
                 <button
-                    className="flex items-center my-3 bg-primary py-2 px-4 rounded-md text-white text-lg"
-                    onClick={() => router.get("/vehicles")}
+                    onClick={() => onApplyFilters({ ...filters, page: 1 })}
+                    className="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors"
                 >
-                    Browse More Vehicles
+                    Clear Filters
                 </button>
             </div>
         );
     }
 
+    const currentPage = cars.meta?.current_page || 1;
+    const lastPage = cars.meta?.last_page || 1;
+    const total = cars.meta?.total || 0;
+    const perPage = cars.meta?.per_page || 12;
+
+    // Calculate the range of items being shown
+    const startItem = (currentPage - 1) * perPage + 1;
+    const endItem = Math.min(currentPage * perPage, total);
+
+    // Generate pagination items
+    const renderPagination = () => {
+        if (lastPage <= 1) {
+            console.log("Not rendering pagination because lastPage <= 1:", {
+                lastPage,
+            });
+            return null;
+        }
+
+        console.log("Rendering pagination:", {
+            currentPage,
+            lastPage,
+            total,
+            perPage,
+            startItem,
+            endItem,
+        });
+
+        const pages = [];
+        const maxVisiblePages = 5;
+        let startPage = Math.max(
+            1,
+            currentPage - Math.floor(maxVisiblePages / 2)
+        );
+        let endPage = Math.min(lastPage, startPage + maxVisiblePages - 1);
+
+        if (endPage - startPage + 1 < maxVisiblePages) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+
+        // Always show first page
+        if (startPage > 1) {
+            pages.push(
+                <button
+                    key="first"
+                    onClick={() => onPageChange(1)}
+                    className="px-3 py-1 rounded-md bg-gray-100 hover:bg-gray-200"
+                >
+                    1
+                </button>
+            );
+            if (startPage > 2) {
+                pages.push(
+                    <span key="start-ellipsis" className="px-2">
+                        ...
+                    </span>
+                );
+            }
+        }
+
+        // Add middle pages
+        for (let i = startPage; i <= endPage; i++) {
+            pages.push(
+                <button
+                    key={i}
+                    onClick={() => onPageChange(i)}
+                    className={`px-3 py-1 rounded-md ${
+                        currentPage === i
+                            ? "bg-primary text-white"
+                            : "bg-gray-100 hover:bg-gray-200"
+                    }`}
+                >
+                    {i}
+                </button>
+            );
+        }
+
+        // Always show last page
+        if (endPage < lastPage) {
+            if (endPage < lastPage - 1) {
+                pages.push(
+                    <span key="end-ellipsis" className="px-2">
+                        ...
+                    </span>
+                );
+            }
+            pages.push(
+                <button
+                    key="last"
+                    onClick={() => onPageChange(lastPage)}
+                    className="px-3 py-1 rounded-md bg-gray-100 hover:bg-gray-200"
+                >
+                    {lastPage}
+                </button>
+            );
+        }
+
+        return (
+            <div className="flex items-center justify-between mt-8">
+                <div className="text-sm text-gray-600">
+                    Showing {startItem} to {endItem} of {total} results
+                </div>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => onPageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className={`p-2 rounded-md ${
+                            currentPage === 1
+                                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                : "bg-gray-100 hover:bg-gray-200"
+                        }`}
+                    >
+                        <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    {pages}
+                    <button
+                        onClick={() => onPageChange(currentPage + 1)}
+                        disabled={currentPage === lastPage}
+                        className={`p-2 rounded-md ${
+                            currentPage === lastPage
+                                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                : "bg-gray-100 hover:bg-gray-200"
+                        }`}
+                    >
+                        <ChevronRight className="w-5 h-5" />
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div>
             {/* Vehicle List */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                {cars.map((car) => (
+                {cars.data.map((car) => (
                     <div key={car.id} className="flex">
                         <DetailedVehicleCard car={car} />
                     </div>
                 ))}
             </div>
 
-            {/* Pagination Links */}
-            <div className="flex justify-center mt-4 space-x-2">
-                {links.map((link, index) => (
-                    <button
-                        key={index}
-                        disabled={!link.url}
-                        onClick={() =>
-                            router.get(link.url, {}, { preserveState: true })
-                        }
-                        className={`px-4 py-2 text-sm rounded-md ${
-                            link.active
-                                ? "bg-primary text-white hover:bg-primary-dark"
-                                : !link.url
-                                ? "bg-gray-200 text-gray-500"
-                                : "bg-gray-100 text-gray-800 hover:bg-gray-200"
-                        }`}
-                    >
-                        {link.label === "Next &raquo;"
-                            ? "Next"
-                            : link.label === "&laquo; Previous"
-                            ? "Previous"
-                            : link.label}
-                    </button>
-                ))}
-            </div>
+            {/* Pagination */}
+            {renderPagination()}
         </div>
     );
 };

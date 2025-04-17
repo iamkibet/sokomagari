@@ -93,7 +93,7 @@ class VehicleController extends Controller
     {
 
         $vehicle = Car::where('slug', $slug)->firstOrFail();
-        
+
 
         return Inertia::render('Vehicles/Show', [
             'vehicle' => new ShowCarResource($vehicle),
