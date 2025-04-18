@@ -84,7 +84,7 @@ const VehicleSlider = ({
             // Calculate the new scroll position
             let newScrollPosition = scrollLeft + scrollAmount;
 
-            // Ensure we don't scroll past the end
+            
             const maxScroll = scrollWidth - clientWidth;
             newScrollPosition = Math.max(
                 0,

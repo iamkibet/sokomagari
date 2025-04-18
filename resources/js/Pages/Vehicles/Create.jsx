@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "@inertiajs/react";
-import { ChevronDown, ChevronUp } from "react-feather";
+import { ChevronDown, ChevronUp, Check, AlertCircle } from "react-feather";
 import StepProgress from "@/Components/StepProgress";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 const LOCAL_STORAGE_KEY = "vehicleCreateForm";
 
@@ -112,12 +113,55 @@ const Create = () => {
     // Submit the form data to the server
     const submit = (e) => {
         e.preventDefault();
-        post(route("vehicles.store"), {
+
+        // Create FormData object to handle file uploads properly
+        const formData = new FormData();
+
+        // Add all basic fields to formData
+        Object.keys(data).forEach((key) => {
+            if (key === "images") {
+                // Handle images separately
+                if (data.images.length > 0) {
+                    data.images.forEach((image, index) => {
+                        formData.append(`images[${index}]`, image);
+                    });
+                }
+            } else if (
+                key === "comfort_features" ||
+                key === "safety_features"
+            ) {
+                // Handle nested objects
+                Object.keys(data[key]).forEach((nestedKey) => {
+                    formData.append(
+                        `${key}[${nestedKey}]`,
+                        data[key][nestedKey]
+                    );
+                });
+            } else {
+                // Handle normal fields
+                formData.append(key, data[key]);
+            }
+        });
+
+        post(route("dashboard.vehicles.store"), formData, {
             preserveScroll: true,
+            forceFormData: true,
             onSuccess: () => {
                 setActiveStep(1);
-                //clear local storage
+                // Clear local storage
                 localStorage.removeItem(LOCAL_STORAGE_KEY);
+                // Clear preview images
+                setPreviewImages([]);
+            },
+            onError: (errors) => {
+                console.error("Form submission errors:", errors);
+                // Scroll to error section
+                if (Object.keys(errors).length > 0) {
+                    document.querySelector(".bg-red-50")?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                    });
+                }
             },
         });
     };
@@ -128,18 +172,30 @@ const Create = () => {
 
     const SectionHeader = ({ title, section }) => (
         <div
-            className="flex justify-between items-center p-4 bg-gray-50 rounded-lg cursor-pointer"
+            className="flex justify-between items-center p-5 bg-white cursor-pointer border-b border-gray-200"
             onClick={() => toggleSection(section)}
         >
-            <h3 className="text-lg font-semibold">{title}</h3>
-            {expandedSection === section ? <ChevronUp /> : <ChevronDown />}
+            <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+            <div
+                className={`w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center transition-colors ${
+                    expandedSection === section
+                        ? "bg-primary bg-opacity-10"
+                        : ""
+                }`}
+            >
+                {expandedSection === section ? (
+                    <ChevronUp size={18} className="text-primary" />
+                ) : (
+                    <ChevronDown size={18} className="text-gray-500" />
+                )}
+            </div>
         </div>
     );
 
     // Reusable input renderer with inline error display
     const renderInput = (label, name, type = "text", options = {}) => (
-        <AuthenticatedLayout className="mb-4">
-            <label className="block text-sm font-medium mb-1">
+        <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
                 {label}
                 <input
                     type={type}
@@ -152,14 +208,16 @@ const Create = () => {
                                 : e.target.value
                         )
                     }
-                    className="w-full p-2 border rounded-md mt-1"
+                    className="w-full p-2 border border-gray-300 rounded-md mt-1 focus:ring-primary focus:border-primary"
                     {...options}
                 />
             </label>
             {errors[name] && (
-                <p className="text-red-500 text-sm mt-1">{errors[name]}</p>
+                <p className="text-red-500 text-sm mt-1 flex items-center">
+                    <AlertCircle size={16} className="mr-1" /> {errors[name]}
+                </p>
             )}
-        </AuthenticatedLayout>
+        </div>
     );
 
     const SelectField = ({
@@ -208,15 +266,15 @@ const Create = () => {
         const fieldName = `${pathParts[0]}[${pathParts.slice(1).join("][")}]`;
 
         return (
-            <label className="flex items-center space-x-2 p-2 hover:bg-gray-50 rounded">
+            <label className="flex items-center space-x-3 p-2 hover:bg-white rounded cursor-pointer">
                 <input
                     type="checkbox"
                     checked={getNestedValue(data, path)}
                     onChange={(e) => setNestedValue(path, e.target.checked)}
-                    className="form-checkbox h-5 w-5 text-primary"
+                    className="form-checkbox h-5 w-5 text-primary rounded border-gray-300 focus:ring-primary"
                     name={fieldName}
                 />
-                <span>{label}</span>
+                <span className="text-gray-700">{label}</span>
             </label>
         );
     };
@@ -480,7 +538,7 @@ const Create = () => {
                                         "comfort_features.keyless_entry"
                                     )}
                                     <div className="space-y-2">
-                                        <label className="block text-sm font-medium">
+                                        <label className="block text-sm font-medium text-gray-700">
                                             Trimming
                                         </label>
                                         <input
@@ -490,17 +548,22 @@ const Create = () => {
                                                 data.comfort_features.trimming
                                             }
                                             onChange={(e) =>
-                                                setData(
+                                                setNestedValue(
                                                     "comfort_features.trimming",
                                                     e.target.value
                                                 )
                                             }
-                                            className="w-full p-2 border rounded"
+                                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
+                                            placeholder="e.g. Wood grain, Carbon fiber"
                                         />
                                         {errors[
                                             "comfort_features.trimming"
                                         ] && (
-                                            <p className="text-red-500 text-sm mt-1">
+                                            <p className="text-red-500 text-sm mt-1 flex items-center">
+                                                <AlertCircle
+                                                    size={16}
+                                                    className="mr-1"
+                                                />
                                                 {
                                                     errors[
                                                         "comfort_features.trimming"
@@ -510,7 +573,7 @@ const Create = () => {
                                         )}
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="block text-sm font-medium">
+                                        <label className="block text-sm font-medium text-gray-700">
                                             Seat Material
                                         </label>
                                         <select
@@ -519,14 +582,16 @@ const Create = () => {
                                                     .seat_material
                                             }
                                             onChange={(e) =>
-                                                setData(
+                                                setNestedValue(
                                                     "comfort_features.seat_material",
                                                     e.target.value
                                                 )
                                             }
-                                            className="w-full p-2 border rounded"
+                                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                                         >
-                                            <option>Select Material</option>
+                                            <option value="">
+                                                Select Material
+                                            </option>
                                             <option value="Leather">
                                                 Leather
                                             </option>
@@ -540,7 +605,11 @@ const Create = () => {
                                         {errors[
                                             "comfort_features.seat_material"
                                         ] && (
-                                            <p className="text-red-500 text-sm mt-1">
+                                            <p className="text-red-500 text-sm mt-1 flex items-center">
+                                                <AlertCircle
+                                                    size={16}
+                                                    className="mr-1"
+                                                />
                                                 {
                                                     errors[
                                                         "comfort_features.seat_material"
@@ -822,4 +891,17 @@ const Create = () => {
     );
 };
 
-export default Create;
+// Wrap the component with AuthenticatedLayout
+export default function VehicleCreate() {
+    return (
+        <AuthenticatedLayout
+            header={
+                <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                    Create New Vehicle
+                </h2>
+            }
+        >
+            <Create />
+        </AuthenticatedLayout>
+    );
+}

@@ -13,11 +13,15 @@ use Illuminate\Support\Facades\Storage;
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
 
+// Terms and Privacy Policy routes
+Route::inertia('/terms', 'Terms')->name('terms.show');
+Route::inertia('/privacy-policy', 'Privacy')->name('policy.show');
+
 // Authentication Routes
 require __DIR__ . '/auth.php';
 
 // Authenticated & Verified User Routes
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // Dashboard Group
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
         // Dashboard Overview
@@ -37,8 +41,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->name('store')
                 ->middleware('can:create,App\Models\Car');
 
+            Route::get('/{vehicle:slug}', [VehicleController::class, 'show'])
+                ->name('show');
+
             Route::get('/{vehicle:slug}/edit', [VehicleController::class, 'edit'])
                 ->name('edit')
+                ->middleware('can:update,vehicle');
+
+            Route::get('/{vehicle:slug}/analytics', [VehicleController::class, 'analytics'])
+                ->name('analytics')
                 ->middleware('can:update,vehicle');
 
             Route::put('/{vehicle:slug}', [VehicleController::class, 'update'])
@@ -51,7 +62,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         // User Profile
-        Route::singularResource('profile', ProfileController::class, [
+        Route::resource('profile', ProfileController::class, [
             'only' => ['edit', 'update', 'destroy'],
             'names' => [
                 'edit' => 'profile.edit',
@@ -71,13 +82,12 @@ Route::name('public.')->group(function () {
 
     // Vehicle Catalog
     Route::prefix('vehicles')->name('vehicles.')->group(function () {
-        Route::get('/', [VehicleController::class, 'publicIndex'])
-            ->name('index')
-            ->middleware('doNotCacheResponse');
+        Route::get('/', [VehicleController::class, 'index'])
+            ->name('index');
 
-        Route::get('/{car:slug}', [VehicleController::class, 'show'])
+        Route::get('/{car}', [VehicleController::class, 'show'])
             ->name('show')
-            ->where('car', '[a-z0-9-]+');
+            ->where('car', '[0-9]+|[a-z0-9-]+');
     });
 });
 

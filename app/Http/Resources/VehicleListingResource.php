@@ -27,7 +27,11 @@ class VehicleListingResource extends JsonResource
             'metrics' => [
                 'views' => $this->views ?? 0,
                 'engagement' => $this->engagementScore(),
-                'last_viewed' => optional($this->latestView)->created_at?->diffForHumans(),
+                'last_viewed' => $this->when(
+                    $this->latestView,
+                    fn() => $this->latestView->created_at->diffForHumans(),
+                    'Never viewed'
+                ),
             ],
             'dates' => [
                 'listed' => $this->created_at->format('M j, Y'),

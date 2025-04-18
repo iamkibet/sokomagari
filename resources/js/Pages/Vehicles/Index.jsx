@@ -3,13 +3,13 @@ import MaxWidthWrapper from "@/Components/MaxWidthWrapper";
 import SecondaryButton from "@/Components/SecondaryButton";
 import { Filter } from "@/Components/svgs/Filter";
 import GuestLayout from "@/Layouts/GuestLayout";
-import FilteredCars from "@/Components/FilteredCars";
+import VehicleList from "@/Components/VehicleList";
 import { Head, router, usePage } from "@inertiajs/react";
 import VehicleSlider from "@/Components/VehicleSlider";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 
 const Index = () => {
-    const { results, filters = {} } = usePage().props;
+    const { allCars, results, filters = {} } = usePage().props;
     const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [activeFilter, setActiveFilter] = useState(null);
@@ -84,6 +84,7 @@ const Index = () => {
     // Submit filters to backend
     const applyFilters = () => {
         setIsLoading(true);
+        console.log("Applying filters:", filterData);
         router.get(route("vehicles.index"), filterData, {
             preserveState: true,
             onFinish: () => setIsLoading(false),
@@ -351,12 +352,7 @@ const Index = () => {
                     </div>
                     {/* Results Section */}
                     <div className="w-3/4 pl-6">
-                        <FilteredCars
-                            cars={results}
-                            filters={filterData}
-                            onPageChange={handlePageChange}
-                            onApplyFilters={applyFilters}
-                        />
+                        <VehicleList vehicles={results} filters={filterData} />
                     </div>
                 </div>
             </MaxWidthWrapper>
@@ -365,12 +361,22 @@ const Index = () => {
                 <VehicleSlider
                     title="Latest Cars"
                     items={results.data.filter((car) => car.year > 2021)}
+                    categories={[
+                        { id: "all", label: "All" },
+                        { id: "suv", label: "SUV" },
+                        { id: "sedan", label: "Sedan" },
+                    ]}
                     viewMoreLink="/vehicles?year_min=2022"
                 />
 
                 <VehicleSlider
                     title="Affordable Options"
                     items={results.data.filter((car) => car.price < 2000000)}
+                    categories={[
+                        { id: "all", label: "All" },
+                        { id: "suv", label: "SUV" },
+                        { id: "sedan", label: "Sedan" },
+                    ]}
                     viewMoreLink="/vehicles?price_max=2000000"
                 />
             </div>

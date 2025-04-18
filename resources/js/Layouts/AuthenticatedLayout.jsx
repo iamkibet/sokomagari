@@ -39,7 +39,7 @@ export default function AuthenticatedLayout({ header, children }) {
     const navigation = [
         {
             name: "Dashboard",
-            route: "dashboard",
+            route: "dashboard.index",
             icon: (
                 <Icon>
                     <path
@@ -54,7 +54,7 @@ export default function AuthenticatedLayout({ header, children }) {
         },
         {
             name: "Vehicles",
-            route: "vehicles.index",
+            route: "dashboard.vehicles.index",
             icon: (
                 <Icon>
                     <path
@@ -67,7 +67,7 @@ export default function AuthenticatedLayout({ header, children }) {
         },
         {
             name: "Bookings",
-            route: "about",
+            route: "public.about",
             icon: (
                 <Icon>
                     <path
@@ -80,7 +80,7 @@ export default function AuthenticatedLayout({ header, children }) {
         },
         {
             name: "Create vehicle",
-            route: "vehicles.create",
+            route: "dashboard.vehicles.create",
             icon: (
                 <Icon>
                     <path
@@ -179,7 +179,11 @@ export default function AuthenticatedLayout({ header, children }) {
                             </Dropdown.Trigger>
 
                             <Dropdown.Content className="w-full">
-                                <Dropdown.Link href={route("profile.edit")}>
+                                <Dropdown.Link
+                                    href={route("dashboard.profile.edit", {
+                                        profile: user.id,
+                                    })}
+                                >
                                     Profile Settings
                                 </Dropdown.Link>
                                 <Dropdown.Link

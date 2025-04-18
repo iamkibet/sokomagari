@@ -11,6 +11,8 @@ import { Head } from "@inertiajs/react";
 export default function Welcome({ cars, categories }) {
     const [currentCar, setCurrentCar] = useState(0);
 
+    console.log(cars);
+
     const heroimages = [
         {
             image: "/images/image 1.avif",

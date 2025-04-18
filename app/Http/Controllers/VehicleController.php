@@ -28,26 +28,26 @@ class VehicleController extends Controller
         $validated = $request->validate([
             'make' => 'nullable|string|max:255',
             'model' => 'nullable|string|max:255',
-            'year' => 'nullable|integer',
+            'year_min' => 'nullable|integer',
+            'year_max' => 'nullable|integer',
             'price_min' => 'nullable|numeric|min:0',
             'price_max' => 'nullable|numeric|min:0',
             'mileage_max' => 'nullable|numeric|min:0',
             'condition' => 'nullable|string|in:new,used',
             'location' => 'nullable|string|max:255',
             'search' => 'nullable|string|max:255',
+            'page' => 'nullable|integer|min:1',
         ]);
 
-        $results = $carService->allCars($validated);
+        // Remove empty values from filters
+        $filters = array_filter($validated, function ($value) {
+            return $value !== null && $value !== '';
+        });
 
-
-        $similarCars = $carService->getContextualSimilarVehicles(
-            searchFilters: $validated,
-            limit: 4
-        );
+        $results = $carService->allCars($filters);
 
         return Inertia::render('Vehicles/Index', [
-            'results' => $carService->carResourceCollection($results),
-            'similarCars' => $carService->carResourceCollection($similarCars),
+            'results' => $results,
             'filters' => $validated,
         ]);
     }
@@ -63,6 +63,9 @@ class VehicleController extends Controller
     public function store(StoreVehicleRequest $request): RedirectResponse
     {
         $validated = $request->validated();
+
+        // Add the user_id to the validated data
+        $validated['user_id'] = auth()->id();
 
         // Handle optional array fields
         $validated['comfort_features'] = $request->has('comfort_features') ? $request->input('comfort_features') : [];
@@ -81,7 +84,7 @@ class VehicleController extends Controller
         // Create the vehicle record
         $vehicle = Car::create($validated);
 
-        return redirect()->route('vehicles.show', $vehicle->slug)
+        return redirect()->route('dashboard.vehicles.show', $vehicle->slug)
             ->with('success', __('Vehicle created successfully'));
     }
 
@@ -89,18 +92,17 @@ class VehicleController extends Controller
     /**
      * Display the specified vehicle.
      */
-    public function show($slug): Response
+    public function show($identifier): Response
     {
-
-        $vehicle = Car::where('slug', $slug)->firstOrFail();
-
+        $vehicle = is_numeric($identifier)
+            ? Car::findOrFail($identifier)
+            : Car::where('slug', $identifier)->firstOrFail();
 
         return Inertia::render('Vehicles/Show', [
             'vehicle' => new ShowCarResource($vehicle),
             'similarVehicles' => CarResource::collection(
                 Car::where('make', $vehicle->make)
                     ->where('id', '!=', $vehicle->id)
-                    ->with(['thumbnail'])
                     ->limit(4)
                     ->inRandomOrder()
                     ->get()
@@ -116,6 +118,44 @@ class VehicleController extends Controller
         return Inertia::render('Vehicles/Edit', [
             'vehicle' => $vehicle->load('owner'),
             'features' => config('vehicles.features')
+        ]);
+    }
+
+    /**
+     * Display the analytics for the specified vehicle.
+     */
+    public function analytics(Car $vehicle): Response
+    {
+        // Gather analytics data
+        $viewsData = $vehicle->views()
+            ->selectRaw('DATE(viewed_at) as date, COUNT(*) as count')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->map(fn($item) => [
+                'date' => $item->date,
+                'count' => $item->count
+            ]);
+
+        return Inertia::render('Dashboard/Vehicles/Analytics', [
+            'vehicle' => [
+                'id' => $vehicle->id,
+                'slug' => $vehicle->slug,
+                'make' => $vehicle->make,
+                'model' => $vehicle->model,
+                'year' => $vehicle->year,
+                'views' => $vehicle->views,
+                'contact_requests' => $vehicle->contact_requests,
+                'created_at' => $vehicle->created_at->format('M j, Y'),
+            ],
+            'analytics' => [
+                'views_by_date' => $viewsData,
+                'days_on_market' => $vehicle->created_at->diffInDays(now()),
+                'total_views' => $vehicle->views,
+                'conversion_rate' => $vehicle->views > 0
+                    ? round(($vehicle->contact_requests / $vehicle->views) * 100, 2)
+                    : 0,
+            ]
         ]);
     }
 

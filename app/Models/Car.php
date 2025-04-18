@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Car extends Model
 {
@@ -39,7 +40,10 @@ class Car extends Model
         'safety_features',
         'annual_insurance_cost',
         'highway_fuel_efficiency',
-        'urban_fuel_efficiency'
+        'urban_fuel_efficiency',
+        'user_id',
+        'is_featured',
+        'status'
     ];
 
     /**
@@ -61,6 +65,7 @@ class Car extends Model
         'urban_fuel_efficiency'   => 'decimal:2',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'is_featured' => 'boolean',
     ];
 
     // Add this to use slugs for route binding
@@ -74,17 +79,62 @@ class Car extends Model
     // Update your accessors to handle empty images
     public function getThumbnailAttribute()
     {
-        if (!empty($this->images) && is_array($this->images)) {
-            return Storage::url($this->images[0]);
+        $images = $this->getImagesArray();
+
+        if (!empty($images)) {
+            $firstImage = $images[0];
+
+            // Check if the path is a storage path or a public path
+            if (strpos($firstImage, 'public/') === 0) {
+                // It's a storage path
+                return Storage::url($firstImage);
+            } else {
+                // It's a public path
+                return asset($firstImage);
+            }
         }
         return asset('defaults/vehicle-thumbnail.png');
     }
 
     public function getImageUrlsAttribute()
     {
-        return collect($this->images)->map(function ($image) {
-            return Storage::url($image);
+        $images = $this->getImagesArray();
+
+        return collect($images)->map(function ($image) {
+            // Check if the path is a storage path or a public path
+            if (strpos($image, 'public/') === 0) {
+                // It's a storage path
+                return Storage::url($image);
+            } else {
+                // It's a public path
+                return asset($image);
+            }
         })->toArray();
+    }
+
+    /**
+     * Helper method to ensure images are always an array
+     * 
+     * @return array
+     */
+    private function getImagesArray(): array
+    {
+        $images = $this->images;
+
+        // Handle different types of image data
+        if (is_string($images)) {
+            // If it's a JSON string, decode it
+            $decoded = json_decode($images, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded;
+            }
+            // If it's a single image path as string
+            return [$images];
+        } elseif (is_array($images)) {
+            return $images;
+        }
+
+        return [];
     }
 
     protected static function boot()
@@ -137,7 +187,29 @@ class Car extends Model
             }));
     }
 
+    /**
+     * Get the user that owns the car.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
+    /**
+     * Get the views for this car.
+     */
+    public function views()
+    {
+        return $this->hasMany(CarView::class);
+    }
+
+    /**
+     * Get the latest view for this car.
+     */
+    public function latestView()
+    {
+        return $this->hasOne(CarView::class)->latest('viewed_at');
+    }
 
     protected static function generateUniqueSlug($car)
     {

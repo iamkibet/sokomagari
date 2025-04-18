@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Car;
+use App\Observers\CarObserver;
 use App\Services\CarService;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
@@ -25,5 +26,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Vite::prefetch(concurrency: 3);
+
+        // Register the Car observer
+        Car::observe(CarObserver::class);
     }
 }

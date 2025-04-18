@@ -1,28 +1,32 @@
+import React, { useState, useEffect } from "react";
 import { router } from "@inertiajs/react";
-import React, { useEffect } from "react";
 import DetailedVehicleCard from "@/Components/DetailedVehicleCard";
 import Loader from "./Loader";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const FilteredCars = ({ cars, filters, onPageChange, onApplyFilters }) => {
+const VehicleList = ({ vehicles, filters = {} }) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [activeFilters, setActiveFilters] = useState(filters);
+
+    console.log(vehicles);
+
     // Debug logging
     useEffect(() => {
-        console.log("FilteredCars received data:", {
-            cars,
+        console.log("VehicleList received data:", {
+            vehicles,
             filters,
-            hasData: cars?.data?.length > 0,
+            hasData: vehicles?.data?.length > 0,
             pagination: {
-                current_page: cars?.meta?.current_page,
-                last_page: cars?.meta?.last_page,
-                total: cars?.meta?.total,
-                per_page: cars?.meta?.per_page,
+                current_page: vehicles?.current_page,
+                last_page: vehicles?.last_page,
+                total: vehicles?.total,
+                per_page: vehicles?.per_page,
             },
         });
-    }, [cars, filters]);
+    }, [vehicles, filters]);
 
-    // Show loading state if cars is null or undefined
-    if (!cars) {
-        console.log("No cars data available");
+    // Show loading state if vehicles is null
+    if (!vehicles) {
         return (
             <div className="flex justify-center items-center h-64">
                 <Loader />
@@ -30,9 +34,8 @@ const FilteredCars = ({ cars, filters, onPageChange, onApplyFilters }) => {
         );
     }
 
-    // Show empty state if no cars
-    if (!cars.data || cars.data.length === 0) {
-        console.log("No cars found in data:", cars);
+    // Show empty state if no vehicles
+    if (!vehicles.data || vehicles.data.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-12">
                 <svg
@@ -58,19 +61,19 @@ const FilteredCars = ({ cars, filters, onPageChange, onApplyFilters }) => {
         );
     }
 
-    const currentPage = cars.meta?.current_page || 1;
-    const lastPage = cars.meta?.last_page || 1;
-    const total = cars.meta?.total || 0;
-    const perPage = cars.meta?.per_page || 12;
+    const currentPage = vehicles.current_page || 1;
+    const lastPage = vehicles.last_page || 1;
+    const total = vehicles.total || 0;
+    const perPage = vehicles.per_page || 12;
 
     // Calculate the range of items being shown
     const startItem = (currentPage - 1) * perPage + 1;
     const endItem = Math.min(currentPage * perPage, total);
 
-    // Generate pagination items
     const handlePageChange = (page) => {
+        setIsLoading(true);
         // Create a clean filters object with only non-empty values
-        const cleanFilters = Object.entries(filters).reduce(
+        const cleanFilters = Object.entries(activeFilters).reduce(
             (acc, [key, value]) => {
                 if (value !== null && value !== undefined && value !== "") {
                     acc[key] = value;
@@ -87,7 +90,21 @@ const FilteredCars = ({ cars, filters, onPageChange, onApplyFilters }) => {
         router.get(route("vehicles.index"), cleanFilters, {
             preserveState: true,
             preserveScroll: true,
+            onFinish: () => setIsLoading(false),
         });
+    };
+
+    const handleFilterChange = (name, value) => {
+        setActiveFilters((prev) => ({
+            ...prev,
+            [name]: value,
+            page: 1, // Reset to first page when filters change
+        }));
+    };
+
+    const clearFilters = () => {
+        setActiveFilters({});
+        router.get(route("vehicles.index"));
     };
 
     const renderPagination = () => {
@@ -206,9 +223,9 @@ const FilteredCars = ({ cars, filters, onPageChange, onApplyFilters }) => {
         <div>
             {/* Vehicle List */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                {cars.data.map((car) => (
-                    <div key={car.id} className="flex">
-                        <DetailedVehicleCard car={car} />
+                {vehicles.data.map((vehicle) => (
+                    <div key={vehicle.id} className="flex">
+                        <DetailedVehicleCard car={vehicle} />
                     </div>
                 ))}
             </div>
@@ -219,4 +236,4 @@ const FilteredCars = ({ cars, filters, onPageChange, onApplyFilters }) => {
     );
 };
 
-export default FilteredCars;
+export default VehicleList;

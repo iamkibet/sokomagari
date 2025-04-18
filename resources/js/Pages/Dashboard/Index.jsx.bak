@@ -1,14 +1,13 @@
 import React from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import { Car, DollarSign, BarChart } from "lucide-react";
+import {
+    TruckIcon,
+    CurrencyDollarIcon,
+    ChartBarIcon,
+} from "@heroicons/react/24/outline";
 
 export default function Index({ recentListings, financialMetrics }) {
-    // Ensure recentListings is an array
-    const listingsArray = Array.isArray(recentListings)
-        ? recentListings
-        : recentListings?.data || [];
-
     return (
         <AuthenticatedLayout>
             <Head title="Dashboard" />
@@ -21,14 +20,14 @@ export default function Index({ recentListings, financialMetrics }) {
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                             <div className="flex items-center">
                                 <div className="flex-shrink-0 bg-primary rounded-md p-3">
-                                    <Car className="h-6 w-6 text-white" />
+                                    <TruckIcon className="h-6 w-6 text-white" />
                                 </div>
                                 <div className="ml-5">
                                     <dt className="text-sm font-medium text-gray-500 truncate">
                                         Total Vehicles
                                     </dt>
                                     <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                                        {listingsArray.length || 0}
+                                        {recentListings?.length || 0}
                                     </dd>
                                 </div>
                             </div>
@@ -38,7 +37,7 @@ export default function Index({ recentListings, financialMetrics }) {
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                             <div className="flex items-center">
                                 <div className="flex-shrink-0 bg-primary rounded-md p-3">
-                                    <DollarSign className="h-6 w-6 text-white" />
+                                    <CurrencyDollarIcon className="h-6 w-6 text-white" />
                                 </div>
                                 <div className="ml-5">
                                     <dt className="text-sm font-medium text-gray-500 truncate">
@@ -57,7 +56,7 @@ export default function Index({ recentListings, financialMetrics }) {
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                             <div className="flex items-center">
                                 <div className="flex-shrink-0 bg-primary rounded-md p-3">
-                                    <BarChart className="h-6 w-6 text-white" />
+                                    <ChartBarIcon className="h-6 w-6 text-white" />
                                 </div>
                                 <div className="ml-5">
                                     <dt className="text-sm font-medium text-gray-500 truncate">
@@ -100,7 +99,7 @@ export default function Index({ recentListings, financialMetrics }) {
                                             </tr>
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
-                                            {listingsArray.map((listing) => (
+                                            {recentListings?.map((listing) => (
                                                 <tr key={listing.id}>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div className="text-sm font-medium text-gray-900">
@@ -123,23 +122,16 @@ export default function Index({ recentListings, financialMetrics }) {
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <span
                                                             className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                                                listing.status
-                                                                    ?.availability ===
+                                                                listing.status ===
                                                                 "available"
                                                                     ? "bg-green-100 text-green-800"
-                                                                    : listing
-                                                                          .status
-                                                                          ?.availability ===
+                                                                    : listing.status ===
                                                                       "pending"
                                                                     ? "bg-yellow-100 text-yellow-800"
                                                                     : "bg-red-100 text-red-800"
                                                             }`}
                                                         >
-                                                            {listing.status
-                                                                ?.status_label ||
-                                                                listing.status
-                                                                    ?.availability ||
-                                                                "Unknown"}
+                                                            {listing.status}
                                                         </span>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

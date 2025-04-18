@@ -24,25 +24,22 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-
-     
         /** @var User $user */
         $user = $request->user();
 
         // Base query for all vehicle metrics
         $baseQuery = $user->cars()->getQuery();
 
+        // Get recent listings (temporarily don't use with(['latestView']) until we have some views in the database)
+        $recentCars = $user->cars()
+            ->latest()
+            ->take(8)
+            ->get();
+
         return Inertia::render('Dashboard/Index', [
-
-            'recentListings' => VehicleListingResource::collection(
-                $user->cars()
-                    ->with(['latestView'])
-                    ->latest()
-                    ->take(8)
-                    ->get()
-            ),
+            // Convert resource collection to array to prevent JavaScript mapping issues
+            'recentListings' => VehicleListingResource::collection($recentCars)->toArray($request),
             'financialMetrics' => $this->getFinancialMetrics($baseQuery),
-
         ]);
     }
 
@@ -101,7 +98,7 @@ class DashboardController extends Controller
             'total_value' => $query->sum('price'),
             'avg_days_to_sell' => $query->whereNotNull('sold_at')
                 ->selectRaw('avg(datediff(sold_at, created_at)) as days')
-                ->value('days'),
+                ->value('days') ?? 0,
             'price_distribution' => $query->selectRaw(
                 'FLOOR(price/1000)*1000 as price_range, COUNT(*) as count'
             )->groupBy('price_range')->get(),
@@ -130,7 +127,7 @@ class DashboardController extends Controller
                 ? ($vehicle->contact_requests / $vehicle->views) * 100
                 : 0,
             'conversion' => $vehicle->views > 0
-                ? ($vehicle->sold_at ? 1 / $vehicle->views * 100 : 0)
+                ? (($vehicle->status === 'sold' || $vehicle->sold_at) ? 1 / $vehicle->views * 100 : 0)
                 : 0,
         ];
     }
