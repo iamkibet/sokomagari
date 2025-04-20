@@ -150,14 +150,14 @@ export default function Register() {
                                 >
                                     I agree to the{" "}
                                     <Link
-                                        href={route("terms.show")}
+                                        href={route("public.terms.show")}
                                         className="text-indigo-600 hover:text-indigo-500"
                                     >
                                         Terms of Service
                                     </Link>{" "}
                                     and{" "}
                                     <Link
-                                        href={route("policy.show")}
+                                        href={route("public.policy.show")}
                                         className="text-indigo-600 hover:text-indigo-500"
                                     >
                                         Privacy Policy

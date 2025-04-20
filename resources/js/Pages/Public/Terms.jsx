@@ -103,7 +103,7 @@ export default function Terms() {
                                 Your privacy is important to us. Please review
                                 our{" "}
                                 <a
-                                    href={route("policy.show")}
+                                    href={route("public.policy.show")}
                                     className="text-indigo-600 hover:text-indigo-500 underline"
                                 >
                                     Privacy Policy

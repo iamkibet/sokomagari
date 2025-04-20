@@ -84,7 +84,7 @@ class VehicleController extends Controller
         // Create the vehicle record
         $vehicle = Car::create($validated);
 
-        return redirect()->route('dashboard.vehicles.show', $vehicle->slug)
+        return redirect()->route('public.vehicles.show', $vehicle->slug)
             ->with('success', __('Vehicle created successfully'));
     }
 
@@ -110,13 +110,20 @@ class VehicleController extends Controller
         ]);
     }
 
+    public function search(Request $request)
+    {
+        $results = Car::where('make', 'like', '%' . $request->input('query') . '%')
+            ->get();
+
+        return $results;
+    }
     /**
      * Show the form for editing the specified vehicle.
      */
     public function edit(Car $vehicle): Response
     {
         return Inertia::render('Vehicles/Edit', [
-            'vehicle' => $vehicle->load('owner'),
+            'vehicle' => $vehicle->load('user'),
             'features' => config('vehicles.features')
         ]);
     }

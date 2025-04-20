@@ -2,7 +2,6 @@ import { router } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
 
 const SearchBar = () => {
-   
     const [isFocused, setIsFocused] = useState(false);
     //component state
     const [query, setQuery] = useState("");
@@ -88,7 +87,7 @@ const SearchBar = () => {
                         onBlur={() =>
                             setTimeout(() => setShowResults(false), 200)
                         }
-                        className="block pl-10 pr-14 py-2.5 w-full text-sm text-gray-900 placeholder-gray-500 bg-transparent border-0 focus:outline-none focus:ring-0 dark:text-white"
+                        className="block pl-10 pr-4 py-2.5 w-full text-sm text-gray-900 placeholder-gray-500 bg-transparent border-0 focus:outline-none focus:ring-0 dark:text-white"
                     />
 
                     {/* Search Icon */}
@@ -120,7 +119,7 @@ const SearchBar = () => {
                                         <a
                                             key={car.id}
                                             href={route(
-                                                "vehicles.show",
+                                                "public.vehicles.show",
                                                 car.slug
                                             )}
                                             className="block p-3 hover:bg-gray-50 border-b last:border-0 transition-colors"

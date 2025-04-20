@@ -8,6 +8,8 @@ import MaxWidthWrapper from "./MaxWidthWrapper";
 import { ArrowDown } from "./svgs/ArrowDown";
 import DropdownMenuItem from "./DropDownMenuItem";
 import { motion, AnimatePresence } from "framer-motion";
+import { Search, Heart, User, MapPin, ChevronDown } from "lucide-react";
+import SearchBar from "./SearchBar";
 
 const LocationSvg = (
     <svg
@@ -34,12 +36,16 @@ const LocationSvg = (
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const [showTopBar, setShowTopBar] = useState(true);
     const { auth } = usePage().props;
 
     useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 20);
+            const scrollPosition = window.scrollY;
+            setIsScrolled(scrollPosition > 20);
+            setShowTopBar(scrollPosition < 100); // Hide top bar after scrolling 100px
         };
+
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
@@ -130,6 +136,63 @@ const Navbar = () => {
                     : "bg-white dark:bg-gray-900"
             }`}
         >
+            {/* Top Bar */}
+            <motion.div
+                initial={{ opacity: 1 }}
+                animate={{
+                    opacity: showTopBar ? 1 : 0,
+                    height: showTopBar ? "auto" : 0,
+                }}
+                transition={{ duration: 0.3 }}
+                className="bg-primary text-white overflow-hidden"
+            >
+                <MaxWidthWrapper>
+                    {/* Mobile View */}
+                    <div className="md:hidden flex flex-col items-center space-y-2 text-xs py-2">
+                        <div className="flex items-center space-x-2">
+                            <MapPin className="w-4 h-4" />
+                            <span>Nairobi, Kenya</span>
+                        </div>
+                        <div className="flex items-center justify-between w-full">
+                            <span className="text-center">
+                                Mon-Fri: 8:00 AM - 6:00 PM
+                            </span>
+                            <div className="flex items-center space-x-3">
+                                <Link
+                                    href="/contact"
+                                    className="hover:text-primary/80 transition-colors"
+                                >
+                                    Contact
+                                </Link>
+                                <ThemeSwitcher />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Desktop View */}
+                    <div className="hidden md:flex items-center justify-between text-sm py-2">
+                        <div className="flex items-center space-x-4">
+                            <span className="flex items-center">
+                                <MapPin className="w-4 h-4 mr-1" />
+                                Nairobi, Kenya
+                            </span>
+                            <span>|</span>
+                            <span>Mon-Fri: 8:00 AM - 6:00 PM</span>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                            <Link
+                                href="/contact"
+                                className="hover:text-primary/80 transition-colors"
+                            >
+                                Contact Us
+                            </Link>
+                            <ThemeSwitcher />
+                        </div>
+                    </div>
+                </MaxWidthWrapper>
+            </motion.div>
+
+            {/* Main Navigation */}
             <section className="border-b border-gray-200 dark:border-gray-800">
                 <MaxWidthWrapper className="flex md:items-center justify-between flex-col space-y-4 md:flex-row md:space-y-0 py-4">
                     <div className="flex justify-between items-center w-full md:w-auto">
@@ -158,43 +221,45 @@ const Navbar = () => {
                                 href="/favorites"
                                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                             >
-                                {heartSvg}
+                                <Heart className="w-5 h-5" />
                             </Link>
                             {auth.user ? (
                                 <Link
                                     href="/profile"
                                     className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                                 >
-                                    {userProfileSvg}
+                                    <User className="w-5 h-5" />
                                 </Link>
                             ) : (
                                 <Link
                                     href="/login"
                                     className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                                 >
-                                    {userProfileSvg}
+                                    <User className="w-5 h-5" />
                                 </Link>
                             )}
                         </div>
                     </div>
 
-                    <div className="hidden md:flex items-center justify-between space-x-6">
-                        <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
-                            <span>English</span>
-                            <span>{DownSvg}</span>
-                        </div>
-                        <Link
+                    {/* Search Bar */}
+                    <div className="hidden md:flex items-center flex-1 max-w-md mx-4">
+                        <SearchBar />
+                    </div>
+
+                    {/* User Actions */}
+                    <div className="hidden md:flex items-center space-x-6">
+                        {/* <Link
                             href="/favorites"
                             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                         >
-                            {heartSvg}
-                        </Link>
+                            <Heart className="w-5 h-5" />
+                        </Link> */}
                         {auth.user ? (
                             <Link
-                                href="/profile"
+                                href="/dashboard"
                                 className="flex items-center gap-2 text-sm p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                             >
-                                {userProfileSvg}
+                                <User className="w-5 h-5" />
                                 <span className="hidden md:inline">
                                     {auth.user.name}
                                 </span>
@@ -204,7 +269,7 @@ const Navbar = () => {
                                 href="/login"
                                 className="flex items-center gap-2 text-sm p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                             >
-                                {userProfileSvg}
+                                <User className="w-5 h-5" />
                                 <span className="hidden md:inline">
                                     Sign In
                                 </span>
@@ -213,10 +278,12 @@ const Navbar = () => {
                     </div>
                 </MaxWidthWrapper>
             </section>
+
+            {/* Navigation Menu */}
             <section className="border-b border-gray-200 dark:border-gray-800">
                 <MaxWidthWrapper>
                     <div className="flex justify-between items-center">
-                        <nav className="hidden md:flex space-x-6">
+                        <nav className="hidden md:flex space-x-4">
                             <DropdownMenuItem
                                 title="Vehicles"
                                 items={[
@@ -225,12 +292,28 @@ const Navbar = () => {
                                         text: "All Vehicles",
                                     },
                                     {
+                                        href: "/vehicles?type=sedan",
+                                        text: "Sedans",
+                                    },
+                                    {
+                                        href: "/vehicles?type=suv",
+                                        text: "SUVs",
+                                    },
+                                    {
+                                        href: "/vehicles?type=truck",
+                                        text: "Trucks",
+                                    },
+                                    {
+                                        href: "/vehicles?type=van",
+                                        text: "Vans",
+                                    },
+                                    {
                                         href: "/vehicles?location=kenya",
                                         text: "Available in Kenya",
                                     },
                                     {
                                         href: "/vehicles?import=direct",
-                                        text: "Direct import",
+                                        text: "Direct Import",
                                     },
                                 ]}
                                 active={isActive("/vehicles")}
@@ -240,36 +323,73 @@ const Navbar = () => {
                                 items={[
                                     { href: "/bikes", text: "All Bikes" },
                                     {
-                                        href: "/bikes?location=kenya",
-                                        text: "Available in Kenya",
+                                        href: "/bikes?type=sports",
+                                        text: "Sports Bikes",
                                     },
                                     {
-                                        href: "/bikes?import=direct",
-                                        text: "Direct import",
+                                        href: "/bikes?type=cruiser",
+                                        text: "Cruisers",
+                                    },
+                                    {
+                                        href: "/bikes?type=offroad",
+                                        text: "Off-Road",
+                                    },
+                                    {
+                                        href: "/bikes?location=kenya",
+                                        text: "Available in Kenya",
                                     },
                                 ]}
                                 active={isActive("/bikes")}
                             />
                             <DropdownMenuItem
+                                title="Services"
+                                items={[
+                                    {
+                                        href: "/services/financing",
+                                        text: "Financing",
+                                    },
+                                    {
+                                        href: "/services/insurance",
+                                        text: "Insurance",
+                                    },
+                                    {
+                                        href: "/services/maintenance",
+                                        text: "Maintenance",
+                                    },
+                                    {
+                                        href: "/services/inspection",
+                                        text: "Vehicle Inspection",
+                                    },
+                                    {
+                                        href: "/services/import",
+                                        text: "Import Services",
+                                    },
+                                ]}
+                                active={isActive("/services")}
+                            />
+                            <DropdownMenuItem
                                 title="News & Reviews"
                                 items={[
-                                    { href: "/blog", text: "Blog" },
+                                    { href: "/news", text: "Latest News" },
                                     {
-                                        href: "/news",
-                                        text: "News & More",
+                                        href: "/",
+                                        text: "Vehicle Reviews",
                                     },
+                                    { href: "/", text: "Buying Guides" },
                                 ]}
                                 active={isActive("/blog") || isActive("/news")}
                             />
                             <DropdownMenuItem
                                 title="About Us"
                                 items={[
+                                    { href: "/about", text: "About Us" },
+                                    { href: "/contact", text: "Contact" },
                                     { href: "/faq", text: "FAQ" },
                                     {
-                                        href: "/about",
-                                        text: "About Us",
+                                        href: "/testimonials",
+                                        text: "Testimonials",
                                     },
-                                    { href: "/contact", text: "Contact" },
+                                    { href: "/careers", text: "Careers" },
                                 ]}
                                 active={
                                     isActive("/about") ||
@@ -277,17 +397,17 @@ const Navbar = () => {
                                     isActive("/faq")
                                 }
                             />
-                            <ThemeSwitcher />
                         </nav>
                         <div className="hidden md:flex items-center gap-2 text-sm p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer">
-                            {LocationSvg}
+                            <MapPin className="w-5 h-5" />
                             <span className="text-gray-600 dark:text-gray-300">
                                 Select City
                             </span>
-                            <ArrowDown />
+                            <ChevronDown className="w-4 h-4" />
                         </div>
                     </div>
 
+                    {/* Mobile Menu */}
                     <AnimatePresence>
                         {isMenuOpen && (
                             <motion.nav
@@ -297,6 +417,13 @@ const Navbar = () => {
                                 transition={{ duration: 0.3 }}
                                 className="md:hidden mt-4 space-y-2"
                             >
+                                <div className="mb-4">
+                                    <input
+                                        type="text"
+                                        placeholder="Search vehicles..."
+                                        className="w-full pl-4 pr-10 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    />
+                                </div>
                                 <DropdownMenuItem
                                     title="Vehicles"
                                     items={[
@@ -305,12 +432,20 @@ const Navbar = () => {
                                             text: "All Vehicles",
                                         },
                                         {
-                                            href: "/vehicles?location=kenya",
-                                            text: "Available in Kenya",
+                                            href: "/vehicles?type=sedan",
+                                            text: "Sedans",
                                         },
                                         {
-                                            href: "/vehicles?import=direct",
-                                            text: "Direct import",
+                                            href: "/vehicles?type=suv",
+                                            text: "SUVs",
+                                        },
+                                        {
+                                            href: "/vehicles?type=truck",
+                                            text: "Trucks",
+                                        },
+                                        {
+                                            href: "/vehicles?type=van",
+                                            text: "Vans",
                                         },
                                     ]}
                                 />
@@ -319,12 +454,33 @@ const Navbar = () => {
                                     items={[
                                         { href: "/bikes", text: "All Bikes" },
                                         {
-                                            href: "/bikes?location=kenya",
-                                            text: "Available in Kenya",
+                                            href: "/bikes?type=sports",
+                                            text: "Sports Bikes",
                                         },
                                         {
-                                            href: "/bikes?import=direct",
-                                            text: "Direct import",
+                                            href: "/bikes?type=cruiser",
+                                            text: "Cruisers",
+                                        },
+                                        {
+                                            href: "/bikes?type=offroad",
+                                            text: "Off-Road",
+                                        },
+                                    ]}
+                                />
+                                <DropdownMenuItem
+                                    title="Services"
+                                    items={[
+                                        {
+                                            href: "/services/financing",
+                                            text: "Financing",
+                                        },
+                                        {
+                                            href: "/services/insurance",
+                                            text: "Insurance",
+                                        },
+                                        {
+                                            href: "/services/maintenance",
+                                            text: "Maintenance",
                                         },
                                     ]}
                                 />
@@ -332,9 +488,6 @@ const Navbar = () => {
                                 <MenuItem href="/about">About</MenuItem>
                                 <MenuItem href="/contact">Contact</MenuItem>
                                 <MenuItem href="/faq">FAQ</MenuItem>
-                                <div className="p-4">
-                                    <ThemeSwitcher />
-                                </div>
                             </motion.nav>
                         )}
                     </AnimatePresence>

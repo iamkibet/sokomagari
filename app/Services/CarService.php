@@ -8,6 +8,7 @@ use App\Models\Car;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class CarService
 {
@@ -25,30 +26,29 @@ class CarService
     {
         $query = Car::query();
 
-        // Debug the incoming filters
-        \Log::info('CarService Filters:', $filters);
+
 
         // Apply filters
         if (!empty($filters['make'])) {
-            $query->where('make', 'like', "%{$filters['make']}%");
+            $query->where('make', $filters['make']);
         }
         if (!empty($filters['model'])) {
-            $query->where('model', 'like', "%{$filters['model']}%");
+            $query->where('model', $filters['model']);
         }
         if (!empty($filters['year_min'])) {
-            $query->where('year', '>=', $filters['year_min']);
+            $query->where('year', '>=', (int)$filters['year_min']);
         }
         if (!empty($filters['year_max'])) {
-            $query->where('year', '<=', $filters['year_max']);
+            $query->where('year', '<=', (int)$filters['year_max']);
         }
         if (!empty($filters['price_min'])) {
-            $query->where('price', '>=', $filters['price_min']);
+            $query->where('price', '>=', (float)$filters['price_min']);
         }
         if (!empty($filters['price_max'])) {
-            $query->where('price', '<=', $filters['price_max']);
+            $query->where('price', '<=', (float)$filters['price_max']);
         }
         if (!empty($filters['mileage_max'])) {
-            $query->where('mileage', '<=', $filters['mileage_max']);
+            $query->where('mileage', '<=', (float)$filters['mileage_max']);
         }
         if (!empty($filters['condition'])) {
             $query->where('condition', $filters['condition']);
@@ -57,23 +57,17 @@ class CarService
             $query->where('location', 'like', "%{$filters['location']}%");
         }
         if (!empty($filters['search'])) {
-            $query->where(function ($q) use ($filters) {
-                $q->where('make', 'like', "%{$filters['search']}%")
-                    ->orWhere('model', 'like', "%{$filters['search']}%")
-                    ->orWhere('description', 'like', "%{$filters['search']}%");
+            $searchTerm = trim($filters['search']);
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('make', 'like', "%{$searchTerm}%")
+                    ->orWhere('model', 'like', "%{$searchTerm}%")
+                    ->orWhere('description', 'like', "%{$searchTerm}%");
             });
         }
 
         $results = $query->latest()->paginate($perPage);
 
-        // Debug the SQL query and results
-        \Log::info('CarService Query:', [
-            'sql' => $query->toSql(),
-            'bindings' => $query->getBindings(),
-            'total' => $results->total(),
-            'count' => $results->count()
-        ]);
-
+       
         return $results;
     }
 

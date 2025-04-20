@@ -1,101 +1,85 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
+import { Link } from "@inertiajs/react";
+import {
+    ChevronDown,
+    Car,
+    Bike,
+    Newspaper,
+    Info,
+    Phone,
+    HelpCircle,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const DropdownMenuItem = ({ title, items, active }) => {
-    const DownSvg = (
-        <svg
-            className="w-2.5 h-2.5 ms-2.5 "
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="#000000"
-            viewBox="0 0 10 6"
-        >
-            <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="m1 1 4 4 4-4"
-            />
-        </svg>
-    );
-    // State to manage the dropdown's open/closed status
     const [isOpen, setIsOpen] = useState(false);
-    const timeoutRef = useRef(null);
 
-    // Open the dropdown immediately when mouse enters or focus occurs
-    const openDropdown = () => {
-        if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
+    const getIcon = (title) => {
+        switch (title.toLowerCase()) {
+            case "vehicles":
+                return <Car className="w-5 h-5" />;
+            case "bikes":
+                return <Bike className="w-5 h-5" />;
+            case "news & reviews":
+                return <Newspaper className="w-5 h-5" />;
+            case "about us":
+                return <Info className="w-5 h-5" />;
+            case "contact":
+                return <Phone className="w-5 h-5" />;
+            case "faq":
+                return <HelpCircle className="w-5 h-5" />;
+            default:
+                return null;
         }
-        setIsOpen(true);
-    };
-
-    // Delay closing to give users time to move from trigger to menu
-    const closeDropdown = () => {
-        timeoutRef.current = setTimeout(() => {
-            setIsOpen(false);
-        }, 100);
-    };
-
-    // Optional: handle keyboard navigation if desired
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-            setIsOpen((prev) => !prev);
-        }
-        // Add additional key handling (e.g., ArrowDown/ArrowUp) if needed
     };
 
     return (
         <div
             className="relative"
-            onMouseEnter={openDropdown}
-            onMouseLeave={closeDropdown}
-            onFocus={openDropdown}
-            onBlur={closeDropdown}
+            onMouseEnter={() => setIsOpen(true)}
+            onMouseLeave={() => setIsOpen(false)}
         >
-            {/* Trigger */}
-            <div
-                className={`flex uppercase font-bold items-center gap-1 py-4 transition-all cursor-pointer ${
-                    active
-                        ? "border-t-2 border-[#f75d34]"
-                        : "border-t-2 border-transparent"
-                } hover:border-t-2 hover:border-[#f75d34]`}
-                role="button"
-                tabIndex="0"
-                aria-haspopup="menu"
-                aria-expanded={isOpen}
-                onKeyDown={handleKeyDown}
+            <button
+                className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200
+                    ${
+                        active
+                            ? "text-primary bg-primary/10"
+                            : "text-gray-700 hover:text-primary hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                    }`}
             >
-                <span className="hover:text-gray-900 dark:hover:text-[#eae9fc]">
-                    {title}
-                </span>
-                {DownSvg}
-            </div>
+                {getIcon(title)}
+                <span>{title}</span>
+                <ChevronDown
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                        isOpen ? "rotate-180" : ""
+                    }`}
+                />
+            </button>
 
-            {/* Dropdown Menu */}
-            <div
-                className={`absolute right-50 mt-2 w-64 text-[#040316] dark:text-[#eae9fc] bg-[#fbfbfe] dark:bg-[rgb(33,33,33)]  border border-gray-200 dark:border-gray-700 rounded-md shadow-lg transition-all transform ${
-                    isOpen
-                        ? "opacity-100 translate-y-0 pointer-events-auto"
-                        : "opacity-0 translate-y-2 pointer-events-none"
-                }`}
-                role="menu"
-                aria-label={`${title} menu`}
-            >
-                {/* Adding a scrollable container if there are many items */}
-                <div className="max-h-64 overflow-y-auto">
-                    {items.map((item, index) => (
-                        <a
-                            key={index}
-                            href={item.href}
-                            role="menuitem"
-                            className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary/15 dark:hover:bg-gray-700"
-                        >
-                            {item.text}
-                        </a>
-                    ))}
-                </div>
-            </div>
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute left-0 mt-2 w-56 rounded-lg bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+                    >
+                        <div className="py-1">
+                            {items.map((item, index) => (
+                                <Link
+                                    key={index}
+                                    href={item.href}
+                                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors duration-200"
+                                >
+                                    {getIcon(item.text)}
+                                    <span>{item.text}</span>
+                                </Link>
+                            ))}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

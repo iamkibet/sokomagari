@@ -1,13 +1,38 @@
 import React from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
-import { Car, DollarSign, BarChart } from "lucide-react";
+import { Head, Link } from "@inertiajs/react";
+import { Car, DollarSign, BarChart, Edit, Trash2 } from "lucide-react";
+import { router } from "@inertiajs/react";
 
 export default function Index({ recentListings, financialMetrics }) {
     // Ensure recentListings is an array
     const listingsArray = Array.isArray(recentListings)
         ? recentListings
         : recentListings?.data || [];
+
+    // Format large numbers for better display
+    const formatCurrency = (value) => {
+        if (!value) return "0";
+
+        if (value >= 1000000) {
+            return `${(value / 1000000).toFixed(1)}M`;
+        } else if (value >= 1000) {
+            return `${(value / 1000).toFixed(1)}K`;
+        } else {
+            return value.toString();
+        }
+    };
+
+    // Handle delete with confirmation
+    const handleDelete = (slug) => {
+        if (
+            confirm(
+                "Are you sure you want to delete this vehicle? This action cannot be undone."
+            )
+        ) {
+            router.delete(route("dashboard.vehicles.destroy", slug));
+        }
+    };
 
     return (
         <AuthenticatedLayout>
@@ -46,8 +71,9 @@ export default function Index({ recentListings, financialMetrics }) {
                                     </dt>
                                     <dd className="mt-1 text-3xl font-semibold text-gray-900">
                                         KES{" "}
-                                        {financialMetrics?.total_value?.toLocaleString() ||
-                                            0}
+                                        {formatCurrency(
+                                            financialMetrics?.total_value || 0
+                                        )}
                                     </dd>
                                 </div>
                             </div>
@@ -97,11 +123,17 @@ export default function Index({ recentListings, financialMetrics }) {
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                     Listed
                                                 </th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Actions
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             {listingsArray.map((listing) => (
-                                                <tr key={listing.id}>
+                                                <tr
+                                                    key={listing.id}
+                                                    className="hover:bg-gray-50"
+                                                >
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div className="text-sm font-medium text-gray-900">
                                                             {listing.make}{" "}
@@ -114,15 +146,19 @@ export default function Index({ recentListings, financialMetrics }) {
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div className="text-sm text-gray-900">
                                                             KES{" "}
-                                                            {
-                                                                listing.price
-                                                                    ?.formatted
-                                                            }
+                                                            {listing.price?.raw
+                                                                ? formatCurrency(
+                                                                      listing
+                                                                          .price
+                                                                          .raw
+                                                                  )
+                                                                : listing.price
+                                                                      ?.formatted}
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <span
-                                                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                                            className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                                                                 listing.status
                                                                     ?.availability ===
                                                                 "available"
@@ -144,6 +180,35 @@ export default function Index({ recentListings, financialMetrics }) {
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                         {listing.dates?.listed}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                        <div className="flex space-x-3">
+                                                            <Link
+                                                                href={
+                                                                    listing
+                                                                        .links
+                                                                        ?.edit
+                                                                }
+                                                                className="text-indigo-600 hover:text-indigo-900"
+                                                            >
+                                                                <Edit
+                                                                    size={18}
+                                                                />
+                                                            </Link>
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        listing.slug
+                                                                    )
+                                                                }
+                                                                className="text-red-600 hover:text-red-900"
+                                                                type="button"
+                                                            >
+                                                                <Trash2
+                                                                    size={18}
+                                                                />
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}

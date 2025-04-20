@@ -78,14 +78,14 @@ const Index = () => {
             page: 1,
         });
         setActiveFilter(null);
-        router.get(route("vehicles.index"));
+        router.get(route("public.vehicles.index"));
     };
 
     // Submit filters to backend
     const applyFilters = () => {
         setIsLoading(true);
         console.log("Applying filters:", filterData);
-        router.get(route("vehicles.index"), filterData, {
+        router.get(route("public.vehicles.index"), filterData, {
             preserveState: true,
             onFinish: () => setIsLoading(false),
         });
@@ -95,7 +95,7 @@ const Index = () => {
     const handlePageChange = (page) => {
         setFilterData((prev) => ({ ...prev, page }));
         router.get(
-            route("vehicles.index"),
+            route("public.vehicles.index"),
             { ...filterData, page },
             {
                 preserveState: true,
@@ -179,41 +179,13 @@ const Index = () => {
                         <ul className="flex-wrap sm:flex gap-2">
                             {[
                                 { label: "0-500K", min: 0, max: 500000 },
-                                {
-                                    label: "500K-1M",
-                                    min: 500000,
-                                    max: 1000000,
-                                },
-                                {
-                                    label: "1M-2M",
-                                    min: 1000000,
-                                    max: 2000000,
-                                },
-                                {
-                                    label: "2M-3M",
-                                    min: 2000000,
-                                    max: 3000000,
-                                },
-                                {
-                                    label: "3M-4M",
-                                    min: 3000000,
-                                    max: 4000000,
-                                },
-                                {
-                                    label: "4M-5M",
-                                    min: 4000000,
-                                    max: 5000000,
-                                },
-                                {
-                                    label: "5M-10M",
-                                    min: 5000000,
-                                    max: 10000000,
-                                },
-                                {
-                                    label: "Above 10M",
-                                    min: 10000000,
-                                    max: null,
-                                },
+                                { label: "500K-1M", min: 500000, max: 1000000 },
+                                { label: "1M-2M", min: 1000000, max: 2000000 },
+                                { label: "2M-3M", min: 2000000, max: 3000000 },
+                                { label: "3M-4M", min: 3000000, max: 4000000 },
+                                { label: "4M-5M", min: 4000000, max: 5000000 },
+                                { label: "5M-10M", min: 5000000, max: 10000000 },
+                                { label: "Above 10M", min: 10000000, max: null },
                             ].map((b) => (
                                 <li
                                     key={b.label}
@@ -223,11 +195,7 @@ const Index = () => {
                                             : "bg-gray-200"
                                     } cursor-pointer border py-3 px-4`}
                                     onClick={() =>
-                                        handleBudgetFilter(
-                                            b.min,
-                                            b.max,
-                                            b.label
-                                        )
+                                        handleBudgetFilter(b.min, b.max, b.label)
                                     }
                                 >
                                     {b.label}
@@ -236,10 +204,7 @@ const Index = () => {
                         </ul>
 
                         {/* Advanced Filters */}
-                        <SecondaryButton
-                            className="my-4"
-                            onClick={ClearFilters}
-                        >
+                        <SecondaryButton className="my-4" onClick={ClearFilters}>
                             Clear Filters
                         </SecondaryButton>
 
@@ -247,9 +212,7 @@ const Index = () => {
                             onClick={() => setIsOpen(!isOpen)}
                             className="font-bold flex w-full justify-between border-b py-1"
                         >
-                            {isOpen
-                                ? "Hide Advanced Search"
-                                : "Click here for Advanced Search"}
+                            {isOpen ? "Hide Advanced Search" : "Click here for Advanced Search"}
                             <div className="h-8 w-8">
                                 <Filter />
                             </div>
@@ -342,9 +305,7 @@ const Index = () => {
                             onClick={applyFilters}
                             disabled={isLoading}
                             className={`px-4 py-3 bg-black text-white w-full mt-4 font-bold text-xl ${
-                                isLoading
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : "hover:bg-black/70"
+                                isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-black/70"
                             }`}
                         >
                             {isLoading ? "Searching..." : "Search"}
