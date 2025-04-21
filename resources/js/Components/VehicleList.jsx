@@ -87,7 +87,7 @@ const VehicleList = ({ vehicles, filters = {} }) => {
         cleanFilters.page = page;
 
         // Use router to navigate with the new filters
-        router.get(route("vehicles.index"), cleanFilters, {
+        router.get(route("public.vehicles.index"), cleanFilters, {
             preserveState: true,
             preserveScroll: true,
             onFinish: () => setIsLoading(false),
@@ -104,7 +104,7 @@ const VehicleList = ({ vehicles, filters = {} }) => {
 
     const clearFilters = () => {
         setActiveFilters({});
-        router.get(route("vehicles.index"));
+        router.get(route("public.vehicles.index"));
     };
 
     const renderPagination = () => {

@@ -128,7 +128,7 @@ export default function Welcome({ cars, categories }) {
 
                         {/* Filter Form Container */}
 
-                        <div className="my-10 md:my-0 md:ml-10 items-center justify-center bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-2 md:p-4 border border-gray-200/20">
+                        <div className="my-10 md:my-0 md:ml-20 items-center justify-center bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-2 md:p-4 border border-gray-200/20">
                             <FilterForm />
                             <div className="hidden md:block md:mt-8 text-sm text-gray-600">
                                 Popular Searches:
