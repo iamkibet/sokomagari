@@ -5,22 +5,27 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import GuestLayout from "@/Layouts/GuestLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
-import { Car } from "lucide-react";
+import { Car, Loader2, User } from "lucide-react";
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        email: "",
-        password: "",
-        remember: false,
+        email: "testuser@example.com",
+        password: "SecurePassword123!",
+        remember: true,
     });
+
+    const handleDemoFill = () => {
+        setData({
+            email: "testuser@example.com",
+            password: "SecurePassword123!",
+            remember: true,
+        });
+    };
 
     const submit = (e) => {
         e.preventDefault();
-
         post(route("login"), {
-            onSuccess: () => {
-                window.location.href = route("dashboard.index");
-            },
+            onSuccess: () => (window.location.href = route("dashboard.index")),
             onFinish: () => reset("password"),
         });
     };
@@ -28,117 +33,149 @@ export default function Login({ status, canResetPassword }) {
     return (
         <GuestLayout>
             <Head title="Log in" />
-
-            <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-md w-full space-y-8">
-                    <div>
-                        <div className="flex justify-center">
-                            <Car className="h-12 w-12 text-indigo-600" />
+            <div className="flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 p-4 sm:p-6 lg:p-8">
+                <div className="w-full max-w-md space-y-8">
+                    <div className="text-center">
+                      
+                        <div className="mt-6 space-y-2">
+                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                                Welcome Back
+                            </h1>
+                            <p className="text-gray-500 dark:text-gray-400 text-balance">
+                                Manage your vehicle inventory with precision
+                            </p>
                         </div>
-                        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                            Welcome to SokoMagari
-                        </h2>
-                        <p className="mt-2 text-center text-sm text-gray-600">
-                            Sign in to manage your vehicle listings
-                        </p>
                     </div>
 
-                    {status && (
-                        <div className="mb-4 text-sm font-medium text-green-600 text-center">
-                            {status}
-                        </div>
-                    )}
-
-                    <form className="mt-8 space-y-6" onSubmit={submit}>
-                        <div className="rounded-md shadow-sm -space-y-px">
-                            <div>
-                                <InputLabel htmlFor="email" value="Email" />
-                                <TextInput
-                                    id="email"
-                                    type="email"
-                                    name="email"
-                                    value={data.email}
-                                    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                                    placeholder="Email address"
-                                    autoComplete="username"
-                                    isFocused={true}
-                                    onChange={(e) =>
-                                        setData("email", e.target.value)
-                                    }
-                                />
-                                <InputError
-                                    message={errors.email}
-                                    className="mt-2"
-                                />
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 sm:p-10 space-y-6 border border-gray-200 dark:border-gray-700">
+                        {status && (
+                            <div className="px-4 py-3 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg text-sm">
+                                {status}
                             </div>
-                            <div>
-                                <InputLabel
-                                    htmlFor="password"
-                                    value="Password"
-                                />
-                                <TextInput
-                                    id="password"
-                                    type="password"
-                                    name="password"
-                                    value={data.password}
-                                    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                                    placeholder="Password"
-                                    autoComplete="current-password"
-                                    onChange={(e) =>
-                                        setData("password", e.target.value)
-                                    }
-                                />
-                                <InputError
-                                    message={errors.password}
-                                    className="mt-2"
-                                />
-                            </div>
-                        </div>
+                        )}
 
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                                <Checkbox
-                                    name="remember"
-                                    checked={data.remember}
-                                    onChange={(e) =>
-                                        setData("remember", e.target.checked)
-                                    }
-                                />
-                                <label className="ml-2 block text-sm text-gray-900">
+                        <form onSubmit={submit} className="space-y-6">
+                            <div className="space-y-4">
+                                <div className="flex flex-col w-full">
+                                    <InputLabel
+                                        value="Email address"
+                                        className="flex w-full dark:text-gray-300 mb-1"
+                                    />
+                                    <TextInput
+                                        id="email"
+                                        type="email"
+                                        value={data.email}
+                                        onChange={(e) =>
+                                            setData("email", e.target.value)
+                                        }
+                                        className="dark:bg-gray-700/50 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500"
+                                        placeholder="name@company.com"
+                                        autoComplete="email"
+                                        required
+                                    />
+                                    <InputError
+                                        message={errors.email}
+                                        className="mt-1"
+                                    />
+                                </div>
+
+                                <div className="flex flex-col w-full">
+                                    <div className="flex justify-between items-center mb-1">
+                                        <InputLabel
+                                            value="Password"
+                                            className=" dark:text-gray-300"
+                                        />
+                                        {canResetPassword && (
+                                            <Link
+                                                href={route("password.request")}
+                                                className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
+                                            >
+                                                Forgot password?
+                                            </Link>
+                                        )}
+                                    </div>
+                                    <TextInput
+                                        id="password"
+                                        type="password"
+                                        value={data.password}
+                                        onChange={(e) =>
+                                            setData("password", e.target.value)
+                                        }
+                                        className="dark:bg-gray-700/50 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500"
+                                        placeholder="••••••••"
+                                        autoComplete="current-password"
+                                        required
+                                    />
+                                    <InputError
+                                        message={errors.password}
+                                        className="mt-1"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                                <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
+                                    <Checkbox
+                                        name="remember"
+                                        checked={data.remember}
+                                        onChange={(e) =>
+                                            setData(
+                                                "remember",
+                                                e.target.checked
+                                            )
+                                        }
+                                    />
                                     Remember me
                                 </label>
                             </div>
 
-                            {canResetPassword && (
-                                <div className="text-sm">
-                                    <Link
-                                        href={route("password.request")}
-                                        className="font-medium text-indigo-600 hover:text-indigo-500"
-                                    >
-                                        Forgot your password?
-                                    </Link>
-                                </div>
-                            )}
-                        </div>
-
-                        <div>
                             <PrimaryButton
-                                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                 disabled={processing}
+                                className="w-full justify-center gap-2"
                             >
-                                {processing ? "Signing in..." : "Sign in"}
+                                {processing ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        Authenticating...
+                                    </>
+                                ) : (
+                                    "Sign in"
+                                )}
                             </PrimaryButton>
-                        </div>
 
-                        <div className="text-center">
-                            <Link
-                                href={route("register")}
-                                className="font-medium text-indigo-600 hover:text-indigo-500"
-                            >
-                                Don't have an account? Register
-                            </Link>
-                        </div>
-                    </form>
+                            <div className="relative">
+                                <div className="absolute inset-0 flex items-center">
+                                    <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
+                                </div>
+                                <div className="relative flex justify-center text-sm">
+                                    <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                                        Quick actions
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="grid gap-3">
+                                <button
+                                    type="button"
+                                    onClick={handleDemoFill}
+                                    className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                                >
+                                    <User className="w-4 h-4" />
+                                    <span>Use Demo Credentials</span>
+                                </button>
+
+                                <Link
+                                    href={route("register")}
+                                    className="text-center text-sm text-gray-600 dark:text-gray-400 hover:underline"
+                                >
+                                    New to SokoMagari?{" "}
+                                    <span className="text-primary-600 dark:text-primary-400 font-medium">
+                                        Create account
+                                    </span>
+                                </Link>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </GuestLayout>

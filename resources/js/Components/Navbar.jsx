@@ -267,11 +267,21 @@ const Navbar = () => {
                         ) : (
                             <Link
                                 href="/login"
-                                className="flex items-center gap-2 text-sm p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                className="group flex items-center gap-3 px-4 py-2.5 rounded-xl 
+             bg-gradient-to-r from-primary to-primary-dark dark:bg-primary-dark/10 dark:hover:bg-primary-dark/20
+             transition-all duration-200 ease-out
+             hover:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/70
+             border border-transparent hover:border-primary/5 dark:hover:border-white/5
+             text-primary-600 dark:text-primary-200"
+                                role="button"
+                                aria-label="Demo login access"
                             >
-                                <User className="w-5 h-5" />
-                                <span className="hidden md:inline">
-                                    Sign In
+                                <User
+                                    className="w-5 h-5 opacity-80 group-hover:opacity-100 
+                 transition-opacity dark:text-primary-300"
+                                />
+                                <span className="hidden md:inline text-sm font-medium tracking-tight">
+                                    Demo Access
                                 </span>
                             </Link>
                         )}

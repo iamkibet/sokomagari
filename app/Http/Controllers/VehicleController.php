@@ -49,6 +49,19 @@ class VehicleController extends Controller
         return Inertia::render('Vehicles/Index', [
             'results' => $results,
             'filters' => $validated,
+            'cars' => [
+                'featured' => $carService->getFeaturedCars(),
+                'suv' => $carService->getFeaturedCars('suv'),
+                'sedan' => $carService->getFeaturedCars('sedan'),
+                'van' => $carService->getFeaturedCars('van'),
+                'Hatchback' => $carService->getFeaturedCars('hatchback'),
+                'affordable' => $carService->getAffordableCars(),
+                'latest' => $carService->getLatestCars(),
+                'petrol' => $carService->getFuelTypeCars('petrol'),
+                'diesel' => $carService->getFuelTypeCars('diesel'),
+                'electric' => $carService->getFuelTypeCars('electric'),
+
+            ],
         ]);
     }
 

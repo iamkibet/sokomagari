@@ -16,9 +16,12 @@ import {
     FileText,
     Car,
     Sparkles,
+    ArrowRight,
 } from "lucide-react";
 
 export default function Welcome({ cars, categories }) {
+    console.log(cars);
+
     return (
         <GuestLayout>
             <Head title="Welcome">
@@ -117,7 +120,7 @@ export default function Welcome({ cars, categories }) {
                                 </div>
                                 <div className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10">
                                     <div className="text-2xl md:text-3xl font-bold text-primary">
-                                       50+
+                                        50+
                                     </div>
                                     <div className="text-sm md:text-base text-gray-300 font-medium">
                                         Loans Facilitated
@@ -194,41 +197,76 @@ export default function Welcome({ cars, categories }) {
             <div className="py-12 md:py-20 bg-gray-50 dark:bg-gray-900">
                 <MaxWidthWrapper>
                     <VehicleSlider
-                        title="The most searched cars"
-                        items={cars.data}
+                        title="Featured Cars"
+                        items={cars.featured}
                         categories={[
                             { id: "all", label: "All" },
-                            { id: "sedan", label: "Sedan" },
                             { id: "suv", label: "SUV" },
+                            { id: "sedan", label: "Sedan" },
+                            { id: "hatchback", label: "Hatchback" },
+                            { id: "van", label: "Van" },
                         ]}
                         filterFn={(items, category) =>
-                            category === "all"
-                                ? items
-                                : items.filter(
-                                      (car) => car.category === category
-                                  )
+                            category === "all" ? items : cars[category] || []
                         }
                         viewMoreLink="/vehicles"
                     />
 
                     <VehicleSlider
-                        title="Latest cars"
-                        items={cars.data.filter((car) => car.year > 2016)}
+                        title="Fuel Type"
+                        items={cars.petrol}
+                        categories={[
+                            { id: "petrol", label: "Petrol" },
+                            { id: "diesel", label: "Diesel" },
+                            { id: "electric", label: "Electric" },
+                        ]}
+                        filterFn={(items, category) =>
+                            category === "all" ? items : cars[category] || []
+                        }
+                        viewMoreLink="/vehicles?fuel_type="
+                    />
+
+                    <VehicleSlider
+                        title="Latest Cars"
+                        items={cars.latest}
                         viewMoreLink="/vehicles"
                     />
 
                     <VehicleSlider
                         title="Affordable Cars"
-                        items={cars.data}
-                        filterFn={(items) =>
-                            items.filter((car) => car.price < 20000)
-                        }
+                        items={cars.affordable}
                         viewMoreLink="/vehicles"
                     />
                 </MaxWidthWrapper>
             </div>
 
             <WhatFits />
+            {/* CTA Section */}
+            <div className="relative py-24 bg-gray-900">
+                <div className="mx-auto max-w-7xl px-6 lg:px-8">
+                    <div className="relative isolate overflow-hidden bg-gradient-to-r from-primary to-primary-dark px-6 py-16 text-center shadow-2xl rounded-3xl sm:px-16">
+                        <h2 className="mx-auto max-w-2xl text-3xl font-bold text-white">
+                            Ready for Exceptional Mobility?
+                        </h2>
+                        <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-100">
+                            Discover your ideal vehicle through Africa's most
+                            trusted automotive platform
+                        </p>
+                        <div className="mt-10 flex items-center justify-center gap-x-6">
+                            <a
+                                href={route("public.vehicles.index")}
+                                className="flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-all"
+                            >
+                                Browse Inventory
+                                <ArrowRight
+                                    className="w-4 h-4"
+                                    strokeWidth={2.5}
+                                />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </GuestLayout>
     );
 }

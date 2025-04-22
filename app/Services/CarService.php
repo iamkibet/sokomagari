@@ -15,9 +15,73 @@ class CarService
     protected const CACHE_TTL = 30;
     protected const SIMILAR_LIMIT = 4;
     protected const SEARCH_LIMIT = 5;
+    protected const SLIDER_LIMIT = 15;
+
+    /**
+     * Get featured cars for the slider with optional type filter
+     */
+    public function getFeaturedCars(?string $type = null): Collection
+    {
+        $cacheKey = 'featured_cars_slider_' . ($type ?? 'all');
+
+        return Car::when($type, fn($q) => $q->where('type', $type))
+            ->latest()
+            ->limit(self::SLIDER_LIMIT)
+            ->get();
+    }
 
 
+    // Fuel Type
 
+    public function getFuelTypeCars(?string $fuelType = null): Collection
+    {
+        $validFuelTypes = ['petrol', 'diesel', 'electric', 'hybrid'];
+
+        return Cache::remember(
+            "fuel_type_cars_{$fuelType}",
+            now()->addMinutes(self::CACHE_TTL),
+            function () use ($fuelType, $validFuelTypes) {
+                $query = Car::query()
+                    
+                    ->whereNotNull('fuel_type');
+
+                if ($fuelType && in_array($fuelType, $validFuelTypes)) {
+                    $query->where('fuel_type', $fuelType);
+                }
+
+                return $query->latest()
+                    ->limit(self::SLIDER_LIMIT)
+                    ->get();
+            }
+        );
+    }
+
+    
+
+    /**
+     * Get affordable cars (under $20,000)
+     */
+    public function getAffordableCars(): Collection
+    {
+
+
+        return Car::where('price', '<', 3000000)
+
+            ->latest()
+            ->limit(self::SLIDER_LIMIT)
+            ->get();
+    }
+
+    /**
+     * Get latest cars (from current year)
+     */
+    public function getLatestCars(): Collection
+    {
+        return Car::where('year', '>=', 2016)
+            ->latest()
+            ->limit(self::SLIDER_LIMIT)
+            ->get();
+    }
 
     /**
      * Get paginated list of all cars
@@ -25,8 +89,6 @@ class CarService
     public function allCars(array $filters = [], int $perPage = 12): Paginator
     {
         $query = Car::query();
-
-
 
         // Apply filters
         if (!empty($filters['make'])) {
@@ -67,7 +129,6 @@ class CarService
 
         $results = $query->latest()->paginate($perPage);
 
-       
         return $results;
     }
 
@@ -128,7 +189,6 @@ class CarService
             // ->with(['thumbnail'])
             ->inRandomOrder()
             ->limit($limit);
-
 
         if (!empty($searchFilters['make'])) {
             $query->where('make', $searchFilters['make']);

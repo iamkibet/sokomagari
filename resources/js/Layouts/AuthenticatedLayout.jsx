@@ -5,6 +5,7 @@ import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link, usePage } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 import { Head } from "@inertiajs/react";
+import { LogOutIcon, UserIcon } from "lucide-react";
 
 // Reusable Icon component to handle SVG props consistently
 const Icon = ({ children, className = "w-5 h-5" }) => (
@@ -23,8 +24,8 @@ export default function AuthenticatedLayout({ header, children }) {
     const user = auth.user;
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isMobile, setIsMobile] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    // Handle responsive behavior
     useEffect(() => {
         const handleResize = () => {
             const isMobile = window.innerWidth < 1024;
@@ -67,7 +68,7 @@ export default function AuthenticatedLayout({ header, children }) {
         },
         {
             name: "News",
-            route: "dashboard.news.create",
+            route: "public.news.index",
             icon: (
                 <Icon>
                     <path
@@ -79,8 +80,8 @@ export default function AuthenticatedLayout({ header, children }) {
             ),
         },
         {
-            name: "Bookings",
-            route: "public.about",
+            name: "Create news",
+            route: "dashboard.news.create",
             icon: (
                 <Icon>
                     <path
@@ -109,11 +110,11 @@ export default function AuthenticatedLayout({ header, children }) {
     return (
         <>
             <Head />
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-gray-50/50">
                 {/* Mobile Overlay */}
                 {isMobile && isSidebarOpen && (
                     <div
-                        className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+                        className="fixed inset-0 z-30 bg-black/40 lg:hidden backdrop-blur-sm"
                         onClick={() => setIsSidebarOpen(false)}
                     />
                 )}
@@ -121,95 +122,130 @@ export default function AuthenticatedLayout({ header, children }) {
                 {/* Mobile Sidebar Toggle */}
                 <button
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                    className="lg:hidden fixed top-4 left-4 z-40 p-2 bg-white rounded-md shadow-sm"
+                    className="lg:hidden fixed top-4 left-4 z-40 p-2 bg-white rounded-xl shadow-sm hover:shadow transition-shadow"
                     aria-label="Toggle sidebar"
                 >
                     <Icon className="w-6 h-6">
                         <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M4 6h16M4 12h16M4 18h16"
+                            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
                         />
                     </Icon>
                 </button>
 
                 {/* Sidebar */}
                 <aside
-                    className={`fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-200 ease-in-out pt-4
-              ${
-                  isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-              } lg:translate-x-0`}
+                    className={`fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-out pt-4 border-r border-gray-100
+                        ${
+                            isSidebarOpen
+                                ? "translate-x-0"
+                                : "-translate-x-full"
+                        } lg:translate-x-0`}
                 >
                     <div className="flex flex-col h-full">
-                        <div className="py-2 px-2 border-b border-gray-200">
-                            <Link href="/" className="flex  gap-2">
-                                <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+                        <div className="px-4 pb-4 border-b border-gray-100">
+                            <Link href="/" className="flex items-center gap-3">
+                                <ApplicationLogo className="block h-8 w-auto text-primary/60" />
+                                
                             </Link>
                         </div>
 
-                        <nav className="flex-1 overflow-y-auto">
-                            <ul className="flex flex-col p-2 space-y-1">
+                        <nav className="flex-1 overflow-y-auto px-2 mt-5">
+                            <ul className="flex flex-col space-y-1">
                                 {navigation.map((item) => (
                                     <li key={item.name}>
                                         <NavLink
                                             href={route(item.route)}
                                             active={route().current(item.route)}
-                                            className="flex items-center gap-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors"
+                                            className="group flex items-center gap-x-3 px-4 py-3  hover:bg-gray-50 transition-colors"
                                         >
-                                            {item.icon}
-                                            {item.name}
+                                            <span className="text-primary-600">
+                                                {item.icon}
+                                            </span>
+                                            <span className="text-sm font-medium text-gray-700 group-hover:text-primary-600">
+                                                {item.name}
+                                            </span>
                                         </NavLink>
                                     </li>
                                 ))}
                             </ul>
                         </nav>
 
-                        {/* User Account Section */}
-                        <div className="p-4 border-t border-gray-200">
-                            <Dropdown>
-                                <Dropdown.Trigger>
-                                    <button className="flex items-center w-full p-2 text-left rounded-lg hover:bg-gray-100 focus:outline-none">
+                        {/* User Account Dropdown */}
+                        <div className="p-4 border-t border-gray-100">
+                            <div className="relative">
+                                <button
+                                    onClick={() =>
+                                        setIsDropdownOpen((prev) => !prev)
+                                    }
+                                    className="flex items-center w-full p-2 text-left rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
+                                    aria-expanded={isDropdownOpen}
+                                    aria-controls="user-menu"
+                                >
+                                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                                        <div
+                                            className="flex items-center justify-center h-9 w-9 rounded-full bg-primary-100 text-primary-800 font-medium uppercase"
+                                            aria-hidden="true"
+                                        >
+                                            {user.initials || user.name[0]}
+                                        </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-sm font-medium text-gray-900 truncate">
                                                 {user.name}
                                             </p>
-                                            <p className="text-sm text-gray-500 truncate">
+                                            <p className="text-xs text-gray-500 truncate">
                                                 {user.email}
                                             </p>
                                         </div>
-                                        <svg
-                                            className="w-5 h-5 text-gray-500"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20"
-                                            fill="currentColor"
-                                        >
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                clipRule="evenodd"
-                                            />
-                                        </svg>
-                                    </button>
-                                </Dropdown.Trigger>
+                                    </div>
+                                </button>
 
-                                <Dropdown.Content className="w-full">
-                                    <Dropdown.Link
-                                        href={route("dashboard.profile.edit", {
-                                            profile: user.id,
-                                        })}
+                                {/* Dropdown Overlay and Menu */}
+                                {isDropdownOpen && (
+                                    <div
+                                        className="fixed inset-0 z-50"
+                                        onClick={() => setIsDropdownOpen(false)}
+                                        role="presentation"
                                     >
-                                        Profile Settings
-                                    </Dropdown.Link>
-                                    <Dropdown.Link
-                                        href={route("logout")}
-                                        method="post"
-                                        as="button"
-                                    >
-                                        Log Out
-                                    </Dropdown.Link>
-                                </Dropdown.Content>
-                            </Dropdown>
+                                        <div className="absolute bottom-0 right-0 w-64 bg-white rounded-lg shadow-lg border border-gray-100 transform translate-y-[-100%] translate-x-[-16px] transition-opacity duration-200 ease-out">
+                                            <nav
+                                                id="user-menu"
+                                                className="py-2"
+                                                aria-label="User menu"
+                                            >
+                                                <Link
+                                                    href={route(
+                                                        "dashboard.profile.edit",
+                                                        { profile: user.id }
+                                                    )}
+                                                    className="flex items-center px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors"
+                                                    onClick={() =>
+                                                        setIsDropdownOpen(false)
+                                                    }
+                                                >
+                                                    <UserIcon className="w-5 h-5 mr-3 text-gray-400" />
+                                                    Profile Settings
+                                                </Link>
+
+                                                <form
+                                                    action={route("logout")}
+                                                    method="POST"
+                                                    className="border-t border-gray-100"
+                                                >
+                                                    <button
+                                                        type="submit"
+                                                        className="flex items-center w-full px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors text-red-600"
+                                                    >
+                                                        <LogOutIcon className="w-5 h-5 mr-3 text-red-400" />
+                                                        Log Out
+                                                    </button>
+                                                </form>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </aside>
@@ -218,18 +254,23 @@ export default function AuthenticatedLayout({ header, children }) {
                 <div className="lg:pl-64">
                     {/* Page Header */}
                     {header && (
-                        <header className="bg-white shadow">
-                            <div className="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                                {header}
+                        <header className="bg-white border-b border-gray-100">
+                            <div className="px-6 py-4 mx-auto max-w-7xl">
+                                <div className="flex items-center justify-between">
+                                    <h1 className="text-2xl font-semibold text-gray-900">
+                                        {header}
+                                    </h1>
+                                    {/* Add any header actions here */}
+                                </div>
                             </div>
                         </header>
                     )}
 
                     {/* Main Content Area */}
                     <main className="p-6">
-                        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                            <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                                {children}
+                        <div className="mx-auto max-w-7xl">
+                            <div className="overflow-hidden bg-white rounded-xl shadow-sm border border-gray-100">
+                                <div className="p-6">{children}</div>
                             </div>
                         </div>
                     </main>

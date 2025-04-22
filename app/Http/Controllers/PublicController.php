@@ -10,7 +10,19 @@ class PublicController extends Controller
     public function home(CarService $carService)
     {
         return Inertia::render('Public/Welcome', [
-            'cars' => $carService->allCars(),
+            'cars' => [
+                'featured' => $carService->getFeaturedCars(),
+                'suv' => $carService->getFeaturedCars('suv'),
+                'sedan' => $carService->getFeaturedCars('sedan'),
+                'van' => $carService->getFeaturedCars('van'),
+                'Hatchback' => $carService->getFeaturedCars('hatchback'),
+                'affordable' => $carService->getAffordableCars(),
+                'latest' => $carService->getLatestCars(),
+                'petrol' => $carService->getFuelTypeCars('petrol'),
+                'diesel' => $carService->getFuelTypeCars('diesel'),
+                'electric' => $carService->getFuelTypeCars('electric'),
+                
+            ],
         ]);
     }
 

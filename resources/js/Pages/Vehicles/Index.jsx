@@ -10,7 +10,7 @@ import { Transition } from "@headlessui/react";
 import { ChevronDown, ChevronRight, Search } from "lucide-react";
 
 const Index = () => {
-    const { allCars, results, filters = {} } = usePage().props;
+    const { allCars,cars, results, filters = {} } = usePage().props;
     const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [activeFilter, setActiveFilter] = useState(null);
@@ -404,27 +404,45 @@ const Index = () => {
                 {/* Featured Sections */}
                 <div className="mt-16 space-y-16">
                     <VehicleSlider
-                        title="Latest Models"
-                        items={results.data.filter((car) => car.year > 2021)}
+                        title="Featured Cars"
+                        items={cars.featured}
                         categories={[
                             { id: "all", label: "All" },
                             { id: "suv", label: "SUV" },
                             { id: "sedan", label: "Sedan" },
+                            { id: "hatchback", label: "Hatchback" },
+                            { id: "van", label: "Van" },
                         ]}
-                        viewMoreLink="/vehicles?year_min=2022"
+                        filterFn={(items, category) =>
+                            category === "all" ? items : cars[category] || []
+                        }
+                        viewMoreLink="/vehicles"
                     />
 
                     <VehicleSlider
-                        title="Great Value Picks"
-                        items={results.data.filter(
-                            (car) => car.price < 2000000
-                        )}
+                        title="Fuel Type"
+                        items={cars.petrol}
                         categories={[
-                            { id: "all", label: "All" },
-                            { id: "hatchback", label: "Hatchback" },
-                            { id: "compact", label: "Compact" },
+                            { id: "petrol", label: "Petrol" },
+                            { id: "diesel", label: "Diesel" },
+                            { id: "electric", label: "Electric" },
                         ]}
-                        viewMoreLink="/vehicles?price_max=2000000"
+                        filterFn={(items, category) =>
+                            category === "all" ? items : cars[category] || []
+                        }
+                        viewMoreLink="/vehicles?fuel_type="
+                    />
+
+                    <VehicleSlider
+                        title="Latest Cars"
+                        items={cars.latest}
+                        viewMoreLink="/vehicles"
+                    />
+
+                    <VehicleSlider
+                        title="Affordable Cars"
+                        items={cars.affordable}
+                        viewMoreLink="/vehicles"
                     />
                 </div>
             </MaxWidthWrapper>

@@ -35,7 +35,7 @@ const Footer = () => {
     ];
 
     const contactInfo = [
-        { icon: Phone, text: "+254 700 000 000" },
+        { icon: Phone, text: "+254 720 449 012" },
         { icon: Mail, text: "info@sokomagari.com" },
         { icon: MapPin, text: "Nairobi, Kenya" },
         { icon: Clock, text: "Mon - Sat: 8:00 AM - 6:00 PM" },

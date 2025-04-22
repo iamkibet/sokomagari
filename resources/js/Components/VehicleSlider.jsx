@@ -84,7 +84,6 @@ const VehicleSlider = ({
             // Calculate the new scroll position
             let newScrollPosition = scrollLeft + scrollAmount;
 
-            
             const maxScroll = scrollWidth - clientWidth;
             newScrollPosition = Math.max(
                 0,
@@ -251,7 +250,7 @@ const VehicleSlider = ({
                                 className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group backdrop-blur-sm"
                                 aria-label="Scroll left"
                             >
-                                <div className="h-6 w-6 sm:h-8 sm:w-8 text-gray-700 group-hover:text-primary transition-colors duration-300">
+                                <div className="h-4 w-4 sm:h-4 sm:w-4 text-gray-700 group-hover:text-primary transition-colors duration-300">
                                     <ArrowLeft />
                                 </div>
                             </button>
@@ -262,7 +261,7 @@ const VehicleSlider = ({
                                 className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group backdrop-blur-sm"
                                 aria-label="Scroll right"
                             >
-                                <div className="h-6 w-6 sm:h-8 sm:w-8 text-gray-700 group-hover:text-primary transition-colors duration-300">
+                                <div className="h-6 w-6 sm:h-4 sm:w-4 text-gray-700 group-hover:text-primary transition-colors duration-300">
                                     <ArrowRight />
                                 </div>
                             </button>
