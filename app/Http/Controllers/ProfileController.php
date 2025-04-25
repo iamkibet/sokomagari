@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
+
+
 class ProfileController extends Controller
 {
     /**
@@ -37,7 +39,7 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit');
+        return Redirect::route('dashboard.profile.edit', ['profile' => $request->user()->id]);
     }
 
     /**

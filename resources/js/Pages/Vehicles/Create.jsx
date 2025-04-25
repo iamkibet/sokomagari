@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useForm } from "@inertiajs/react";
 import { ChevronDown, ChevronUp, Check, AlertCircle } from "react-feather";
 import StepProgress from "@/Components/StepProgress";
@@ -7,68 +7,87 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 const LOCAL_STORAGE_KEY = "vehicleCreateForm";
 
 const Create = () => {
-    const { data, setData, post, errors } = useForm({
-        // Basic Details
-        make: "",
-        model: "",
-        year: "",
-        price: "",
-        mileage: "",
-        condition: "",
-        location: "Nairobi, Kenya",
-        availability: "Available",
-        drive: "",
-        engine_size: "",
-        fuel_type: "",
-        horse_power: "",
-        transmission: "",
-        torque: "",
-        type: "",
-        acceleration: "",
-        description: "",
-        images: [],
-        is_sell_on_behalf: false,
-        owner_name: "",
-        owner_email: "",
-        owner_phone: "",
-        // Specifications (all stored in one nested object)
-        comfort_features: {
-            trimming: "",
-            heated_seats: false,
-            sound_system: "",
-            power_windows: false,
-            seat_material: "",
-            air_conditioning: "",
-            powered_tailgate: false,
-            steering_controls: false,
-            phone_connectivity: false,
-            auto_start_stop: false,
-            infotainment_system: "",
-            isofix_anchors: false,
-            paddle_shifts: false,
-            apple_carplay: false,
-            fm_radio: false,
-            keyless_entry: false,
-        },
-        safety_features: {
-            gps_tracker: false,
-            srs_airbags: false,
-            reverse_camera: false,
-            lane_assistance: false,
-            parking_sensors: false,
-            cruise_control: false,
-            abs: false,
-            emergency_braking: false,
-            immobilizer: false,
-            stability_control: false,
-            tyre_pressure_monitor: false,
-            brake_force_distribution: false,
-        },
-        // Running Costs
-        annual_insurance_cost: "",
-        highway_fuel_efficiency: "",
-        urban_fuel_efficiency: "",
-    });
+    const initialFormData = useMemo(
+        () => ({
+            // Basic Details
+            make: "",
+            model: "",
+            year: "",
+            price: "",
+            mileage: "",
+            condition: "",
+            location: "Nairobi, Kenya",
+            availability: "Available",
+            drive: "",
+            engine_size: "",
+            fuel_type: "",
+            horse_power: "",
+            transmission: "",
+            torque: "",
+            type: "",
+            acceleration: "",
+            description: "",
+            images: [],
+            is_sell_on_behalf: false,
+            owner_name: "",
+            owner_email: "",
+            owner_phone: "",
+            // Specifications (all stored in one nested object)
+            comfort_features: {
+                trimming: "",
+                heated_seats: false,
+                sound_system: "",
+                power_windows: false,
+                seat_material: "",
+                air_conditioning: "",
+                powered_tailgate: false,
+                steering_controls: false,
+                phone_connectivity: false,
+                auto_start_stop: false,
+                infotainment_system: "",
+                isofix_anchors: false,
+                paddle_shifts: false,
+                apple_carplay: false,
+                fm_radio: false,
+                keyless_entry: false,
+            },
+            safety_features: {
+                gps_tracker: false,
+                srs_airbags: false,
+                reverse_camera: false,
+                lane_assistance: false,
+                parking_sensors: false,
+                cruise_control: false,
+                abs: false,
+                emergency_braking: false,
+                immobilizer: false,
+                stability_control: false,
+                tyre_pressure_monitor: false,
+                brake_force_distribution: false,
+            },
+            // Running Costs
+            annual_insurance_cost: "",
+            highway_fuel_efficiency: "",
+            urban_fuel_efficiency: "",
+        }),
+        []
+    );
+
+    const { data, setData, post, errors, reset } = useForm(initialFormData);
+
+    useEffect(() => {
+        const { images, ...dataToSave } = data;
+        const { images: _, ...initialWithoutImages } = initialFormData;
+
+        const shouldSave =
+            JSON.stringify(dataToSave) !== JSON.stringify(initialWithoutImages);
+
+        if (shouldSave) {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dataToSave));
+        } else {
+            localStorage.removeItem(LOCAL_STORAGE_KEY);
+        }
+    }, [data, initialFormData]);
 
     // Load saved data from localStorage only once on mount
     useEffect(() => {
@@ -76,22 +95,24 @@ const Create = () => {
         if (savedData) {
             try {
                 const parsedData = JSON.parse(savedData);
-
-                Object.keys(parsedData).forEach((key) => {
-                    setData(key, parsedData[key]);
-                });
+                const mergedData = {
+                    ...initialFormData,
+                    ...parsedData,
+                    comfort_features: {
+                        ...initialFormData.comfort_features,
+                        ...(parsedData.comfort_features || {}),
+                    },
+                    safety_features: {
+                        ...initialFormData.safety_features,
+                        ...(parsedData.safety_features || {}),
+                    },
+                };
+                setData(mergedData);
             } catch (error) {
                 console.error("Error parsing saved form data:", error);
             }
         }
-    }, []);
-
-    // Save form data on every change
-    useEffect(() => {
-        const { images, ...dataToSave } = data;
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dataToSave));
-    }, [data]);
-
+    }, [initialFormData]);
     const [activeStep, setActiveStep] = useState(1);
     const [expandedSection, setExpandedSection] = useState(null);
     const [previewImages, setPreviewImages] = useState([]);
@@ -148,10 +169,9 @@ const Create = () => {
             forceFormData: true,
             onSuccess: () => {
                 setActiveStep(1);
-                // Clear local storage
                 localStorage.removeItem(LOCAL_STORAGE_KEY);
-                // Clear preview images
                 setPreviewImages([]);
+                reset(initialFormData); // Explicitly reset to initial state
             },
             onError: (errors) => {
                 console.error("Form submission errors:", errors);

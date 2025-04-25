@@ -161,7 +161,7 @@ export default function Welcome({ cars, categories }) {
                 </MaxWidthWrapper>
 
                 {/* USP Bar */}
-                <div className="absolute bottom-0 left-0 right-0 bg-white/5 backdrop-blur-md border-t border-gray-200/10">
+                <div className="hidden md:block absolute bottom-0 left-0 right-0 bg-white/5 backdrop-blur-md border-t border-gray-200/10">
                     <div className="max-w-7xl mx-auto px-4">
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4">
                             <div className="flex items-center gap-3 text-gray-200">
@@ -203,20 +203,22 @@ export default function Welcome({ cars, categories }) {
                             { id: "all", label: "All" },
                             { id: "suv", label: "SUV" },
                             { id: "sedan", label: "Sedan" },
-                            { id: "hatchback", label: "Hatchback" },
                             { id: "van", label: "Van" },
+                            { id: "hatchback", label: "Hatchback" },
                         ]}
                         filterFn={(items, category) =>
                             category === "all" ? items : cars[category] || []
                         }
                         viewMoreLink="/vehicles"
+                        sliderText="View More Featured Cars"
                     />
 
                     <VehicleSlider
-                        title="Fuel Type"
+                        title="Get truested used cars nearby"
                         items={cars.petrol}
                         categories={[
-                            { id: "petrol", label: "Petrol" },
+                            { id: "all", label: "Petrol" },
+
                             { id: "diesel", label: "Diesel" },
                             { id: "electric", label: "Electric" },
                         ]}
@@ -224,18 +226,21 @@ export default function Welcome({ cars, categories }) {
                             category === "all" ? items : cars[category] || []
                         }
                         viewMoreLink="/vehicles?fuel_type="
+                        sliderText="View More vehicles"
                     />
 
                     <VehicleSlider
                         title="Latest Cars"
                         items={cars.latest}
                         viewMoreLink="/vehicles"
+                        sliderText="View More Latest Cars"
                     />
 
                     <VehicleSlider
                         title="Affordable Cars"
                         items={cars.affordable}
                         viewMoreLink="/vehicles"
+                        sliderText="View More Affordable Cars"
                     />
                 </MaxWidthWrapper>
             </div>

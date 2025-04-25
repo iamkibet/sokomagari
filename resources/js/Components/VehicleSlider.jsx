@@ -12,6 +12,7 @@ const VehicleSlider = ({
     categories,
     filterFn = (items, category) => items,
     viewMoreLink = "/",
+    sliderText,
 }) => {
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [isLoading, setIsLoading] = useState(true);
@@ -102,14 +103,16 @@ const VehicleSlider = ({
         <section className="w-full pt-6">
             <MaxWidthWrapper>
                 <div className="border shadow-md rounded-2xl">
-                    <h2 className="text-xl font-semibold px-6 pt-4">{title}</h2>
+                    <h2 className="text-xl font-semibold px-6 py-4 md:py-6 pt-4">
+                        {title}
+                    </h2>
 
                     {categories && (
-                        <div className="flex flex-wrap justify-start px-4 space-x-4 mb-4 pt-3 w-full border-b">
+                        <div className="flex flex-wrap justify-start px-2 md:px-4 space-x-2 md:space-x-4 mb-4  w-full border-b">
                             {categories.map((category) => (
                                 <button
                                     key={category.id}
-                                    className={`px-4 py-2 text-sm ${
+                                    className={`px-4 py-2 text-xs md:text-sm ${
                                         selectedCategory === category.id
                                             ? "border-b-[3px] border-primary font-bold"
                                             : ""
@@ -266,6 +269,15 @@ const VehicleSlider = ({
                                 </div>
                             </button>
                         )}
+                    </div>
+                    {/* View more link */}
+                    <div className="flex justify-start px-4 pb-4">
+                        <a
+                            href={`${viewMoreLink}${selectedCategory !== 'all' ? `?category=${selectedCategory}` : ''}`}
+                            className="text-primary hover:text-primary/80 transition-colors duration-200"
+                        >
+                            {`${sliderText}${selectedCategory !== 'all' ? categories?.find(c => c.id === selectedCategory)?.label || '' : ''}`}
+                        </a>
                     </div>
                 </div>
             </MaxWidthWrapper>

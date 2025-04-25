@@ -18,7 +18,7 @@ use Inertia\Response;
 
 class VehicleController extends Controller
 {
-
+    use AuthorizesRequests;
 
     /**
      * Display a listing of vehicles.
@@ -81,13 +81,13 @@ class VehicleController extends Controller
         $validated['user_id'] = auth()->id();
 
         // Handle optional array fields
-        $validated['comfort_features'] = $request->has('comfort_features') ? $request->input('comfort_features') : [];
-        $validated['safety_features'] = $request->has('safety_features') ? $request->input('safety_features') : [];
+        $validated['comfort_features'] = $request->input('comfort_features', []);
+        $validated['safety_features'] = $request->input('safety_features', []);
 
         // Ensure numeric fields are set to null if empty
-        $validated['annual_insurance_cost'] = $request->filled('annual_insurance_cost') ? $request->input('annual_insurance_cost') : null;
-        $validated['highway_fuel_efficiency'] = $request->filled('highway_fuel_efficiency') ? $request->input('highway_fuel_efficiency') : null;
-        $validated['urban_fuel_efficiency'] = $request->filled('urban_fuel_efficiency') ? $request->input('urban_fuel_efficiency') : null;
+        $validated['annual_insurance_cost'] = $request->input('annual_insurance_cost');
+        $validated['highway_fuel_efficiency'] = $request->input('highway_fuel_efficiency');
+        $validated['urban_fuel_efficiency'] = $request->input('urban_fuel_efficiency');
 
         // Handle image uploads
         if ($request->hasFile('images')) {
@@ -186,14 +186,25 @@ class VehicleController extends Controller
     {
         $validated = $request->validated();
 
+        // Handle optional array fields
+        $validated['comfort_features'] = $request->input('comfort_features', []);
+        $validated['safety_features'] = $request->input('safety_features', []);
+
+        // Ensure numeric fields are set to null if empty
+        $validated['annual_insurance_cost'] = $request->input('annual_insurance_cost');
+        $validated['highway_fuel_efficiency'] = $request->input('highway_fuel_efficiency');
+        $validated['urban_fuel_efficiency'] = $request->input('urban_fuel_efficiency');
+
+        // Handle image uploads
         if ($request->hasFile('images')) {
             $this->deleteImages($vehicle->images);
             $validated['images'] = $this->storeImages($request->file('images'));
         }
 
+        // Update the vehicle record
         $vehicle->update($validated);
 
-        return redirect()->route('vehicles.show', $vehicle->slug)
+        return redirect()->route('dashboard.vehicles.index')
             ->with('success', __('Vehicle updated successfully'));
     }
 
@@ -205,7 +216,7 @@ class VehicleController extends Controller
         $this->deleteImages($vehicle->images);
         $vehicle->delete();
 
-        return redirect()->route('vehicles.index')
+        return redirect()->route('dashboard.vehicles.index')
             ->with('success', __('Vehicle deleted successfully'));
     }
 
