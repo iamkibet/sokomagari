@@ -110,6 +110,20 @@ export default {
                     ring: "hsl(var(--sidebar-ring))",
                 },
             },
+            keyframes: {
+                "fade-in": {
+                    "0%": { opacity: "0", transform: "translateY(20px)" },
+                    "100%": { opacity: "1", transform: "translateY(0)" },
+                },
+                "scale-x": {
+                    "0%": { transform: "scaleX(0)" },
+                    "100%": { transform: "scaleX(1)" },
+                },
+            },
+            animation: {
+                "fade-in": "fade-in 0.5s ease-out forwards",
+                "scale-x": "scale-x 1s ease-out forwards",
+            },
         },
     },
 

@@ -32,13 +32,13 @@ const CarCard = ({ car }) => {
             {/* Content Container */}
             <div className="flex flex-col gap-3 p-4 md:p-5 lg:p-6">
                 {/* Title Row */}
-                <div className="flex justify-between items-start mb-1.5">
+                <div className="flex justify-between items-start ">
                     <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-gray-100 leading-tight transition-colors duration-200 hover:text-primary-600 dark:hover:text-primary-400">
                         <span className="inline-block pr-2 bg-clip-text bg-gradient-to-r from-gray-800 dark:from-gray-100 to-gray-600 dark:to-gray-300">
                             {car.make} {car.model}
                         </span>
                     </h3>
-                    <span className="text-sm md:text-base font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap bg-gray-100 dark:bg-gray-700/50 px-2.5 py-1 rounded-full">
+                    <span className="text-sm md:text-base font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap bg-gray-100 dark:bg-gray-700/50 px-2.5  rounded-full">
                         {car.year}
                     </span>
                 </div>

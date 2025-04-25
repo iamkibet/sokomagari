@@ -1,11 +1,13 @@
 import React from "react";
 
 const CarFeatures = ({ features }) => {
+    // Ensure features is an object, default to empty object if null/undefined
+    const safeFeatures = features || {};
+
     return (
         <div className="mb-8">
-          
             <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Object.entries(features).map(([feature, value]) => (
+                {Object.entries(safeFeatures).map(([feature, value]) => (
                     <li
                         key={feature}
                         className="flex justify-between items-center bg-white py-2 rounded-lg shadow-sm hover:shadow-md"

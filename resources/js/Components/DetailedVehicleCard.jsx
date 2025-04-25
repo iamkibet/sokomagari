@@ -51,7 +51,7 @@ const DetailedVehicleCard = ({ car }) => {
     );
 
     return (
-        <div className=" my-3 border rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl w-full">
+        <div className=" my-3 border dark:border-gray-700 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl w-full">
             <div className="relative">
                 <img
                     src={car.thumbnail}

@@ -5,7 +5,7 @@ import Footer from "@/Components/Footer";
 
 export default function GuestLayout({ auth, children }) {
     return (
-        <div className="flex flex-col text-[#040316] dark:text-[#eae9fc] min-h-screen bg-[#fbfbfe] dark:bg-[rgb(33,33,33)]">
+        <div className="flex flex-col text-[#040316] dark:text-[#eae9fc] min-h-screen bg-[#fbfbfe] dark:bg-gray-900">
             <Navbar />
 
             {/* Main Content */}

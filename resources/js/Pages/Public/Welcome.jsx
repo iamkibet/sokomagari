@@ -131,27 +131,27 @@ export default function Welcome({ cars, categories }) {
 
                         {/* Filter Form Container */}
 
-                        <div className="my-10 md:my-0 md:ml-20 items-center justify-center bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-2 md:p-4 border border-gray-200/20">
+                        <div className="my-10 md:my-0 md:ml-20 items-center justify-center bg-white/95 dark:bg-primary/10 backdrop-blur-xl rounded-2xl shadow-2xl dark:shadow-gray-800/30 p-2 md:p-4 border border-gray-200/20 dark:border-gray-700/20">
                             <FilterForm />
-                            <div className="hidden md:block md:mt-8 text-sm text-gray-600">
+                            <div className="hidden md:block md:mt-8 text-sm text-gray-600 dark:text-gray-400">
                                 Popular Searches:
                                 <a
                                     href="#"
-                                    className="ml-2 text-blue-600 hover:underline"
+                                    className="ml-2 text-blue-600 dark:text-blue-400 hover:underline"
                                 >
                                     SUV
                                 </a>
                                 ,
                                 <a
                                     href="#"
-                                    className="ml-2 text-blue-600 hover:underline"
+                                    className="ml-2 text-blue-600 dark:text-blue-400 hover:underline"
                                 >
                                     Electric
                                 </a>
                                 ,
                                 <a
                                     href="#"
-                                    className="ml-2 text-blue-600 hover:underline"
+                                    className="ml-2 text-blue-600 dark:text-blue-400 hover:underline"
                                 >
                                     Luxury
                                 </a>

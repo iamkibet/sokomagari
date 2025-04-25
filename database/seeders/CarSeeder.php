@@ -23,15 +23,28 @@ class CarSeeder extends Seeder
         // Get all users
         $users = User::all();
 
+        // Create regular cars for each user
+        $this->createRegularCars($users);
+
+        // Create featured cars
+        $this->createFeaturedCars($users);
+    }
+
+    /**
+     * Create regular cars for each user
+     * 
+     * @param \Illuminate\Database\Eloquent\Collection $users
+     * @return void
+     */
+    private function createRegularCars($users): void
+    {
         foreach ($users as $user) {
             // Create 5 cars for each user
             for ($i = 0; $i < 5; $i++) {
                 $isFeatured = $i === 0; // First car is featured
+                $carFolder = ($i % 2 == 0) ? 'car1' : 'car4';
 
                 try {
-                    // Alternate between car1 and car4 folders since they're the only ones with images
-                    $carFolder = ($i % 2 == 0) ? 'car1' : 'car4';
-
                     Car::create([
                         'user_id' => $user->id,
                         'make' => $this->getRandomMake(),
@@ -55,14 +68,27 @@ class CarSeeder extends Seeder
                         'acceleration' => rand(5, 15) + (rand(0, 99) / 100),
                         'images' => json_encode($this->getLocalImagePaths($carFolder)),
                         'is_sell_on_behalf' => false,
+                        'comfort_features' => json_encode($this->getComfortFeatures()),
+                        'safety_features' => json_encode($this->getSafetyFeatures()),
+                        'annual_insurance_cost' => rand(50000, 200000),
+                        'highway_fuel_efficiency' => rand(10, 25) + (rand(0, 99) / 100),
+                        'urban_fuel_efficiency' => rand(8, 20) + (rand(0, 99) / 100),
                     ]);
                 } catch (\Exception $e) {
                     Log::error('Failed to create car: ' . $e->getMessage());
                 }
             }
         }
+    }
 
-        // Create featured cars with specific attributes
+    /**
+     * Create featured cars with specific attributes
+     * 
+     * @param \Illuminate\Database\Eloquent\Collection $users
+     * @return void
+     */
+    private function createFeaturedCars($users): void
+    {
         $featuredCars = [
             [
                 'make' => 'Toyota',
@@ -112,10 +138,14 @@ class CarSeeder extends Seeder
             ],
         ];
 
-        // Assign featured cars to random users
         foreach ($featuredCars as $carData) {
             try {
                 $carData['user_id'] = $users->random()->id;
+                $carData['comfort_features'] = json_encode($this->getComfortFeatures());
+                $carData['safety_features'] = json_encode($this->getSafetyFeatures());
+                $carData['annual_insurance_cost'] = rand(50000, 200000);
+                $carData['highway_fuel_efficiency'] = rand(10, 25) + (rand(0, 99) / 100);
+                $carData['urban_fuel_efficiency'] = rand(8, 20) + (rand(0, 99) / 100);
                 Car::create($carData);
             } catch (\Exception $e) {
                 Log::error('Failed to create featured car: ' . $e->getMessage());
@@ -184,45 +214,185 @@ class CarSeeder extends Seeder
         return $imagePaths;
     }
 
+    /**
+     * Get random car make
+     * 
+     * @return string
+     */
     private function getRandomMake(): string
     {
         $makes = ['Toyota', 'Honda', 'Ford', 'Chevrolet', 'BMW', 'Mercedes', 'Audi', 'Nissan'];
         return $makes[array_rand($makes)];
     }
 
+    /**
+     * Get random car model
+     * 
+     * @return string
+     */
     private function getRandomModel(): string
     {
         $models = ['Camry', 'Civic', 'F-150', 'Silverado', '3 Series', 'C-Class', 'A4', 'Altima'];
         return $models[array_rand($models)];
     }
 
+    /**
+     * Get random car condition
+     * 
+     * @return string
+     */
     private function getRandomCondition(): string
     {
         $conditions = ['New', 'Used', 'Certified Pre-Owned'];
         return $conditions[array_rand($conditions)];
     }
 
+    /**
+     * Get random car type
+     * 
+     * @return string
+     */
     private function getRandomType(): string
     {
         $types = ['Sedan', 'SUV', 'Hatchback', 'Truck', 'Van'];
         return $types[array_rand($types)];
     }
 
+    /**
+     * Get random drive type
+     * 
+     * @return string
+     */
     private function getRandomDrive(): string
     {
         $drives = ['FWD', 'RWD', 'AWD', '4WD'];
         return $drives[array_rand($drives)];
     }
 
+    /**
+     * Get random fuel type
+     * 
+     * @return string
+     */
     private function getRandomFuelType(): string
     {
         $fuelTypes = ['Petrol', 'Diesel', 'Hybrid', 'Electric'];
         return $fuelTypes[array_rand($fuelTypes)];
     }
 
+    /**
+     * Get random transmission type
+     * 
+     * @return string
+     */
     private function getRandomTransmission(): string
     {
         $transmissions = ['Automatic', 'Manual', 'CVT'];
         return $transmissions[array_rand($transmissions)];
+    }
+
+    /**
+     * Get comfort features with standardized boolean values
+     * 
+     * @return array
+     */
+    private function getComfortFeatures(): array
+    {
+        return [
+            'fm_radio' => (string)rand(0, 1),
+            'trimming' => $this->getRandomTrim(),
+            'heated_seats' => (string)rand(0, 1),
+            'sound_system' => $this->getRandomSoundSystem(),
+            'apple_carplay' => (string)rand(0, 1),
+            'keyless_entry' => (string)rand(0, 1),
+            'paddle_shifts' => (string)rand(0, 1),
+            'power_windows' => (string)rand(0, 1),
+            'seat_material' => $this->getRandomSeatMaterial(),
+            'isofix_anchors' => (string)rand(0, 1),
+            'auto_start_stop' => (string)rand(0, 1),
+            'air_conditioning' => $this->getRandomAirConditioningType(),
+            'powered_tailgate' => (string)rand(0, 1),
+            'steering_controls' => (string)rand(0, 1),
+            'phone_connectivity' => (string)rand(0, 1),
+            'infotainment_system' => $this->getRandomInfotainmentSystem()
+        ];
+    }
+
+    /**
+     * Get safety features with standardized boolean values
+     * 
+     * @return array
+     */
+    private function getSafetyFeatures(): array
+    {
+        return [
+            'abs' => (string)rand(0, 1),
+            'gps_tracker' => (string)rand(0, 1),
+            'immobilizer' => (string)rand(0, 1),
+            'srs_airbags' => (string)rand(0, 1),
+            'cruise_control' => (string)rand(0, 1),
+            'reverse_camera' => (string)rand(0, 1),
+            'lane_assistance' => (string)rand(0, 1),
+            'parking_sensors' => (string)rand(0, 1),
+            'emergency_braking' => (string)rand(0, 1),
+            'stability_control' => (string)rand(0, 1),
+            'tyre_pressure_monitor' => (string)rand(0, 1),
+            'brake_force_distribution' => (string)rand(0, 1)
+        ];
+    }
+
+    /**
+     * Get random trim type
+     * 
+     * @return string
+     */
+    private function getRandomTrim(): string
+    {
+        $trims = ['wood', 'carbon fiber', 'aluminum', 'plastic'];
+        return $trims[array_rand($trims)];
+    }
+
+    /**
+     * Get random seat material
+     * 
+     * @return string
+     */
+    private function getRandomSeatMaterial(): string
+    {
+        $materials = ['Leather', 'Semi Leather', 'Fabric'];
+        return $materials[array_rand($materials)];
+    }
+
+    /**
+     * Get random sound system or null
+     * 
+     * @return string|null
+     */
+    private function getRandomSoundSystem(): ?string
+    {
+        $systems = [null, 'Bose', 'Harman Kardon', 'Sony', 'JBL'];
+        return $systems[array_rand($systems)];
+    }
+
+    /**
+     * Get random air conditioning type or null
+     * 
+     * @return string|null
+     */
+    private function getRandomAirConditioningType(): ?string
+    {
+        $types = [null, 'Manual', 'Automatic Climate Control', 'Dual-zone Climate Control', 'Multi-zone Climate Control'];
+        return $types[array_rand($types)];
+    }
+
+    /**
+     * Get random infotainment system or null
+     * 
+     * @return string|null
+     */
+    private function getRandomInfotainmentSystem(): ?string
+    {
+        $systems = [null, 'Basic', 'Touchscreen', 'Navigation System', 'Premium Entertainment System'];
+        return $systems[array_rand($systems)];
     }
 }
