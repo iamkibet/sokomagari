@@ -9,7 +9,7 @@ class PublicController extends Controller
 {
     public function home(CarService $carService)
     {
-        return Inertia::render('Public/Welcome', [
+        return Inertia::render('Welcome', [
             'cars' => [
                 'featured' => $carService->getFeaturedCars(),
                 'suv' => $carService->getFeaturedCars('suv'),
