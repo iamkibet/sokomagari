@@ -32,7 +32,9 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
-        "files": []
+        "files": [
+            "app/Helpers/BreadCrumbHelper.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

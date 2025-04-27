@@ -165,6 +165,7 @@ const Index = () => {
                                         </li>
                                     </ol>
                                 </nav>
+
                                 {/* Search Input */}
                                 <div className="relative mb-6">
                                     <input
@@ -283,9 +284,7 @@ const Index = () => {
                                                 <select
                                                     name="make"
                                                     value={filterData.make}
-                                                    onChange={
-                                                        handleFilterChange
-                                                    }
+                                                    onChange={handleFilterChange}
                                                     className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                                 >
                                                     <option value="">
@@ -304,24 +303,16 @@ const Index = () => {
                                                         type="number"
                                                         name="year_min"
                                                         placeholder="Min Year"
-                                                        value={
-                                                            filterData.year_min
-                                                        }
-                                                        onChange={
-                                                            handleFilterChange
-                                                        }
+                                                        value={filterData.year_min}
+                                                        onChange={handleFilterChange}
                                                         className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                                                     />
                                                     <input
                                                         type="number"
                                                         name="year_max"
                                                         placeholder="Max Year"
-                                                        value={
-                                                            filterData.year_max
-                                                        }
-                                                        onChange={
-                                                            handleFilterChange
-                                                        }
+                                                        value={filterData.year_max}
+                                                        onChange={handleFilterChange}
                                                         className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                                                     />
                                                 </div>
@@ -331,24 +322,16 @@ const Index = () => {
                                                         type="number"
                                                         name="price_min"
                                                         placeholder="Min Price (KES)"
-                                                        value={
-                                                            filterData.price_min
-                                                        }
-                                                        onChange={
-                                                            handleFilterChange
-                                                        }
+                                                        value={filterData.price_min}
+                                                        onChange={handleFilterChange}
                                                         className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                                                     />
                                                     <input
                                                         type="number"
                                                         name="price_max"
                                                         placeholder="Max Price (KES)"
-                                                        value={
-                                                            filterData.price_max
-                                                        }
-                                                        onChange={
-                                                            handleFilterChange
-                                                        }
+                                                        value={filterData.price_max}
+                                                        onChange={handleFilterChange}
                                                         className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                                                     />
                                                 </div>

@@ -10,6 +10,37 @@ export default function Show({ news, relatedNews }) {
 
             <div className="py-12">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Breadcrumb */}
+                    <nav className="mb-8">
+                        <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                            <li>
+                                <Link
+                                    href={route("public.home")}
+                                    className="hover:text-primary transition-colors"
+                                >
+                                    Home
+                                </Link>
+                            </li>
+                            <li>
+                                <span className="mx-2">/</span>
+                            </li>
+                            <li>
+                                <Link
+                                    href={route("public.news.index")}
+                                    className="hover:text-primary transition-colors"
+                                >
+                                    News
+                                </Link>
+                            </li>
+                            <li>
+                                <span className="mx-2">/</span>
+                            </li>
+                            <li className="text-gray-900 dark:text-gray-100">
+                                {news.title}
+                            </li>
+                        </ol>
+                    </nav>
+
                     <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 md:p-8 text-gray-900 dark:text-gray-100">
                             {/* Featured Image */}
