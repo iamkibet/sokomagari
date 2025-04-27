@@ -1,7 +1,6 @@
 import React from "react";
 
 const CarFeatures = ({ features }) => {
-    // Ensure features is an object, default to empty object if null/undefined
     const safeFeatures = features || {};
 
     return (
@@ -10,9 +9,9 @@ const CarFeatures = ({ features }) => {
                 {Object.entries(safeFeatures).map(([feature, value]) => (
                     <li
                         key={feature}
-                        className="flex justify-between items-center bg-white py-2 rounded-lg shadow-sm hover:shadow-md"
+                        className="flex justify-between items-center bg-white dark:bg-gray-800 py-2 rounded-lg shadow-sm hover:shadow-md"
                     >
-                        <span className="text-gray-700">
+                        <span className="text-gray-700 dark:text-gray-300">
                             {formatFeatureName(feature)}
                         </span>
                         <FeatureIcon value={value} />
@@ -26,7 +25,7 @@ const CarFeatures = ({ features }) => {
 const FeatureIcon = ({ value }) =>
     value === "1" ? (
         <svg
-            className="w-6 h-6 text-primary"
+            className="w-6 h-6 text-primary dark:text-primary"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -40,7 +39,7 @@ const FeatureIcon = ({ value }) =>
             ></path>
         </svg>
     ) : (
-        <span className="text-gray-400">—</span>
+        <span className="text-gray-400 dark:text-gray-500">—</span>
     );
 
 const formatFeatureName = (name) => {

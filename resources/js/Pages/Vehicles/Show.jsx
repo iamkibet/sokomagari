@@ -298,22 +298,22 @@ const Show = () => {
 
                     {/* Vehicle Details Section */}
                     <div className="w-full xl:w-1/2 p-4">
-                        <div className="bg-white p-6 rounded-lg shadow-lg">
-                            <h1 className="text-2xl font-extrabold mb-4">
+                        <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg">
+                            <h1 className="text-2xl font-extrabold mb-4 text-gray-900 dark:text-gray-100">
                                 {vehicle.make} {vehicle.model}
                             </h1>
-                            <p className="text-gray-700">
+                            <p className="text-gray-700 dark:text-gray-300">
                                 {vehicle.description}
                             </p>
                             <div className="pt-4">
                                 <a
-                                    className="cursor-pointer flex justify-between border-b p-4 hover:bg-primary/10"
+                                    className="cursor-pointer flex justify-between border-b border-gray-200 dark:border-gray-700 p-4 hover:bg-primary/10 dark:hover:bg-primary/20"
                                     onClick={openModal}
                                 >
                                     Specifications <span>{arrowRight}</span>
                                 </a>
                                 <a
-                                    className="cursor-pointer flex justify-between border-b p-4 hover:bg-primary/10"
+                                    className="cursor-pointer flex justify-between border-b border-gray-200 dark:border-gray-700 p-4 hover:bg-primary/10 dark:hover:bg-primary/20"
                                     onClick={openRunningCosts}
                                 >
                                     Running Costs <span>{arrowRight}</span>
@@ -323,7 +323,7 @@ const Show = () => {
                             <Modal show={isModalOpen} onClose={closeModal}>
                                 <div className="flex flex-col sm:p-4 p-6">
                                     <div className="flex items-center justify-between">
-                                        <h1 className="font-bold text-2xl">
+                                        <h1 className="font-bold text-2xl text-gray-900 dark:text-gray-100">
                                             {vehicle.make} {vehicle.model}{" "}
                                             Specifications
                                         </h1>
@@ -334,7 +334,7 @@ const Show = () => {
                                             {closeSVG}
                                         </span>
                                     </div>
-                                    <div className="w-full p-6 ">
+                                    <div className="w-full p-6">
                                         {/* Safety Features Section */}
                                         <SectionHeader
                                             title="Comfort Features"
@@ -366,7 +366,7 @@ const Show = () => {
                             >
                                 <div className="flex flex-col h-full">
                                     <div className="flex items-center justify-between py-3 px-4">
-                                        <h1 className="font-bold text-2xl">
+                                        <h1 className="font-bold text-2xl text-gray-900 dark:text-gray-100">
                                             {vehicle.make} {vehicle.model}{" "}
                                             Running Costs
                                         </h1>
@@ -378,31 +378,31 @@ const Show = () => {
                                         </span>
                                     </div>
                                     <div className="flex flex-col h-full items-center justify-center p-6 gap-y-3">
-                                        <div className="flex flex-col text-center items-center justify-center bg-gray-100 h-1/2 w-full">
+                                        <div className="flex flex-col text-center items-center justify-center bg-gray-100 dark:bg-gray-800 h-1/2 w-full">
                                             {insuranceSVG}
-                                            <h2 className="text-2xl font-semibold text-gray-800">
+                                            <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
                                                 Insurance Costs
                                             </h2>
-                                            <p className="text-gray-600 mt-2">
+                                            <p className="text-gray-600 dark:text-gray-400 mt-2">
                                                 Estimated annual insurance costs
                                                 based on average rates.
                                             </p>
-                                            <p className="text-xl font-bold t mt-4">
+                                            <p className="text-xl font-bold mt-4 text-gray-900 dark:text-gray-100">
                                                 KES: {annual_insurance_cost} /
                                                 Annually
                                             </p>{" "}
                                         </div>
 
-                                        <div className="flex flex-col h-1/2 text-center items-center justify-center bg-gray-100 w-full gap-y-2">
-                                            <h1 className="flex flex-col items-center text-center justify-center font-bold">
+                                        <div className="flex flex-col h-1/2 text-center items-center justify-center bg-gray-100 dark:bg-gray-800 w-full gap-y-2">
+                                            <h1 className="flex flex-col items-center text-center justify-center font-bold text-gray-900 dark:text-gray-100">
                                                 {fuelSVG} Fuel
                                             </h1>
-                                            <p>
+                                            <p className="text-gray-700 dark:text-gray-300">
                                                 Highway:{" "}
                                                 {highway_fuel_efficiency}{" "}
                                                 Km/Litre
                                             </p>
-                                            <p>
+                                            <p className="text-gray-700 dark:text-gray-300">
                                                 Urban: {urban_fuel_efficiency}{" "}
                                                 Km/Litre
                                             </p>
@@ -425,10 +425,10 @@ const Show = () => {
                                 </a>
                             </div>
                             <div className="mt-6">
-                                <p className="text-gray-600 font-semibold mb-2">
+                                <p className="text-gray-600 dark:text-gray-400 font-semibold mb-2">
                                     Share this:
                                 </p>
-                                <div className="flex items-center  space-x-10 mt-4">
+                                <div className="flex items-center space-x-10 mt-4">
                                     <a
                                         href={shareLinks.whatsapp}
                                         target="_blank"
