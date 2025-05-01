@@ -76,23 +76,33 @@ class Car extends Model
 
     protected $appends = ['thumbnail', 'image_urls'];
 
-    // Update your accessors to handle empty images
+    // // Update your accessors to handle empty images
+    // public function getThumbnailAttribute()
+    // {
+    //     $images = $this->getImagesArray();
+
+    //     if (!empty($images)) {
+    //         $firstImage = $images[0];
+
+    //         // Check if the path is a storage path or a public path
+    //         if (strpos($firstImage, 'public/') === 0) {
+    //             // It's a storage path
+    //             return Storage::url($firstImage);
+    //         } else {
+    //             // It's a public path
+    //             return asset($firstImage);
+    //         }
+    //     }
+    //     return asset('defaults/vehicle-thumbnail.png');
+    // }
     public function getThumbnailAttribute()
     {
         $images = $this->getImagesArray();
 
         if (!empty($images)) {
-            $firstImage = $images[0];
-
-            // Check if the path is a storage path or a public path
-            if (strpos($firstImage, 'public/') === 0) {
-                // It's a storage path
-                return Storage::url($firstImage);
-            } else {
-                // It's a public path
-                return asset($firstImage);
-            }
+            return Storage::url($images[0]);
         }
+
         return asset('defaults/vehicle-thumbnail.png');
     }
 
@@ -100,16 +110,11 @@ class Car extends Model
     {
         $images = $this->getImagesArray();
 
-        return collect($images)->map(function ($image) {
-            // Check if the path is a storage path or a public path
-            if (strpos($image, 'public/') === 0) {
-                // It's a storage path
+        return collect($images)->map(
+            function ($image) {
                 return Storage::url($image);
-            } else {
-                // It's a public path
-                return asset($image);
             }
-        })->toArray();
+        )->toArray();
     }
 
     /**

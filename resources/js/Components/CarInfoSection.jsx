@@ -182,8 +182,6 @@ const CarInfoScroll = () => {
                     </motion.div>
                 </motion.div>
             </motion.div>
-
-            
         </motion.section>
     );
 };
