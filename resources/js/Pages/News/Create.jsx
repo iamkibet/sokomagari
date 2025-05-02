@@ -21,7 +21,7 @@ export default function Create() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route("news.store"));
+        post(route("dashboard.news.store"));
     };
 
     const handleImageChange = (e) => {

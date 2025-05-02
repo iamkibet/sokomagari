@@ -37,13 +37,28 @@ const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [showTopBar, setShowTopBar] = useState(true);
+    const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+    const [selectedCity, setSelectedCity] = useState("Nairobi");
     const { auth } = usePage().props;
+
+    const cities = [
+        "Nairobi",
+        "Mombasa",
+        "Kisumu",
+        "Nakuru",
+        "Eldoret",
+        "Thika",
+        "Malindi",
+        "Kitale",
+        "Garissa",
+        "Kakamega",
+    ];
 
     useEffect(() => {
         const handleScroll = () => {
             const scrollPosition = window.scrollY;
             setIsScrolled(scrollPosition > 20);
-            setShowTopBar(scrollPosition < 100); // Hide top bar after scrolling 100px
+            setShowTopBar(scrollPosition < 100);
         };
 
         window.addEventListener("scroll", handleScroll);
@@ -105,6 +120,12 @@ const Navbar = () => {
     );
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+    const handleCitySelect = (city) => {
+        setSelectedCity(city);
+        setIsCityDropdownOpen(false);
+        // You can add additional logic here, like updating the URL or making an API call
+    };
 
     const MenuItem = ({ href, children, active }) => (
         <Link
@@ -268,7 +289,7 @@ const Navbar = () => {
                             <Link
                                 href="/login"
                                 className="group flex items-center gap-3 px-4 py-2.5 rounded-xl 
-             bg-gradient-to-r from-primary to-primary-dark dark:bg-primary-dark/10 dark:hover:bg-primary-dark/20
+              dark:bg-primary-dark/10 dark:hover:bg-primary-dark/20
              transition-all duration-200 ease-out
              hover:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/70
              border border-transparent hover:border-primary/5 dark:hover:border-white/5
@@ -280,9 +301,6 @@ const Navbar = () => {
                                     className="w-5 h-5 opacity-80 group-hover:opacity-100 
                  transition-opacity dark:text-primary-300"
                                 />
-                                <span className="hidden md:inline text-sm font-medium tracking-tight">
-                                    Demo Access
-                                </span>
                             </Link>
                         )}
                     </div>
@@ -408,12 +426,51 @@ const Navbar = () => {
                                 }
                             />
                         </nav>
-                        <div className="hidden md:flex items-center gap-2 text-sm p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer">
-                            <MapPin className="w-5 h-5" />
-                            <span className="text-gray-600 dark:text-gray-300">
-                                Select City
-                            </span>
-                            <ChevronDown className="w-4 h-4" />
+                        <div className="relative">
+                            <button
+                                onClick={() =>
+                                    setIsCityDropdownOpen(!isCityDropdownOpen)
+                                }
+                                className="hidden md:flex items-center gap-2 text-sm p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+                            >
+                                <MapPin className="w-5 h-5" />
+                                <span className="text-gray-600 dark:text-gray-300">
+                                    {selectedCity}
+                                </span>
+                                <ChevronDown
+                                    className={`w-4 h-4 transition-transform duration-200 ${
+                                        isCityDropdownOpen ? "rotate-180" : ""
+                                    }`}
+                                />
+                            </button>
+
+                            <AnimatePresence>
+                                {isCityDropdownOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-50"
+                                    >
+                                        {cities.map((city) => (
+                                            <button
+                                                key={city}
+                                                onClick={() =>
+                                                    handleCitySelect(city)
+                                                }
+                                                className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
+                                                    selectedCity === city
+                                                        ? "bg-primary/10 text-primary dark:bg-primary/20"
+                                                        : "text-gray-700 dark:text-gray-300"
+                                                }`}
+                                            >
+                                                {city}
+                                            </button>
+                                        ))}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     </div>
 

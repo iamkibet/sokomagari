@@ -58,9 +58,9 @@ const CarCard = ({ car }) => {
                 {/* CTA Button */}
                 <a
                     href={`/vehicles/${car.slug}`}
-                    className="group relative inline-flex items-center justify-center w-full py-3 px-5 space-x-2 border border-transparent rounded-xl font-medium transition-all duration-300  dark:bg-gray-700 dark:hover:bg-gray-600 
+                    className="group relative inline-flex items-center justify-center w-full py-3 px-5 space-x-2 border border-primary rounded-xl font-medium transition-all duration-300  dark:bg-gray-700 dark:hover:bg-gray-600 
                    hover:shadow-sm 
-                   focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                   "
                     aria-label={`Explore ${car.make} ${car.model} details`}
                 >
                     <span className="text-primary/70 dark:text-primary transition-colors duration-200">
@@ -80,7 +80,6 @@ const CarCard = ({ car }) => {
                             d="M14 5l7 7m0 0l-7 7m7-7H3"
                         />
                     </svg>
-                    <div className="absolute inset-0 rounded-xl border border-primary group-hover:border-primary/60 transition-colors duration-300 pointer-events-none" />
                 </a>
             </div>
         </div>

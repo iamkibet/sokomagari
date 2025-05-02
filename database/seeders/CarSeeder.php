@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Car;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class CarSeeder extends Seeder
 {
@@ -45,19 +46,19 @@ class CarSeeder extends Seeder
                 $carFolder = ($i % 2 == 0) ? 'car1' : 'car4';
 
                 try {
-                    Car::create([
+                    $carData = [
                         'user_id' => $user->id,
                         'make' => $this->getRandomMake(),
                         'model' => $this->getRandomModel(),
                         'year' => rand(2010, 2023),
-                        'price' => rand(10000, 50000) * 1000,
-                        'mileage' => rand(10000, 100000),
+                        'price' => rand(300000, 1500000),
+                        'mileage' => rand(1000, 300000),
                         'condition' => $this->getRandomCondition(),
-                        'description' => 'This is a sample car description.',
+                        'description' => $this->getRandomDescription(),
                         'is_featured' => $isFeatured,
                         'status' => 'available',
                         'type' => $this->getRandomType(),
-                        'location' => 'Nairobi',
+                        'location' => $this->getRandomLocation(),
                         'availability' => 'Available',
                         'drive' => $this->getRandomDrive(),
                         'engine_size' => rand(1000, 5000),
@@ -66,14 +67,16 @@ class CarSeeder extends Seeder
                         'transmission' => $this->getRandomTransmission(),
                         'torque' => rand(200, 800),
                         'acceleration' => rand(5, 15) + (rand(0, 99) / 100),
-                        'images' => json_encode($this->getLocalImagePaths($carFolder)),
+                        'images' => $this->getLocalImagePaths($carFolder),
                         'is_sell_on_behalf' => false,
-                        'comfort_features' => json_encode($this->getComfortFeatures()),
-                        'safety_features' => json_encode($this->getSafetyFeatures()),
+                        'comfort_features' => $this->getComfortFeatures(),
+                        'safety_features' => $this->getSafetyFeatures(),
                         'annual_insurance_cost' => rand(50000, 200000),
                         'highway_fuel_efficiency' => rand(10, 25) + (rand(0, 99) / 100),
                         'urban_fuel_efficiency' => rand(8, 20) + (rand(0, 99) / 100),
-                    ]);
+                    ];
+
+                    Car::create($carData);
                 } catch (\Exception $e) {
                     Log::error('Failed to create car: ' . $e->getMessage());
                 }
@@ -94,7 +97,7 @@ class CarSeeder extends Seeder
                 'make' => 'Toyota',
                 'model' => 'Land Cruiser',
                 'year' => 2023,
-                'price' => 7990000,
+                'price' => 790000,
                 'mileage' => 12000,
                 'condition' => 'New',
                 'location' => 'Nairobi',
@@ -108,7 +111,7 @@ class CarSeeder extends Seeder
                 'torque' => 400,
                 'acceleration' => 11.00,
                 'description' => 'A reliable and luxurious SUV perfect for off-road and city driving.',
-                'images' => json_encode($this->getLocalImagePaths('car1')),
+                'images' => $this->getLocalImagePaths('car1'),
                 'is_sell_on_behalf' => false,
                 'is_featured' => true,
                 'status' => 'available',
@@ -131,7 +134,7 @@ class CarSeeder extends Seeder
                 'torque' => 620,
                 'acceleration' => 6.40,
                 'description' => 'A luxury sedan offering unmatched comfort and performance.',
-                'images' => json_encode($this->getLocalImagePaths('car4')),
+                'images' => $this->getLocalImagePaths('car4'),
                 'is_sell_on_behalf' => false,
                 'is_featured' => true,
                 'status' => 'available',
@@ -141,8 +144,8 @@ class CarSeeder extends Seeder
         foreach ($featuredCars as $carData) {
             try {
                 $carData['user_id'] = $users->random()->id;
-                $carData['comfort_features'] = json_encode($this->getComfortFeatures());
-                $carData['safety_features'] = json_encode($this->getSafetyFeatures());
+                $carData['comfort_features'] = $this->getComfortFeatures();
+                $carData['safety_features'] = $this->getSafetyFeatures();
                 $carData['annual_insurance_cost'] = rand(50000, 200000);
                 $carData['highway_fuel_efficiency'] = rand(10, 25) + (rand(0, 99) / 100);
                 $carData['urban_fuel_efficiency'] = rand(8, 20) + (rand(0, 99) / 100);
@@ -289,6 +292,34 @@ class CarSeeder extends Seeder
     {
         $transmissions = ['Automatic', 'Manual', 'CVT'];
         return $transmissions[array_rand($transmissions)];
+    }
+
+    /**
+     * Get random location
+     * 
+     * @return string
+     */
+    private function getRandomLocation(): string
+    {
+        $locations = ['Nairobi', 'Mombasa', 'Kisumu', 'Nakuru', 'Eldoret'];
+        return $locations[array_rand($locations)];
+    }
+
+    /**
+     * Get random description
+     * 
+     * @return string
+     */
+    private function getRandomDescription(): string
+    {
+        $descriptions = [
+            'Well-maintained vehicle with regular service history.',
+            'Excellent condition, perfect for family use.',
+            'Low mileage, single owner, meticulously maintained.',
+            'Premium features and modern technology included.',
+            'Great fuel efficiency and comfortable ride.',
+        ];
+        return $descriptions[array_rand($descriptions)];
     }
 
     /**
