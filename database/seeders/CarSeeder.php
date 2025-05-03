@@ -177,7 +177,7 @@ class CarSeeder extends Seeder
 
         if (empty($imageFiles)) {
             // Fallback to placeholder if no images found
-            return ['images/placeholder.jpg'];
+            return ['placeholder.jpg'];
         }
 
         // Define the thumbnail based on car folder
@@ -203,7 +203,7 @@ class CarSeeder extends Seeder
 
         // If thumbnail is found, add it first and remove from array
         if ($thumbnailFile) {
-            $imagePaths[] = 'images/' . $carFolder . '/' . basename($thumbnailFile);
+            $imagePaths[] = $carFolder . '/' . basename($thumbnailFile);
             $imageFiles = array_diff($imageFiles, [$thumbnailFile]);
         }
 
@@ -216,7 +216,7 @@ class CarSeeder extends Seeder
 
         for ($i = 0; $i < $count; $i++) {
             // Create web-accessible path
-            $imagePaths[] = 'images/' . $carFolder . '/' . basename($imageFiles[$i]);
+            $imagePaths[] = $carFolder . '/' . basename($imageFiles[$i]);
         }
 
         return $imagePaths;

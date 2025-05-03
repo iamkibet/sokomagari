@@ -76,45 +76,52 @@ class Car extends Model
 
     protected $appends = ['thumbnail', 'image_urls'];
 
-    // // Update your accessors to handle empty images
-    // public function getThumbnailAttribute()
-    // {
-    //     $images = $this->getImagesArray();
-
-    //     if (!empty($images)) {
-    //         $firstImage = $images[0];
-
-    //         // Check if the path is a storage path or a public path
-    //         if (strpos($firstImage, 'public/') === 0) {
-    //             // It's a storage path
-    //             return Storage::url($firstImage);
-    //         } else {
-    //             // It's a public path
-    //             return asset($firstImage);
-    //         }
-    //     }
-    //     return asset('defaults/vehicle-thumbnail.png');
-    // }
-    public function getThumbnailAttribute()
+    /**
+     * Get the image paths with the correct URL.
+     *
+     * @return array
+     */
+    public function getImagePathsAttribute(): array
     {
         $images = $this->getImagesArray();
+        return array_map(function ($path) {
+            // If the path starts with 'images/' or 'storage/', use it directly
+            if (strpos($path, 'images/') === 0 || strpos($path, 'storage/') === 0) {
+                return $path;
+            }
+            // Otherwise, prepend 'images/'
+            return 'images/' . $path;
+        }, $images);
+    }
 
+    /**
+     * Get the thumbnail image path.
+     *
+     * @return string|null
+     */
+    public function getThumbnailAttribute(): ?string
+    {
+        $images = $this->image_paths;
         if (!empty($images)) {
-            return Storage::url($images[0]);
+            $firstImage = $images[0];
+            // Check if the path is a storage path or a public path
+            if (strpos($firstImage, 'storage/') === 0) {
+                return Storage::url($firstImage);
+            } else {
+                return asset($firstImage);
+            }
         }
-
         return asset('defaults/vehicle-thumbnail.png');
     }
 
-    public function getImageUrlsAttribute()
+    public function getImageUrlsAttribute(): array
     {
-        $images = $this->getImagesArray();
-
-        return collect($images)->map(
-            function ($image) {
+        return collect($this->image_paths)->map(function ($image) {
+            if (strpos($image, 'storage/') === 0) {
                 return Storage::url($image);
             }
-        )->toArray();
+            return asset($image);
+        })->toArray();
     }
 
     /**
