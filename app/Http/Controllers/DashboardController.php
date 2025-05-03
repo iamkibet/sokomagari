@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Car;
+use App\Models\News;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use App\Http\Resources\VehicleMetricResource;
 use App\Http\Resources\VehicleListingResource;
+use App\Http\Resources\NewsResource;
 
 class DashboardController extends Controller
 {
@@ -30,16 +32,24 @@ class DashboardController extends Controller
         // Base query for all vehicle metrics
         $baseQuery = $user->cars()->getQuery();
 
-        // Get recent listings (temporarily don't use with(['latestView']) until we have some views in the database)
+        // Get recent listings
         $recentCars = $user->cars()
             ->latest()
             ->take(8)
             ->get();
 
+        // Get news metrics and recent articles
+        $newsMetrics = $this->getNewsMetrics($user);
+        $recentNews = $user->news()
+            ->latest()
+            ->take(5)
+            ->get();
+
         return Inertia::render('Dashboard/Index', [
-            // Convert resource collection to array to prevent JavaScript mapping issues
             'recentListings' => VehicleListingResource::collection($recentCars)->toArray($request),
             'financialMetrics' => $this->getFinancialMetrics($baseQuery),
+            'newsMetrics' => $newsMetrics,
+            'recentNews' => NewsResource::collection($recentNews)->toArray($request),
         ]);
     }
 
@@ -129,6 +139,37 @@ class DashboardController extends Controller
             'conversion' => $vehicle->views > 0
                 ? (($vehicle->status === 'sold' || $vehicle->sold_at) ? 1 / $vehicle->views * 100 : 0)
                 : 0,
+        ];
+    }
+
+    /**
+     * Get news metrics for the dashboard
+     */
+    protected function getNewsMetrics(User $user): array
+    {
+        $newsQuery = $user->news();
+
+        return [
+            'total_articles' => $newsQuery->count(),
+            'published_articles' => $newsQuery->where('is_published', true)->count(),
+            'draft_articles' => $newsQuery->where('is_published', false)->count(),
+            'total_views' => $newsQuery->sum('views'),
+            'avg_views' => $newsQuery->where('is_published', true)->avg('views') ?? 0,
+            'top_performing' => $newsQuery->where('is_published', true)
+                ->orderByDesc('views')
+                ->take(3)
+                ->get()
+                ->map(fn($article) => [
+                    'title' => $article->title,
+                    'views' => $article->views,
+                    'published_at' => $article->published_at,
+                ]),
+            'engagement_metrics' => [
+                'avg_read_time' => $newsQuery->where('is_published', true)
+                    ->get()
+                    ->avg(fn($article) => str_word_count($article->content) / 200) ?? 0,
+                'total_comments' => $newsQuery->sum('comments_count') ?? 0,
+            ],
         ];
     }
 }

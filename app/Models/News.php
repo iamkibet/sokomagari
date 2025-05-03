@@ -20,11 +20,15 @@ class News extends Model
         'is_published',
         'published_at',
         'user_id',
+        'views',
+        'comments_count',
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
         'published_at' => 'datetime',
+        'views' => 'integer',
+        'comments_count' => 'integer',
     ];
 
     public function user(): BelongsTo
@@ -52,5 +56,13 @@ class News extends Model
         return $query->where('is_published', true)
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now());
+    }
+
+    /**
+     * Increment the view count for the article
+     */
+    public function incrementViews(): void
+    {
+        $this->increment('views');
     }
 }
