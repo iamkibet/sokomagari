@@ -46,6 +46,9 @@ class CarSeeder extends Seeder
                 $carFolder = ($i % 2 == 0) ? 'car1' : 'car4';
 
                 try {
+                    $description = $this->getRandomDescription();
+                    Log::info('Generated description: ' . $description);
+
                     $carData = [
                         'user_id' => $user->id,
                         'make' => $this->getRandomMake(),
@@ -54,7 +57,7 @@ class CarSeeder extends Seeder
                         'price' => rand(300000, 1500000),
                         'mileage' => rand(1000, 300000),
                         'condition' => $this->getRandomCondition(),
-                        'description' => $this->getRandomDescription(),
+                        'description' => $description,
                         'is_featured' => $isFeatured,
                         'status' => 'available',
                         'type' => $this->getRandomType(),
@@ -76,9 +79,11 @@ class CarSeeder extends Seeder
                         'urban_fuel_efficiency' => rand(8, 20) + (rand(0, 99) / 100),
                     ];
 
-                    Car::create($carData);
+                    $car = Car::create($carData);
+                    Log::info('Created car with description: ' . $car->description);
                 } catch (\Exception $e) {
                     Log::error('Failed to create car: ' . $e->getMessage());
+                    Log::error('Stack trace: ' . $e->getTraceAsString());
                 }
             }
         }

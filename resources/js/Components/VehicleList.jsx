@@ -8,22 +8,10 @@ const VehicleList = ({ vehicles, filters = {} }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [activeFilters, setActiveFilters] = useState(filters);
 
-    console.log(vehicles);
+ 
 
-    // Debug logging
-    useEffect(() => {
-        console.log("VehicleList received data:", {
-            vehicles,
-            filters,
-            hasData: vehicles?.data?.length > 0,
-            pagination: {
-                current_page: vehicles?.current_page,
-                last_page: vehicles?.last_page,
-                total: vehicles?.total,
-                per_page: vehicles?.per_page,
-            },
-        });
-    }, [vehicles, filters]);
+
+ 
 
     // Show loading state if vehicles is null
     if (!vehicles) {

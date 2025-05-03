@@ -38,6 +38,7 @@ class ShowCarResource extends JsonResource
             'image_urls' => $this->image_urls,
             'comfort_features' => $this->comfort_features,
             'safety_features' => $this->safety_features,
+            'description' => $this->description,
         ];
     }
 }

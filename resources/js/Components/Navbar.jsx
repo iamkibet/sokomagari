@@ -67,41 +67,6 @@ const Navbar = () => {
 
     const isActive = (route) => window.location.pathname === route;
 
-    const DownSvg = (
-        <svg
-            className="w-2.5 h-2.5 ms-2.5"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 10 6"
-        >
-            <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="m1 1 4 4 4-4"
-            />
-        </svg>
-    );
-
-    const heartSvg = (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="size-5"
-        >
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-            />
-        </svg>
-    );
-
     const userProfileSvg = (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +89,6 @@ const Navbar = () => {
     const handleCitySelect = (city) => {
         setSelectedCity(city);
         setIsCityDropdownOpen(false);
-        // You can add additional logic here, like updating the URL or making an API call
     };
 
     const MenuItem = ({ href, children, active }) => (
