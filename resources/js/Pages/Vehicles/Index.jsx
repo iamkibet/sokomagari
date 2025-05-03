@@ -66,14 +66,14 @@ const Index = () => {
             page: 1,
         });
         setActiveFilter(null);
-        router.get(route("public.vehicles.index"));
+        router.get(route("public.showroom.index"));
     };
 
     // Submit filters to backend
     const applyFilters = () => {
         setIsLoading(true);
         console.log("Applying filters:", filterData);
-        router.get(route("public.vehicles.index"), filterData, {
+        router.get(route("public.showroom.index"), filterData, {
             preserveState: true,
             onFinish: () => setIsLoading(false),
         });
@@ -83,7 +83,7 @@ const Index = () => {
     const handlePageChange = (page) => {
         setFilterData((prev) => ({ ...prev, page }));
         router.get(
-            route("public.vehicles.index"),
+            route("public.showroom.index"),
             { ...filterData, page },
             {
                 preserveState: true,
@@ -385,7 +385,7 @@ const Index = () => {
                         filterFn={(items, category) =>
                             category === "all" ? items : cars[category] || []
                         }
-                        viewMoreLink="/vehicles"
+                        viewMoreLink="/showroom"
                     />
 
                     <VehicleSlider
@@ -399,19 +399,19 @@ const Index = () => {
                         filterFn={(items, category) =>
                             category === "all" ? items : cars[category] || []
                         }
-                        viewMoreLink="/vehicles?fuel_type="
+                        viewMoreLink="/showroom?fuel_type="
                     />
 
                     <VehicleSlider
                         title="Latest Cars"
                         items={cars.latest}
-                        viewMoreLink="/vehicles"
+                        viewMoreLink="/showroom"
                     />
 
                     <VehicleSlider
                         title="Affordable Cars"
                         items={cars.affordable}
-                        viewMoreLink="/vehicles"
+                        viewMoreLink="/showroom"
                     />
                 </div>
             </MaxWidthWrapper>

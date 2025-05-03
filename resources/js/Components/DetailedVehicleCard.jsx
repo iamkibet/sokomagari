@@ -87,7 +87,7 @@ const DetailedVehicleCard = ({ car }) => {
                     </p>
                 </div>
                 <a
-                    href={`/vehicles/${car.slug}`}
+                    href={`/showroom/${car.slug}`}
                     className="flex items-center  w-full py-2 text-primary font-bold "
                 >
                     View more details {arrowRight}

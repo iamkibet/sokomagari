@@ -23,12 +23,16 @@ Route::name('public.')->group(function () {
     Route::inertia('/privacy-policy', 'Public/Privacy')->name('policy.show');
 
     // Vehicle Catalog
-    Route::prefix('vehicles')->name('vehicles.')->group(function () {
+    Route::prefix('showroom')->name('showroom.')->group(function () {
         Route::get('/', [VehicleController::class, 'index'])->name('index');
         Route::get('/search', [VehicleController::class, 'search'])->name('search');
         Route::get('/{car}', [VehicleController::class, 'show'])
             ->name('show')
             ->where('car', '[0-9]+|[a-z0-9-]+');
+    });
+
+    Route::prefix('bikes')->name('bikes.')->group(function () {
+        Route::get('/', [VehicleController::class, 'index'])->name('index');
     });
 
     // News
@@ -102,20 +106,4 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-// Development Routes
-if (app()->environment('local')) {
-    Route::get('/test-image', function () {
-        $path = public_path('images/car1/carpic1.jpg');
-        if (!file_exists($path)) {
-            return response()->json([
-                'error' => 'File not found',
-                'path' => $path,
-                'realpath' => realpath($path),
-                'public_path' => public_path(),
-                'base_path' => base_path(),
-            ], 404);
-        }
 
-        return response()->file($path);
-    });
-}

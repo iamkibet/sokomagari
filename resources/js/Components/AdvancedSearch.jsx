@@ -32,7 +32,7 @@ export const AdvancedSearch = () => {
         const activeFilters = Object.fromEntries(
             Object.entries(filters).filter(([_, value]) => value !== "")
         );
-        router.get(route("public.vehicles.index"), activeFilters);
+        router.get(route("public.showroom.index"), activeFilters);
     };
 
     const clearFilters = () => {
@@ -48,7 +48,7 @@ export const AdvancedSearch = () => {
             location: "",
             search: "",
         });
-        router.get(route("public.vehicles.index"));
+        router.get(route("public.showroom.index"));
     };
 
     return (

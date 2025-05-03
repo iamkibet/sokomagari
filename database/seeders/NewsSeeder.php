@@ -76,34 +76,33 @@ class NewsSeeder extends Seeder
         $models = ['Camry', 'Civic', 'F-150', 'Silverado', '3 Series', 'C-Class', 'A4', 'Altima'];
         $years = range(2020, 2024);
 
-        foreach ($users as $user) {
-            // Create 3 news articles for each user
-            for ($i = 0; $i < 3; $i++) {
-                $type = array_rand($newsTypes);
-                $make = $makes[array_rand($makes)];
-                $model = $models[array_rand($models)];
-                $year = $years[array_rand($years)];
+        // Create 30 news articles
+        for ($i = 0; $i < 30; $i++) {
+            $user = $users->random();
+            $type = array_rand($newsTypes);
+            $make = $makes[array_rand($makes)];
+            $model = $models[array_rand($models)];
+            $year = $years[array_rand($years)];
 
-                $titleTemplate = $newsTypes[$type]['titles'][array_rand($newsTypes[$type]['titles'])];
-                $excerptTemplate = $newsTypes[$type]['excerpts'][array_rand($newsTypes[$type]['excerpts'])];
+            $titleTemplate = $newsTypes[$type]['titles'][array_rand($newsTypes[$type]['titles'])];
+            $excerptTemplate = $newsTypes[$type]['excerpts'][array_rand($newsTypes[$type]['excerpts'])];
 
-                $title = str_replace(['{make}', '{model}', '{year}'], [$make, $model, $year], $titleTemplate);
-                $excerpt = str_replace(['{make}', '{model}', '{year}'], [$make, $model, $year], $excerptTemplate);
+            $title = str_replace(['{make}', '{model}', '{year}'], [$make, $model, $year], $titleTemplate);
+            $excerpt = str_replace(['{make}', '{model}', '{year}'], [$make, $model, $year], $excerptTemplate);
 
-                $content = $this->generateContent($type, $make, $model, $year);
+            $content = $this->generateContent($type, $make, $model, $year);
 
-                try {
-                    News::create([
-                        'title' => $title,
-                        'excerpt' => $excerpt,
-                        'content' => $content,
-                        'is_published' => true,
-                        'published_at' => now()->subDays(rand(0, 30)),
-                        'user_id' => $user->id,
-                    ]);
-                } catch (\Exception $e) {
-                    Log::error('Failed to create news article: ' . $e->getMessage());
-                }
+            try {
+                News::create([
+                    'title' => $title,
+                    'excerpt' => $excerpt,
+                    'content' => $content,
+                    'is_published' => true,
+                    'published_at' => now()->subDays(rand(0, 30)),
+                    'user_id' => $user->id,
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Failed to create news article: ' . $e->getMessage());
             }
         }
     }

@@ -57,7 +57,7 @@ const CarCard = ({ car }) => {
 
                 {/* CTA Button */}
                 <a
-                    href={`/vehicles/${car.slug}`}
+                    href={`/showroom/${car.slug}`}
                     className="group relative inline-flex items-center justify-center w-full py-3 px-5 space-x-2 border border-primary rounded-xl font-medium transition-all duration-300  dark:bg-gray-700 dark:hover:bg-gray-600 
                    hover:shadow-sm 
                    "

@@ -34,7 +34,7 @@ const FilterForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        get(route("public.vehicles.index"), {
+        get(route("public.showroom.index"), {
             preserveScroll: true,
             preserveState: true,
             data: {

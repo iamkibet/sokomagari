@@ -280,54 +280,54 @@ const Navbar = () => {
                                 title="Vehicles"
                                 items={[
                                     {
-                                        href: "/vehicles",
+                                        href: "/showroom",
                                         text: "All Vehicles",
                                     },
                                     {
-                                        href: "/vehicles?type=sedan",
+                                        href: "/showroom?type=sedan",
                                         text: "Sedans",
                                     },
                                     {
-                                        href: "/vehicles?type=suv",
+                                        href: "/showroom?type=suv",
                                         text: "SUVs",
                                     },
                                     {
-                                        href: "/vehicles?type=truck",
+                                        href: "/showroom?type=truck",
                                         text: "Trucks",
                                     },
                                     {
-                                        href: "/vehicles?type=van",
+                                        href: "/showroom?type=van",
                                         text: "Vans",
                                     },
                                     {
-                                        href: "/vehicles?location=kenya",
+                                        href: "/showroom?location=kenya",
                                         text: "Available in Kenya",
                                     },
                                     {
-                                        href: "/vehicles?import=direct",
+                                        href: "/showroom?import=direct",
                                         text: "Direct Import",
                                     },
                                 ]}
-                                active={isActive("/vehicles")}
+                                active={isActive("/showroom")}
                             />
                             <DropdownMenuItem
                                 title="Bikes"
                                 items={[
                                     { href: "/bikes", text: "All Bikes" },
                                     {
-                                        href: "/bikes?type=sports",
+                                        href: "/showroom?type=sports",
                                         text: "Sports Bikes",
                                     },
                                     {
-                                        href: "/bikes?type=cruiser",
+                                        href: "/showroom?type=cruiser",
                                         text: "Cruisers",
                                     },
                                     {
-                                        href: "/bikes?type=offroad",
+                                        href: "/showroom?type=offroad",
                                         text: "Off-Road",
                                     },
                                     {
-                                        href: "/bikes?location=kenya",
+                                        href: "/showroom?location=kenya",
                                         text: "Available in Kenya",
                                     },
                                 ]}
@@ -459,23 +459,23 @@ const Navbar = () => {
                                     title="Vehicles"
                                     items={[
                                         {
-                                            href: "/vehicles",
+                                            href: "/showroom",
                                             text: "All Vehicles",
                                         },
                                         {
-                                            href: "/vehicles?type=sedan",
+                                            href: "/showroom?type=sedan",
                                             text: "Sedans",
                                         },
                                         {
-                                            href: "/vehicles?type=suv",
+                                            href: "/showroom?type=suv",
                                             text: "SUVs",
                                         },
                                         {
-                                            href: "/vehicles?type=truck",
+                                            href: "/showroom?type=truck",
                                             text: "Trucks",
                                         },
                                         {
-                                            href: "/vehicles?type=van",
+                                            href: "/showroom?type=van",
                                             text: "Vans",
                                         },
                                     ]}

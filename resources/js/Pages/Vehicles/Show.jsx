@@ -604,7 +604,7 @@ const Show = () => {
                         </p>
                         <div className="mt-8 sm:mt-10 flex items-center justify-center gap-x-4 sm:gap-x-6">
                             <a
-                                href={route("public.vehicles.index")}
+                                href={route("public.showroom.index")}
                                 className="flex items-center gap-2 rounded-xl bg-white px-4 sm:px-6 py-2.5 sm:py-3.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary transition-all"
                             >
                                 Browse Inventory

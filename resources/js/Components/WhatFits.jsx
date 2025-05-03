@@ -16,7 +16,7 @@ const WhatFits = () => {
 
     const handleCategoryClick = (categoryId) => {
         setActiveTab(categoryId);
-        router.get(route("public.vehicles.index", { type: categoryId }));
+        router.get(route("public.showroom.index", { type: categoryId }));
     };
 
     return (

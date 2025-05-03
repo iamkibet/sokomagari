@@ -40,7 +40,7 @@ class VehicleListingResource extends JsonResource
             ],
             'links' => [
                 'edit' => route('dashboard.vehicles.edit', $this->slug),
-                'public' => route('public.vehicles.show', $this->slug),
+                'public' => route('public.showroom.show', $this->slug),
                 'analytics' => route('dashboard.vehicles.analytics', $this->slug),
             ]
         ];

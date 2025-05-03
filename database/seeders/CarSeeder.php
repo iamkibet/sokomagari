@@ -40,8 +40,8 @@ class CarSeeder extends Seeder
     private function createRegularCars($users): void
     {
         foreach ($users as $user) {
-            // Create 5 cars for each user
-            for ($i = 0; $i < 5; $i++) {
+            // Create 30 cars for each user
+            for ($i = 0; $i < 30; $i++) {
                 $isFeatured = $i === 0; // First car is featured
                 $carFolder = ($i % 2 == 0) ? 'car1' : 'car4';
 

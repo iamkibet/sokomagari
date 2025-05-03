@@ -136,21 +136,21 @@ export default function Welcome({ cars, categories }) {
                             <div className="hidden md:block md:mt-8 text-sm text-gray-600 dark:text-gray-400">
                                 Popular Searches:
                                 <a
-                                    href="#"
+                                    href={route("public.showroom.index")}
                                     className="ml-2 text-blue-600 dark:text-blue-400 hover:underline"
                                 >
                                     SUV
                                 </a>
                                 ,
                                 <a
-                                    href="#"
+                                    href={route("public.showroom.index")}
                                     className="ml-2 text-blue-600 dark:text-blue-400 hover:underline"
                                 >
                                     Electric
                                 </a>
                                 ,
                                 <a
-                                    href="#"
+                                    href={route("public.showroom.index")}
                                     className="ml-2 text-blue-600 dark:text-blue-400 hover:underline"
                                 >
                                     Luxury
@@ -209,7 +209,7 @@ export default function Welcome({ cars, categories }) {
                         filterFn={(items, category) =>
                             category === "all" ? items : cars[category] || []
                         }
-                        viewMoreLink="/vehicles"
+                        viewMoreLink="/showroom"
                         sliderText="View More Featured Cars"
                     />
 
@@ -225,21 +225,21 @@ export default function Welcome({ cars, categories }) {
                         filterFn={(items, category) =>
                             category === "all" ? items : cars[category] || []
                         }
-                        viewMoreLink="/vehicles?fuel_type="
+                        viewMoreLink="/showroom?fuel_type="
                         sliderText="View More vehicles"
                     />
 
                     <VehicleSlider
                         title="Latest Cars"
                         items={cars.latest}
-                        viewMoreLink="/vehicles"
+                        viewMoreLink="/showroom"
                         sliderText="View More Latest Cars"
                     />
 
                     <VehicleSlider
                         title="Affordable Cars"
                         items={cars.affordable}
-                        viewMoreLink="/vehicles"
+                        viewMoreLink="/showroom"
                         sliderText="View More Affordable Cars"
                     />
                 </MaxWidthWrapper>
@@ -259,7 +259,7 @@ export default function Welcome({ cars, categories }) {
                         </p>
                         <div className="mt-10 flex items-center justify-center gap-x-6">
                             <a
-                                href={route("public.vehicles.index")}
+                                href={route("public.showroom.index")}
                                 className="flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-all"
                             >
                                 Browse Inventory
