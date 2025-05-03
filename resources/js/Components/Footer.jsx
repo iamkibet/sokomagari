@@ -143,6 +143,9 @@ const Footer = () => {
                         <p className="text-sm">
                             © {currentYear} Sokomagari. All rights reserved.
                         </p>
+                        <p className="text-sm">
+                            Developed by <a href="https://isolatedsolutions.org" target="_blank" rel="noopener noreferrer">Dennis Kibet</a>
+                        </p>
                         <div className="flex items-center gap-4">
                             <ThemeSwitcher />
                         </div>
