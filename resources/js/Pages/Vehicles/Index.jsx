@@ -14,24 +14,11 @@ const Index = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [activeFilter, setActiveFilter] = useState(null);
-
-    // Debug logging
+ 
     useEffect(() => {
-        console.log("Index page received data:", {
-            results,
-            filters,
-            hasResults: !!results,
-            resultsData: results?.data,
-            pagination: {
-                current_page: results?.current_page,
-                last_page: results?.last_page,
-                total: results?.total,
-                per_page: results?.per_page,
-            },
-        });
     }, [results, filters]);
 
-    // Initialize filter state with received filters or defaults
+   
     const [filterData, setFilterData] = useState({
         make: filters.make || "",
         model: filters.model || "",

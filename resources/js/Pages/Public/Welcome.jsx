@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 
 export default function Welcome({ cars, categories }) {
-    console.log(cars);
+ 
 
     return (
         <GuestLayout>

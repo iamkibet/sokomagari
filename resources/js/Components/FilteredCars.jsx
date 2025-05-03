@@ -5,24 +5,9 @@ import Loader from "./Loader";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const FilteredCars = ({ cars, filters, onPageChange, onApplyFilters }) => {
-    // Debug logging
-    useEffect(() => {
-        console.log("FilteredCars received data:", {
-            cars,
-            filters,
-            hasData: cars?.data?.length > 0,
-            pagination: {
-                current_page: cars?.meta?.current_page,
-                last_page: cars?.meta?.last_page,
-                total: cars?.meta?.total,
-                per_page: cars?.meta?.per_page,
-            },
-        });
-    }, [cars, filters]);
-
-    // Show loading state if cars is null or undefined
+   
     if (!cars) {
-        console.log("No cars data available");
+        
         return (
             <div className="flex justify-center items-center h-64">
                 <Loader />
@@ -32,7 +17,7 @@ const FilteredCars = ({ cars, filters, onPageChange, onApplyFilters }) => {
 
     // Show empty state if no cars
     if (!cars.data || cars.data.length === 0) {
-        console.log("No cars found in data:", cars);
+        
         return (
             <div className="flex flex-col items-center justify-center py-12">
                 <svg
